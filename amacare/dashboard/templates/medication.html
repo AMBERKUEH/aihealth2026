@@ -89,30 +89,30 @@
 <body class="bg-surface text-on-surface min-h-screen">
 <!-- SideNavBar -->
 <aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface-container-low z-40 hidden md:flex flex-col gap-y-2 p-6 font-semibold">
-<div class="text-xl font-extrabold text-blue-700 dark:text-blue-400 mb-8">CareLink</div>
+<div class="text-xl font-extrabold text-blue-700 dark:text-blue-400 mb-8">AmaCare</div>
 <nav class="flex flex-col space-y-2">
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'dashboard' %}">
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
 <span>Dashboard</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'location' %}">
 <span class="material-symbols-outlined" data-icon="location_on">location_on</span>
 <span>Location</span>
 </a>
 <!-- Active Tab: Medication -->
-<a class="flex items-center gap-3 px-4 py-3 text-blue-700 bg-blue-50/50 rounded-xl transition-all active:scale-95 duration-150" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-blue-700 bg-blue-50/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'medication' %}">
 <span class="material-symbols-outlined" data-icon="medication" style="font-variation-settings: 'FILL' 1;">medication</span>
 <span>Medication</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'chat' %}">
 <span class="material-symbols-outlined" data-icon="chat">chat</span>
 <span>Chat History</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'mood' %}">
 <span class="material-symbols-outlined" data-icon="psychology">psychology</span>
 <span>Mood &amp; Wellbeing</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150 mt-auto" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150 mt-auto" href="{% url 'settings' %}">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 <span>Settings</span>
 </a>

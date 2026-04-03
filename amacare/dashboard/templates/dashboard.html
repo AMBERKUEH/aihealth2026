@@ -3,7 +3,7 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>CareLink Dashboard</title>
+<title>AmaCare Dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -93,30 +93,30 @@
 <body class="bg-surface font-body text-on-surface antialiased">
 <!-- SideNavBar (Fixed) -->
 <aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface flex flex-col gap-y-2 p-6 z-40 hidden md:flex">
-<div class="text-xl font-extrabold text-blue-700 dark:text-blue-400 mb-8 font-headline">CareLink</div>
+<div class="text-xl font-extrabold text-blue-700 dark:text-blue-400 mb-8 font-headline">AmaCare</div>
 <nav class="space-y-2">
 <!-- Dashboard Active -->
-<a class="flex items-center gap-3 px-4 py-3 text-blue-700 dark:text-blue-300 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl font-headline text-sm font-semibold transition-all" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-blue-700 dark:text-blue-300 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl font-headline text-sm font-semibold transition-all" href="{% url 'dashboard' %}">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
                 Dashboard
             </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all" href="{% url 'location' %}">
 <span class="material-symbols-outlined">location_on</span>
                 Location
             </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all" href="{% url 'medication' %}">
 <span class="material-symbols-outlined">medication</span>
                 Medication
             </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all" href="{% url 'chat' %}">
 <span class="material-symbols-outlined">chat</span>
                 Chat History
             </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all" href="{% url 'mood' %}">
 <span class="material-symbols-outlined">psychology</span>
                 Mood &amp; Wellbeing
             </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all mt-auto" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl font-headline text-sm font-semibold transition-all mt-auto" href="{% url 'settings' %}">
 <span class="material-symbols-outlined">settings</span>
                 Settings
             </a>
