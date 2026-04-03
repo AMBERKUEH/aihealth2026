@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CareLink Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-container": "#bc4800",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-fixed": "#00174b",
+                        "surface-tint": "#0053db",
+                        "on-secondary-container": "#006f66",
+                        "surface-dim": "#ccdbf3",
+                        "on-secondary-fixed-variant": "#005049",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#86f2e4",
+                        "surface-container": "#e6eeff",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#d5e3fc",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-fixed": "#00201d",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "surface-container-low": "#eff4ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "outline": "#737686",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary-container": "#ffede6",
+                        "on-background": "#0d1c2e",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary": "#943700",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "background": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#0d1c2e",
+                        "inverse-surface": "#233144",
+                        "secondary": "#006a61",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-variant": "#d5e3fc",
+                        "on-tertiary-fixed": "#360f00",
+                        "primary": "#004ac6",
+                        "secondary-fixed": "#89f5e7"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Modal states */
+        #patient-modal, #robot-modal {
+            display: none;
+        }
+        #patient-modal.active, #robot-modal.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed">
+<!-- SideNavBar (Authority: JSON) -->
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface dark:bg-surface-dim z-40 hidden md:flex flex-col gap-y-2 p-6 font-manrope text-sm font-semibold">
+<div class="text-xl font-extrabold text-blue-700 dark:text-blue-400 mb-8">CareLink</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">location_on</span>
+<span>Location</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">medication</span>
+<span>Medication</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span>Chat History</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span>Mood &amp; Wellbeing</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-blue-700 dark:text-blue-300 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 flex items-center gap-3 border-t border-outline-variant/10">
+<img alt="Professional medical caregiver portrait" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm-ANZpQo8x6XZoQRHUgp7_lizmKJy5DZxKo7XQMIZ_ck4FM48szv6V5QPKc1Xd7oNbz0yzFM9uWtCtE4i5lJ_vXENERbfQ2UtzRmZX31I-AYlhDt5rceryqr_UtMBerWmVVfPFsKdl75EJznpHCZSFh34m4G9W2xACdXKq9c66WQzF2RknAW14VrX3L0roLitWp-XlpUEDWKqKjvHIoYBQkSzhFIQdXXfsIuOlvEfsuHzWKRTH81JzlvTauhS4QEZTu3SfZgUgsm9"/>
+<div>
+<p class="text-xs font-bold text-on-surface">Caregiver Profile</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Caregiver Portal</p>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-64 min-h-screen">
+<!-- TopNavBar (Authority: JSON) -->
+<header class="bg-surface/70 dark:bg-surface-dim/70 backdrop-blur-xl docked full-width top-0 sticky z-50 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)] flex justify-between items-center w-full px-6 py-3">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-400 font-manrope">Settings</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors rounded-full">
+<span class="material-symbols-outlined">contrast</span>
+</button>
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors rounded-full">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-6 md:p-10 max-w-7xl mx-auto space-y-10">
+<!-- Bento Layout Sections -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- User Profile & Theme Toggle (Col 1-5) -->
+<div class="lg:col-span-5 space-y-8">
+<!-- Profile Card (Patient/Caregiver Mixed context) -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-6">
+<div class="relative">
+<img alt="Dr. Sarah Jenkins profile" class="w-24 h-24 rounded-2xl object-cover ring-4 ring-primary-fixed/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4_Wq79na2ddPuym98siTQACwcmauJN8CsvFHG-llrXk9E3BjZVRCK4upcs3xfO6GO0Wx5eu6sYnOjRVgimzrJVMQoTGwIelDxvgW9ICHixRfi3LpHeGLX6NR7xggHAJVEKLgSxxP6dhRGvagqPfRCXRxyCQvjfXVeh1tNQy-bItPunAvsz_7Yt8BxIIX5Am9GLIGgas1hN7Ma_5D8CtLPM4I1o-RwTIRbxP_Hk3NEYl-jN5zVQ7Ho3yfn75TX9075UVYPqjDtUzId"/>
+</div>
+<div>
+<h2 class="text-xl font-bold font-manrope text-on-surface">Dr. Sarah Jenkins</h2>
+<p class="text-sm text-on-surface-variant">Primary Health Caregiver</p>
+</div>
+</div>
+<button class="bg-primary/10 text-primary px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-primary/20 transition-colors" onclick="document.getElementById('patient-modal').classList.add('active')">
+<span class="material-symbols-outlined text-[18px]">person_edit</span> Edit Patient
+                            </button>
+</div>
+<div class="space-y-4">
+<div class="space-y-1">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Assigned Patient</label>
+<div class="w-full bg-surface-container px-4 py-3 text-sm rounded-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">elderly</span>
+<span class="font-medium">Arthur Miller (82) - Alzheimer's</span>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Account Email</label>
+<div class="w-full bg-surface-container px-4 py-3 text-sm rounded-lg">sarah.jenkins@carelink.health</div>
+</div>
+</div>
+</section>
+<!-- Theme Toggle Card -->
+<section class="bg-primary/5 dark:bg-primary-container/20 rounded-xl p-6 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary-container/20 p-3 rounded-full">
+<span class="material-symbols-outlined text-primary">dark_mode</span>
+</div>
+<div>
+<p class="font-manrope font-bold text-on-surface">Visual Mode</p>
+<p class="text-xs text-on-surface-variant">Switch between light and dark</p>
+</div>
+</div>
+<button class="w-14 h-8 bg-surface-container-highest rounded-full p-1 flex items-center shadow-inner relative transition-colors duration-300">
+<div class="w-6 h-6 bg-primary rounded-full shadow-md flex items-center justify-center transform translate-x-0">
+<span class="material-symbols-outlined text-[14px] text-white">light_mode</span>
+</div>
+</button>
+</section>
+<!-- Robot Connection -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold font-manrope">Robot Connection</h3>
+<div class="flex items-center gap-1 text-secondary font-semibold text-xs">
+<span class="material-symbols-outlined text-sm">signal_cellular_alt</span>
+                                Excellent
+                            </div>
+</div>
+<div class="space-y-4">
+<div class="space-y-1">
+<label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Active Device IP</label>
+<div class="flex gap-2">
+<input class="flex-grow bg-surface-container-highest border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" readonly="" type="text" value="192.168.1.104"/>
+<button class="px-4 py-3 bg-primary text-on-primary rounded-lg font-bold text-sm hover:opacity-90 transition-opacity" onclick="document.getElementById('robot-modal').classList.add('active')">
+                                        Configure
+                                    </button>
+</div>
+</div>
+<div class="p-4 bg-secondary/5 rounded-lg border border-secondary/10 flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs text-secondary-container font-medium">Device 'CL-Echo-4' is currently active and synced.</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Main Configuration (Col 6-12) -->
+<div class="lg:col-span-7 space-y-8">
+<!-- Safe Zones (Map Snippet) -->
+<section class="bg-surface-container-lowest rounded-xl p-1 overflow-hidden shadow-sm">
+<div class="p-7">
+<h3 class="text-lg font-bold font-manrope mb-1">Safe Zones</h3>
+<p class="text-sm text-on-surface-variant mb-6">Define the radius for automatic proximity alerts.</p>
+<div class="relative h-64 rounded-xl overflow-hidden mb-6">
+<img alt="Satellite map of residential area" class="w-full h-full object-cover grayscale-[0.5] contrast-[1.1]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_u2U7iFQFjb0mXa9uIYUqzudA3TRLUntPA6DQWruqqX6LW2aiKhbm7zrz4dMzbRJk7v1NjfxCKnTCivWhEat8pS6oz9H5COBv6q-Eg0zXPq_P-rgWg5Qah_y-FblUdWfYml8iWxJCjSXi3qiyTJyzxNNsoAieGryrbbI5QAenXsXjbVS25oPuok7CPGgzDcyiCcnYKbhz20ILZlfCaEfmjjNRiy99yeRBvUHYuFxb7dkjy6m6E2rTk1RArTrg6C21vFg8KiJD6UjR"/>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-32 h-32 rounded-full border-2 border-primary/40 bg-primary/10 backdrop-blur-[1px] animate-pulse"></div>
+<div class="w-2 h-2 bg-primary rounded-full ring-4 ring-white"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center text-sm font-semibold">
+<span class="text-on-surface-variant">Detection Radius</span>
+<span class="text-primary font-manrope">250m</span>
+</div>
+<input class="w-full h-2 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" max="500" min="50" type="range" value="250"/>
+<div class="flex justify-between text-[10px] text-outline font-bold uppercase tracking-widest">
+<span>50m</span>
+<span>500m</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Medication Schedule -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h3 class="text-lg font-bold font-manrope">Medication Schedule</h3>
+<p class="text-sm text-on-surface-variant">Manage daily dosage and timing alerts.</p>
+</div>
+<button class="bg-surface-container-high text-primary px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span> Add New
+                            </button>
+</div>
+<div class="space-y-3">
+<!-- Med Item -->
+<div class="group flex items-center justify-between p-4 bg-surface rounded-xl border border-transparent hover:border-primary/20 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">medication</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Lisinopril</p>
+<p class="text-xs text-on-surface-variant">10mg • 08:00 AM</p>
+</div>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-2 text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<!-- Med Item -->
+<div class="group flex items-center justify-between p-4 bg-surface rounded-xl border border-transparent hover:border-primary/20 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">pill</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Metformin</p>
+<p class="text-xs text-on-surface-variant">500mg • 01:00 PM, 08:00 PM</p>
+</div>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-2 text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+</div>
+</section>
+<!-- Notification Preferences -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<h3 class="text-lg font-bold font-manrope mb-6">Notification Channels</h3>
+<div class="overflow-x-auto">
+<table class="w-full">
+<thead>
+<tr class="text-left border-b border-surface-container">
+<th class="pb-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest">Alert Type</th>
+<th class="pb-4 text-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">App</th>
+<th class="pb-4 text-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">SMS</th>
+<th class="pb-4 text-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">Email</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<tr>
+<td class="py-4">
+<p class="font-semibold text-sm">Distress Signal</p>
+<p class="text-[10px] text-on-surface-variant">Immediate panic button triggers</p>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center">
+<input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center">
+<input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center">
+<input class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/>
+</div>
+</td>
+</tr>
+<tr>
+<td class="py-4">
+<p class="font-semibold text-sm">Missed Medication</p>
+<p class="text-[10px] text-on-surface-variant">30min delay after schedule</p>
+</td>
+<td class="py-4 text-center"><input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/></td>
+<td class="py-4 text-center"><input class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/></td>
+<td class="py-4 text-center"><input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/></td>
+</tr>
+<tr>
+<td class="py-4">
+<p class="font-semibold text-sm">Safe Zone Exit</p>
+<p class="text-[10px] text-on-surface-variant">Patient leaves defined perimeter</p>
+</td>
+<td class="py-4 text-center"><input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/></td>
+<td class="py-4 text-center"><input checked="" class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/></td>
+<td class="py-4 text-center"><input class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+<!-- Global Actions -->
+<div class="flex justify-end gap-4 pb-10">
+<button class="px-8 py-3 bg-surface-container-highest text-on-surface-variant rounded-full font-bold transition-all hover:bg-outline-variant/30">
+                    Discard Changes
+                </button>
+<button class="px-10 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-full font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95" onclick="showSuccessToast()">
+                    Save Configuration
+                </button>
+</div>
+</div>
+</main>
+<!-- Patient Settings Modal -->
+<div class="fixed inset-0 z-[60] bg-on-background/40 backdrop-blur-sm items-center justify-center p-4" id="patient-modal">
+<div class="bg-surface-container-lowest rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
+<div class="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-primary/5">
+<h3 class="text-xl font-bold font-manrope">Edit Patient Profile</h3>
+<button class="p-2 hover:bg-surface-container rounded-full" onclick="document.getElementById('patient-modal').classList.remove('active')">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<form class="p-8 space-y-5" id="patient-form" onsubmit="event.preventDefault(); document.getElementById('patient-modal').classList.remove('active'); showSuccessToast();">
+<div class="space-y-1">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Patient Full Name</label>
+<input class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary" required="" type="text" value="Arthur Miller"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Age</label>
+<input class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary" required="" type="number" value="82"/>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Primary Condition</label>
+<select class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary">
+<option selected="">Alzheimer's</option>
+<option>Dementia</option>
+<option>Parkinson's</option>
+<option>Post-Op Care</option>
+</select>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Emergency Contact</label>
+<input class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary" required="" type="tel" value="+1 (555) 012-3456"/>
+</div>
+<div class="pt-4 flex gap-3">
+<button class="flex-1 py-3 border border-outline-variant rounded-xl font-bold text-sm" onclick="document.getElementById('patient-modal').classList.remove('active')" type="button">Cancel</button>
+<button class="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-primary/20" type="submit">Update Profile</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Robot Configuration Modal -->
+<div class="fixed inset-0 z-[60] bg-on-background/40 backdrop-blur-sm items-center justify-center p-4" id="robot-modal">
+<div class="bg-surface-container-lowest rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
+<div class="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-secondary/5">
+<h3 class="text-xl font-bold font-manrope">Robot Configuration</h3>
+<button class="p-2 hover:bg-surface-container rounded-full" onclick="document.getElementById('robot-modal').classList.remove('active')">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<form class="p-8 space-y-6" id="robot-form" onsubmit="event.preventDefault(); document.getElementById('robot-modal').classList.remove('active'); showSuccessToast();">
+<div class="space-y-1">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Device Name</label>
+<input class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-secondary" required="" type="text" value="CL-Echo-4"/>
+</div>
+<div class="p-4 bg-surface-container rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">wifi</span>
+<div class="text-xs">
+<p class="font-bold">WiFi: CareLink_Secure</p>
+<p class="text-secondary">Signal Strength: -45dBm</p>
+</div>
+</div>
+<span class="text-[10px] font-extrabold text-secondary bg-secondary/10 px-2 py-1 rounded">CONNECTED</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Low Battery Alert</label>
+<span class="text-sm font-bold text-secondary">20%</span>
+</div>
+<input class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer accent-secondary" max="50" min="5" type="range" value="20"/>
+</div>
+<div class="flex items-center justify-between p-4 border border-outline-variant/20 rounded-xl">
+<div>
+<p class="font-bold text-sm">Maintenance mode</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Disables navigation for testing</p>
+</div>
+<button class="w-10 h-5 bg-outline-variant/20 rounded-full relative flex items-center px-1" type="button">
+<div class="w-3 h-3 bg-outline rounded-full"></div>
+</button>
+</div>
+<div class="pt-2 flex gap-3">
+<button class="flex-1 py-3 border border-outline-variant rounded-xl font-bold text-sm" onclick="document.getElementById('robot-modal').classList.remove('active')" type="button">Cancel</button>
+<button class="flex-1 py-3 bg-secondary text-white rounded-xl font-bold text-sm shadow-lg shadow-secondary/20" type="submit">Apply Configuration</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Success Feedback Toast -->
+<div class="fixed bottom-24 md:bottom-10 right-1/2 translate-x-1/2 md:translate-x-0 md:right-10 bg-inverse-surface text-inverse-on-surface px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 transition-all opacity-0 translate-y-20 pointer-events-none z-[100]" id="success-toast">
+<div class="bg-secondary p-1 rounded-full text-white">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<div>
+<p class="text-sm font-bold">Settings Updated</p>
+<p class="text-[10px] opacity-80 uppercase tracking-widest font-semibold">Configuration saved successfully</p>
+</div>
+</div>
+<script>
+        function showSuccessToast() {
+            const toast = document.getElementById('success-toast');
+            toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+    </script>
+<!-- BottomNavBar (Mobile Only Architecture) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-low backdrop-blur-lg flex justify-around items-center py-4 px-2 z-50">
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Dash</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">location_on</span>
+<span class="text-[10px] font-bold">Map</span>
+</a>
+<div class="bg-primary p-4 rounded-full -mt-10 shadow-xl shadow-primary/30">
+<span class="material-symbols-outlined text-white">add</span>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span class="text-[10px] font-bold">Chat</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-blue-700" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="text-[10px] font-bold">Config</span>
+</a>
+</nav>
+</body></html>

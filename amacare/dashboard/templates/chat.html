@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CareLink | Chat History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-container": "#bc4800",
+              "on-secondary": "#ffffff",
+              "inverse-on-surface": "#eaf1ff",
+              "on-primary-fixed": "#00174b",
+              "surface-tint": "#0053db",
+              "on-secondary-container": "#006f66",
+              "surface-dim": "#ccdbf3",
+              "on-secondary-fixed-variant": "#005049",
+              "tertiary-fixed-dim": "#ffb596",
+              "surface-container-high": "#dce9ff",
+              "surface-bright": "#f8f9ff",
+              "error-container": "#ffdad6",
+              "secondary-container": "#86f2e4",
+              "surface-container": "#e6eeff",
+              "on-error-container": "#93000a",
+              "surface-container-highest": "#d5e3fc",
+              "on-tertiary-fixed-variant": "#7d2d00",
+              "outline-variant": "#c3c6d7",
+              "on-secondary-fixed": "#00201d",
+              "secondary-fixed-dim": "#6bd8cb",
+              "surface-container-low": "#eff4ff",
+              "on-primary-fixed-variant": "#003ea8",
+              "outline": "#737686",
+              "tertiary-fixed": "#ffdbcd",
+              "on-error": "#ffffff",
+              "on-surface-variant": "#434655",
+              "on-tertiary": "#ffffff",
+              "primary-fixed": "#dbe1ff",
+              "on-primary-container": "#eeefff",
+              "on-tertiary-container": "#ffede6",
+              "on-background": "#0d1c2e",
+              "surface-container-lowest": "#ffffff",
+              "error": "#ba1a1a",
+              "tertiary": "#943700",
+              "primary-fixed-dim": "#b4c5ff",
+              "background": "#f8f9ff",
+              "on-primary": "#ffffff",
+              "primary-container": "#2563eb",
+              "surface": "#f8f9ff",
+              "on-surface": "#0d1c2e",
+              "inverse-surface": "#233144",
+              "secondary": "#006a61",
+              "inverse-primary": "#b4c5ff",
+              "surface-variant": "#d5e3fc",
+              "on-tertiary-fixed": "#360f00",
+              "primary": "#004ac6",
+              "secondary-fixed": "#89f5e7"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface flex flex-col gap-y-2 p-6 z-40 hidden md:flex border-r border-outline-variant/10">
+<div class="text-xl font-extrabold text-blue-700 mb-8 font-headline">CareLink</div>
+<nav class="flex flex-col gap-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">location_on</span> Location
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">medication</span> Medication
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-blue-700 bg-blue-50/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span> Chat History
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">psychology</span> Mood &amp; Wellbeing
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+</nav>
+<div class="mt-auto pt-6">
+<div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-2xl">
+<img alt="Caregiver Profile" class="w-10 h-10 rounded-full object-cover" data-alt="professional female caregiver with a warm smile in a clean medical setting, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWNqAebTDIjX3byTe1ARoSUSOHrP8hX9HvCI0lv8oAkVabfxM6BxomrCt6Vmn5p2Cc3tvHPSKyctGeh3EPxLpeeZPDEbt6QdSBiPjQ5fUwWLOgK8VtcXySxBX-ccwvQtg4RbQk-0Dz0PcFj0xeXYBQoFvxYAGxwfhZRy8jGKzx3WH5tq81yIC-La2sgC3XP7bwzUAAuuc5T7JagmAHBHmo0821TytrcXQlaqcUN9ecWnMPA-bg6aQDlSW2NUajvctYPJK6YCgOzr4n"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Sarah Jenkins</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Primary Caregiver</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface/70 backdrop-blur-xl sticky top-0 z-50 flex justify-between items-center w-full px-6 py-3 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)]">
+<div class="flex items-center gap-4">
+<div class="md:hidden text-2xl font-bold tracking-tight text-blue-700 font-manrope">CareLink</div>
+<div class="hidden md:flex bg-surface-container-low px-4 py-2 rounded-full items-center gap-3 w-64 border border-outline-variant/10">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full p-0 placeholder-slate-400" placeholder="Search conversations..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-blue-50/50 rounded-full transition-colors text-slate-500">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-blue-50/50 rounded-full transition-colors text-slate-500">
+<span class="material-symbols-outlined">contrast</span>
+</button>
+<button class="p-2 hover:bg-blue-50/50 rounded-full transition-colors text-slate-500">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Chat Shell -->
+<section class="flex-1 flex overflow-hidden h-[calc(100vh-64px)]">
+<!-- Conversation List Sidebar -->
+<div class="w-80 bg-surface-container-low flex flex-col border-r border-outline-variant/10 overflow-hidden">
+<div class="p-6">
+<h2 class="font-headline text-lg font-bold text-on-surface mb-1">Interactions</h2>
+<p class="text-xs text-on-surface-variant">Archived history with CareBot V2</p>
+</div>
+<div class="flex-1 overflow-y-auto px-4 pb-6 space-y-2 no-scrollbar">
+<!-- List Item Active -->
+<button class="w-full text-left p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-primary/10 transition-all">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary">Today</span>
+<span class="text-[10px] text-on-surface-variant">10:45 AM</span>
+</div>
+<p class="text-sm font-semibold text-on-surface truncate">Morning Check-in</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-[10px] font-medium text-secondary-fixed-dim">Calm</span>
+</div>
+</button>
+<!-- List Item -->
+<button class="w-full text-left p-4 rounded-2xl hover:bg-surface-container-high transition-all group">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Yesterday</span>
+<span class="text-[10px] text-on-surface-variant">08:12 PM</span>
+</div>
+<p class="text-sm font-semibold text-slate-600 truncate group-hover:text-on-surface transition-colors">Evening Routine</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="inline-block w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-[10px] font-medium text-tertiary">Anxious</span>
+</div>
+</button>
+<!-- List Item -->
+<button class="w-full text-left p-4 rounded-2xl hover:bg-surface-container-high transition-all group">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">24 Oct 2023</span>
+<span class="text-[10px] text-on-surface-variant">02:30 PM</span>
+</div>
+<p class="text-sm font-semibold text-slate-600 truncate group-hover:text-on-surface transition-colors">Medicine Reminder</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-[10px] font-medium text-secondary-fixed-dim">Calm</span>
+</div>
+</button>
+<!-- List Item -->
+<button class="w-full text-left p-4 rounded-2xl hover:bg-surface-container-high transition-all group">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">23 Oct 2023</span>
+<span class="text-[10px] text-on-surface-variant">11:15 AM</span>
+</div>
+<p class="text-sm font-semibold text-slate-600 truncate group-hover:text-on-surface transition-colors">Social Engagement</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="inline-block w-2 h-2 rounded-full bg-error"></span>
+<span class="text-[10px] font-medium text-error">Distressed</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Main Chat View -->
+<div class="flex-1 flex flex-col bg-surface relative">
+<!-- Chat Header / Sentiment Summary -->
+<div class="p-6 bg-surface-bright flex items-center justify-between border-b border-outline-variant/5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-primary-fixed-dim flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">smart_toy</span>
+</div>
+<div>
+<h1 class="font-headline font-bold text-xl leading-none">Morning Check-in</h1>
+<p class="text-xs text-on-surface-variant mt-1">Patient: Arthur Miller • Session ID: #8821</p>
+</div>
+</div>
+<!-- Sentiment Summary Card -->
+<div class="hidden lg:flex items-center gap-6 bg-surface-container-lowest px-6 py-3 rounded-2xl shadow-sm border border-outline-variant/10">
+<div class="flex flex-col">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Overall Mood</span>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(0,106,97,0.4)]"></span>
+<span class="font-bold text-sm text-secondary">Calm &amp; Responsive</span>
+</div>
+</div>
+<div class="w-px h-8 bg-outline-variant/20"></div>
+<div class="flex flex-col">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Key Flags</span>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="text-sm font-bold text-on-surface">None detected</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Messages -->
+<div class="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
+<!-- Message Group: Robot -->
+<div class="flex flex-col items-start max-w-2xl">
+<div class="flex items-center gap-2 mb-2 px-1">
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary">CareBot</span>
+<span class="text-[10px] text-on-surface-variant">10:45 AM</span>
+</div>
+<div class="bg-surface-container-high rounded-tr-3xl rounded-br-3xl rounded-bl-3xl p-5 text-sm leading-relaxed text-on-surface">
+                            Good morning, Arthur. How are you feeling today? I've noticed you didn't finish your breakfast this morning.
+                        </div>
+</div>
+<!-- Message Group: Patient -->
+<div class="flex flex-col items-end ml-auto max-w-2xl">
+<div class="flex items-center gap-2 mb-2 px-1">
+<span class="text-[10px] text-on-surface-variant">10:46 AM</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface">Patient</span>
+<div class="flex items-center gap-1 bg-secondary-container/30 px-2 py-0.5 rounded-full">
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+<span class="text-[9px] font-bold text-on-secondary-container">Calm</span>
+</div>
+</div>
+<div class="bg-primary text-on-primary shadow-lg shadow-primary/10 rounded-tl-3xl rounded-bl-3xl rounded-br-3xl p-5 text-sm leading-relaxed">
+                            I'm doing okay, but I have a bit of a <span class="font-extrabold underline decoration-2 decoration-on-primary-container">pain</span> in my lower back when I move. It's making me feel a bit <span class="font-extrabold underline decoration-2 decoration-on-primary-container">lonely</span> too, as I can't go to the garden.
+                        </div>
+</div>
+<!-- Message Group: Robot -->
+<div class="flex flex-col items-start max-w-2xl">
+<div class="flex items-center gap-2 mb-2 px-1">
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary">CareBot</span>
+<span class="text-[10px] text-on-surface-variant">10:47 AM</span>
+</div>
+<div class="bg-surface-container-high rounded-tr-3xl rounded-br-3xl rounded-bl-3xl p-5 text-sm leading-relaxed text-on-surface">
+                            I'm sorry to hear that. Should I call Sarah to <span class="font-extrabold text-error">help</span> you with the stretching exercises we talked about?
+                        </div>
+</div>
+<!-- Message Group: Patient -->
+<div class="flex flex-col items-end ml-auto max-w-2xl">
+<div class="flex items-center gap-2 mb-2 px-1">
+<span class="text-[10px] text-on-surface-variant">10:48 AM</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface">Patient</span>
+<div class="flex items-center gap-1 bg-tertiary-fixed/30 px-2 py-0.5 rounded-full">
+<span class="w-1 h-1 rounded-full bg-tertiary"></span>
+<span class="text-[9px] font-bold text-tertiary">Anxious</span>
+</div>
+</div>
+<div class="bg-primary text-on-primary shadow-lg shadow-primary/10 rounded-tl-3xl rounded-bl-3xl rounded-br-3xl p-5 text-sm leading-relaxed">
+                            Yes, please. I think I need some <span class="font-extrabold underline decoration-2 decoration-on-primary-container">help</span> getting comfortable.
+                        </div>
+</div>
+<!-- System Note -->
+<div class="flex justify-center my-8">
+<div class="bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/10">
+<p class="text-[11px] font-medium text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">event_repeat</span> 
+                                Caregiver Sarah Jenkins notified at 10:49 AM
+                            </p>
+</div>
+</div>
+</div>
+<!-- Message Input (Read Only / History Mode) -->
+<div class="p-6 bg-surface-bright/80 backdrop-blur-md border-t border-outline-variant/5">
+<div class="max-w-4xl mx-auto bg-surface-container-highest rounded-2xl p-4 flex items-center justify-between border border-outline-variant/10">
+<p class="text-xs text-on-surface-variant font-medium">Viewing historical log. New messages can only be sent during live sessions.</p>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-xl text-xs font-bold transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">print</span>
+                            Export Transcript
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Mobile Navigation Toggle (Bottom Bar for Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-low flex justify-around items-center px-4 py-3 z-50 border-t border-outline-variant/10">
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-semibold">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-blue-700" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="text-[10px] font-bold">Chat</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="text-[10px] font-semibold">Mood</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-semibold">Settings</span>
+</a>
+</nav>
+</body></html>

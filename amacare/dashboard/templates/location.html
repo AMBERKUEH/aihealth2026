@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CareLink | Location Tracking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-container": "#bc4800",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-fixed": "#00174b",
+                        "surface-tint": "#0053db",
+                        "on-secondary-container": "#006f66",
+                        "surface-dim": "#ccdbf3",
+                        "on-secondary-fixed-variant": "#005049",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#86f2e4",
+                        "surface-container": "#e6eeff",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#d5e3fc",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-fixed": "#00201d",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "surface-container-low": "#eff4ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "outline": "#737686",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary-container": "#ffede6",
+                        "on-background": "#0d1c2e",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary": "#943700",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "background": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#0d1c2e",
+                        "inverse-surface": "#233144",
+                        "secondary": "#006a61",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-variant": "#d5e3fc",
+                        "on-tertiary-fixed": "#360f00",
+                        "primary": "#004ac6",
+                        "secondary-fixed": "#89f5e7"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        /* Modal Backdrop */
+        #safe-zone-modal:target, #delete-confirm:target {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface-container-low z-50 hidden md:flex flex-col gap-y-2 p-6 font-manrope text-sm font-semibold">
+<div class="text-xl font-extrabold text-blue-700 dark:text-blue-400 mb-8">CareLink</div>
+<nav class="flex flex-col gap-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Active State: Location -->
+<a class="flex items-center gap-3 px-4 py-3 text-blue-700 bg-blue-50/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<span>Location</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">medication</span>
+<span>Medication</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span>Chat History</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span>Mood &amp; Wellbeing</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-8 border-t border-outline-variant/10">
+<div class="flex items-center gap-3 px-2">
+<img alt="professional female caregiver" class="w-10 h-10 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCue-8RHyUgMNUmrXkW9qr41U7eAhx7k8OHg521JIU9uG451uPWTyP7Sv-tl1mzaboSEYBIapReeZBmii_BjIzzaNK0L4VoLtjHWVZbgkpHXg9vBXQWidBEjjd1Ri_wtdQ5Q1dEpz1VhN7dznFWW5aNcwiN_W7UEqBaeC08udxCecSfxH26bEDhyTCLtw7W-RDy8C4ftb7zY5Ybi9lvSZ2kKnlj_Q6KBy3meIuPKhT9d_K5ctIAnjZt4AVw80hNmCpX6Y3KnVpci3LH"/>
+<div>
+<p class="text-xs font-bold text-on-surface">Sarah Johnson</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-wider">Registered Nurse</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface/70 backdrop-blur-xl sticky top-0 z-40 flex justify-between items-center w-full px-8 py-4 font-manrope text-sm font-medium">
+<div class="flex items-center gap-4">
+<h1 class="text-2xl font-bold tracking-tight text-blue-700">Location Tracking</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-blue-50/50 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-blue-50/50 rounded-full transition-colors">
+<span class="material-symbols-outlined">contrast</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-blue-50/50 rounded-full transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Context Canvas -->
+<div class="p-8 flex flex-col gap-8 flex-1">
+<!-- Hero Stats / Status Bar -->
+<section class="flex flex-col lg:flex-row gap-6">
+<!-- Last Location Status Card -->
+<div class="flex-1 bg-surface-container-lowest p-6 rounded-2xl shadow-[0_8px_32px_0_rgba(0,23,75,0.05)] border border-blue-50">
+<div class="flex items-center justify-between mb-4">
+<span class="text-xs font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span> Live Status
+                        </span>
+<span class="text-xs text-slate-400 font-medium">Updated 2m ago</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<h3 class="text-3xl font-extrabold text-on-surface mb-1">Home - Living Room</h3>
+<p class="text-slate-500 font-medium">Stationary for 45 minutes</p>
+</div>
+<div class="p-3 bg-secondary-container/30 rounded-xl">
+<span class="material-symbols-outlined text-secondary text-3xl">chair</span>
+</div>
+</div>
+</div>
+<!-- Safe Zone Metric -->
+<div class="w-full lg:w-96 bg-surface-container-low p-6 rounded-2xl border border-white/50 flex flex-col justify-between">
+<div class="flex justify-between items-start mb-2">
+<div>
+<p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Current Safe Zone</p>
+<div class="flex items-center gap-3">
+<div class="relative w-10 h-10 flex items-center justify-center">
+<div class="absolute inset-0 bg-blue-100 rounded-full opacity-40"></div>
+<span class="material-symbols-outlined text-blue-600 text-xl z-10">verified_user</span>
+</div>
+<div>
+<p class="text-lg font-bold text-on-surface">Main Residence</p>
+<p class="text-xs text-slate-500">50m Perimeter</p>
+</div>
+</div>
+</div>
+<div class="flex gap-1">
+<a class="p-1.5 hover:bg-white rounded-lg text-slate-400 hover:text-primary transition-colors" href="#safe-zone-modal">
+<span class="material-symbols-outlined text-lg">edit</span>
+</a>
+<a class="p-1.5 hover:bg-white rounded-lg text-slate-400 hover:text-error transition-colors" href="#delete-confirm">
+<span class="material-symbols-outlined text-lg">delete</span>
+</a>
+</div>
+</div>
+<a class="mt-4 flex items-center justify-center gap-2 py-2.5 bg-primary text-white rounded-xl text-xs font-bold shadow-md hover:bg-primary/90 transition-all" href="#safe-zone-modal">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                        ADD NEW SAFE ZONE
+                    </a>
+</div>
+</section>
+<!-- Main Interactive Map Section -->
+<section class="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-8 min-h-[600px]">
+<!-- Large Interactive Map -->
+<div class="lg:col-span-3 relative rounded-3xl overflow-hidden bg-surface-container shadow-inner border-4 border-white">
+<!-- Mock Map UI -->
+<div class="absolute inset-0 grayscale-[0.2] contrast-[0.9]" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCaJ72b_dEJezM9NNukp2m3wdP_rGMdu_LSfCGD36CQwfgUzWa_D3bljjn3huYCTFexhpeaAvj8F_5w1i84SG2AA_D4Js3qhb3KxJXmPmbouq5QLptmig2-tmPhT3qDe2mDEg3-axOUupKitHkEx8iFKs7rkFJb0Jf4fWSz9HKKM-T90Sv6C9DCD7YSDm3TTc5zzB6H9aEUnE9svzHHD5iXXT8fPbEq4v4Xl7Myx_qu7o8p5geVSisC-9pnPBCyQuiAHPbFd4PtCieJ'); background-size: cover; background-position: center;">
+</div>
+<!-- Safe Zone Radius Overlay -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-primary/10 border-2 border-primary/30 border-dashed backdrop-blur-[1px]"></div>
+<!-- Patient Marker -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+<div class="relative group cursor-pointer">
+<div class="absolute -inset-4 bg-primary/20 rounded-full animate-ping"></div>
+<div class="w-16 h-16 rounded-full border-4 border-white shadow-2xl overflow-hidden relative z-10">
+<img alt="Arthur Clarke" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhpZ154rG3JcnWcan2osL_LdsujVHaveoMOA1b3A-G7qPgg-WdrANb7cbpIXoGZ-voXxJCFjyMu6ktQovzc0sLwWHkWc2IF_Z5phYUK2YHMgHxUbJSn5VY5f3GMfdweFsprIH-7_uQk24WUmE6cdcMRlJvb-HFjVOhwlx-wnz5xIHM3mFA0OdcGCSN5jMD0TdTMtV_w_mWwUdLlAyqrI2ZngZqsJhsHeru2g3d0TXymbnFIzV_kjhac-hCS4haGsT9Nb8GYvrXStnc"/>
+</div>
+<div class="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-on-surface text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-lg uppercase">
+                                Arthur Clarke
+                            </div>
+</div>
+</div>
+<!-- Map Controls Floating -->
+<div class="absolute bottom-8 left-8 flex flex-col gap-2">
+<div class="bg-surface-container-lowest/80 backdrop-blur-md p-1 rounded-xl shadow-xl flex flex-col gap-1 border border-white/40">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-blue-50 rounded-lg transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+<div class="h-[1px] bg-outline-variant/30 mx-2"></div>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-blue-50 rounded-lg transition-all">
+<span class="material-symbols-outlined">remove</span>
+</button>
+</div>
+<button class="bg-surface-container-lowest/80 backdrop-blur-md p-3 rounded-xl shadow-xl border border-white/40 text-primary">
+<span class="material-symbols-outlined">my_location</span>
+</button>
+</div>
+<!-- Overlay Layer Toggle -->
+<div class="absolute top-8 right-8 flex gap-3">
+<button class="bg-primary px-4 py-2 rounded-full text-white text-xs font-bold shadow-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">security</span> Safe Zone Active
+                        </button>
+<button class="bg-surface-container-lowest/80 backdrop-blur-md px-4 py-2 rounded-full text-on-surface text-xs font-bold shadow-lg border border-white/40 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">layers</span> Satelite
+                        </button>
+</div>
+<!-- Playback Controls -->
+<div class="absolute bottom-8 right-8 left-32">
+<div class="bg-surface-container-lowest/90 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/50 flex items-center gap-6">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</button>
+<div class="flex-1 relative h-1 bg-slate-200 rounded-full">
+<div class="absolute inset-y-0 left-0 w-3/4 bg-primary rounded-full"></div>
+<div class="absolute top-1/2 left-3/4 -translate-y-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-500 tabular-nums">11:45 AM</span>
+</div>
+</div>
+</div>
+<!-- Movement History Sidebar -->
+<aside class="bg-surface-container-low/50 rounded-3xl p-6 flex flex-col h-full border border-white/20">
+<h2 class="text-lg font-bold text-on-surface mb-6 flex items-center justify-between">
+                        History
+                        <span class="material-symbols-outlined text-slate-400">history</span>
+</h2>
+<div class="flex-1 space-y-0 overflow-y-auto pr-2 custom-scrollbar">
+<!-- Timeline Item -->
+<div class="relative pl-8 pb-8 group">
+<div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
+<div class="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-primary bg-white z-10"></div>
+<p class="text-[10px] font-bold text-primary uppercase tracking-tighter mb-1">11:15 AM</p>
+<h4 class="text-sm font-bold text-on-surface">Garden Terrace</h4>
+<p class="text-xs text-slate-500 mt-1 leading-relaxed">Movement detected near the north gazebo.</p>
+</div>
+<!-- Timeline Item -->
+<div class="relative pl-8 pb-8 group">
+<div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
+<div class="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-slate-300 bg-white z-10"></div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">10:45 AM</p>
+<h4 class="text-sm font-bold text-on-surface">Kitchen</h4>
+<p class="text-xs text-slate-500 mt-1 leading-relaxed">Stationary for 30 minutes.</p>
+</div>
+<!-- Timeline Item -->
+<div class="relative pl-8 pb-8 group">
+<div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
+<div class="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-slate-300 bg-white z-10"></div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">10:30 AM</p>
+<h4 class="text-sm font-bold text-on-surface">Living Room</h4>
+<p class="text-xs text-slate-500 mt-1 leading-relaxed">Transition from Bedroom.</p>
+</div>
+<!-- Timeline Item -->
+<div class="relative pl-8 pb-8 group">
+<div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
+<div class="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-slate-300 bg-white z-10"></div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">08:00 AM</p>
+<h4 class="text-sm font-bold text-on-surface">Master Bedroom</h4>
+<p class="text-xs text-slate-500 mt-1 leading-relaxed">Wake up routine initiated.</p>
+</div>
+</div>
+<button class="mt-6 w-full py-3 bg-white text-primary text-xs font-bold rounded-xl border border-blue-50 hover:bg-blue-50 transition-all">
+                        VIEW FULL LOGS
+                    </button>
+</aside>
+</section>
+</div>
+</main>
+<!-- Safe Zone Management Modal -->
+<div class="fixed inset-0 z-[60] bg-on-surface/40 backdrop-blur-sm hidden items-center justify-center p-4" id="safe-zone-modal">
+<div class="bg-surface-container-lowest w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-white">
+<div class="p-6 border-b border-outline-variant/10 flex items-center justify-between">
+<h2 class="text-xl font-bold text-on-surface">Manage Safe Zone</h2>
+<a class="text-slate-400 hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined">close</span>
+</a>
+</div>
+<form class="p-6 flex flex-col gap-5">
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Location Name</label>
+<input class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="e.g. Garden, Park, Home" type="text" value="Main Residence"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Radius (meters)</label>
+<input class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all" type="number" value="50"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Coordinates</label>
+<div class="w-full bg-slate-100 rounded-xl px-4 py-3 text-[10px] text-slate-500 font-mono flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">location_pin</span>
+                            30.2672° N, 97.7431° W
+                        </div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-primary/5 rounded-2xl border border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">notifications_active</span>
+<div>
+<p class="text-sm font-bold text-on-surface">Enable Alerts</p>
+<p class="text-[10px] text-slate-500">Notify if Arthur leaves this area</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex gap-3 pt-4">
+<a class="flex-1 py-3 text-center bg-slate-100 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-200 transition-all" href="#">CANCEL</a>
+<button class="flex-1 py-3 bg-primary text-white text-xs font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all" type="submit">SAVE CHANGES</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Delete Confirmation Dialog -->
+<div class="fixed inset-0 z-[60] bg-on-surface/40 backdrop-blur-sm hidden items-center justify-center p-4" id="delete-confirm">
+<div class="bg-surface-container-lowest w-full max-w-sm rounded-3xl shadow-2xl p-6 text-center border border-white">
+<div class="w-16 h-16 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-3xl">delete_forever</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-2">Delete Safe Zone?</h3>
+<p class="text-sm text-slate-500 mb-8 px-4">This will disable all tracking alerts for this location. This action cannot be undone.</p>
+<div class="flex gap-3">
+<a class="flex-1 py-3 text-center bg-slate-100 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-200 transition-all" href="#">CANCEL</a>
+<button class="flex-1 py-3 bg-error text-white text-xs font-bold rounded-xl shadow-lg shadow-error/20 hover:bg-error/90 transition-all">DELETE</button>
+</div>
+</div>
+</div>
+<!-- Mobile BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-low/95 backdrop-blur-xl border-t border-white/20 px-4 py-3 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">dashboard</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">medication</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">chat</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">person</span>
+</button>
+</nav>
+</body></html>

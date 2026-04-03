@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CareLink | Mood &amp; Wellbeing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-container": "#bc4800",
+              "on-secondary": "#ffffff",
+              "inverse-on-surface": "#eaf1ff",
+              "on-primary-fixed": "#00174b",
+              "surface-tint": "#0053db",
+              "on-secondary-container": "#006f66",
+              "surface-dim": "#ccdbf3",
+              "on-secondary-fixed-variant": "#005049",
+              "tertiary-fixed-dim": "#ffb596",
+              "surface-container-high": "#dce9ff",
+              "surface-bright": "#f8f9ff",
+              "error-container": "#ffdad6",
+              "secondary-container": "#86f2e4",
+              "surface-container": "#e6eeff",
+              "on-error-container": "#93000a",
+              "surface-container-highest": "#d5e3fc",
+              "on-tertiary-fixed-variant": "#7d2d00",
+              "outline-variant": "#c3c6d7",
+              "on-secondary-fixed": "#00201d",
+              "secondary-fixed-dim": "#6bd8cb",
+              "surface-container-low": "#eff4ff",
+              "on-primary-fixed-variant": "#003ea8",
+              "outline": "#737686",
+              "tertiary-fixed": "#ffdbcd",
+              "on-error": "#ffffff",
+              "on-surface-variant": "#434655",
+              "on-tertiary": "#ffffff",
+              "primary-fixed": "#dbe1ff",
+              "on-primary-container": "#eeefff",
+              "on-tertiary-container": "#ffede6",
+              "on-background": "#0d1c2e",
+              "surface-container-lowest": "#ffffff",
+              "error": "#ba1a1a",
+              "tertiary": "#943700",
+              "primary-fixed-dim": "#b4c5ff",
+              "background": "#f8f9ff",
+              "on-primary": "#ffffff",
+              "primary-container": "#2563eb",
+              "surface": "#f8f9ff",
+              "on-surface": "#0d1c2e",
+              "inverse-surface": "#233144",
+              "secondary": "#006a61",
+              "inverse-primary": "#b4c5ff",
+              "surface-variant": "#d5e3fc",
+              "on-tertiary-fixed": "#360f00",
+              "primary": "#004ac6",
+              "secondary-fixed": "#89f5e7"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+        }
+        [x-cloak] { display: none !important; }
+    </style>
+<script defer="" src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-surface text-on-surface" x-data="{ showModal: false, editMode: false }">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface flex flex-col gap-y-2 p-6 z-40 hidden md:flex">
+<div class="text-xl font-extrabold text-blue-700 mb-8 font-manrope">CareLink</div>
+<nav class="flex flex-col gap-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            Dashboard
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+            Location
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="medication">medication</span>
+            Medication
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+            Chat History
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 text-blue-700 bg-blue-50/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="psychology" style="font-variation-settings: 'FILL' 1;">psychology</span>
+            Mood &amp; Wellbeing
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+            Settings
+        </a>
+</nav>
+<div class="mt-auto pt-8 border-t border-transparent">
+<div class="flex items-center gap-3 p-2 bg-surface-container-low rounded-xl">
+<img alt="professional portrait of a friendly female nurse" class="w-10 h-10 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvi6F8ubZvD0gpGSVCZ-X47BsjsDeWguT2XdYdblktRfcWbCVysY8mCpa5ymXfWoaW66y0gGIEvo8H61IjaHUHZFQWruk88aCMu6SQbHQAte24zgknIRYzBYanLOKeNaHDDwi37cFW20O95U5cKCj5B6jlmBQ35Dix47--L_F0xa6p48uXSd9h-brmaVrWTNilYD5yKRl6RtjVOXrOjz473O-63E1DFATN8bQ84nV-4FHqFFA80mmZGnxOiGT1uVHlgUC15Rdw0E-p"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold text-on-surface truncate">Elena Vance</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Primary Caregiver</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-64 min-h-screen">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface/70 backdrop-blur-xl sticky top-0 z-50 flex justify-between items-center w-full px-6 py-3 no-border bg-surface-container-low shadow-[0_8px_32px_0_rgba(0,23,75,0.05)]">
+<div class="flex items-center gap-4">
+<div class="md:hidden text-blue-700 font-bold text-xl">CareLink</div>
+<h1 class="text-2xl font-bold tracking-tight text-blue-700 font-manrope hidden md:block">Mood &amp; Wellbeing</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="contrast">contrast</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Content Shell -->
+<div class="p-6 md:p-8 space-y-8">
+<!-- Hero Bento Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Mood Score Card -->
+<div class="lg:col-span-4 bg-surface-container-lowest rounded-3xl p-8 flex flex-col justify-between shadow-[0_4px_24px_rgba(0,74,198,0.04)] relative overflow-hidden group">
+<div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-100/30 rounded-full blur-3xl group-hover:bg-blue-200/40 transition-all"></div>
+<div>
+<p class="text-on-surface-variant font-medium label-md uppercase tracking-widest mb-1">Current Mood Score</p>
+<h3 class="text-blue-700 text-lg font-bold font-manrope">Daily Stability</h3>
+</div>
+<div class="py-12 flex flex-col items-center text-center">
+<div class="relative w-40 h-40 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container-high" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="8"></circle>
+<circle cx="50" cy="50" fill="none" r="45" stroke="url(#blue-grad)" stroke-dasharray="282.7" stroke-dashoffset="62.2" stroke-linecap="round" stroke-width="8"></circle>
+<defs>
+<lineargradient id="blue-grad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#004ac6"></stop>
+<stop offset="100%" stop-color="#2563eb"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-4xl font-extrabold text-on-surface">78</span>
+<span class="text-xs font-bold text-on-surface-variant">/ 100</span>
+</div>
+</div>
+<div class="mt-6 inline-flex items-center gap-2 px-4 py-1.5 bg-secondary/10 text-secondary rounded-full">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="text-sm font-bold">Stability High</span>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant text-center font-body leading-relaxed">
+                    Last assessment: Today, 8:45 AM
+                </p>
+</div>
+<!-- Weekly Mood Trend Chart -->
+<div class="lg:col-span-8 bg-surface-container-low rounded-3xl p-8 flex flex-col shadow-inner">
+<div class="flex justify-between items-center mb-10">
+<div>
+<h3 class="text-xl font-bold font-manrope text-on-surface">Weekly Mood Trend</h3>
+<p class="text-on-surface-variant text-sm">Aggregated sentiment analysis</p>
+</div>
+<div class="flex gap-2">
+<span class="text-xs font-bold text-slate-400">MAY 14 — MAY 20</span>
+</div>
+</div>
+<!-- Mock Line Chart -->
+<div class="flex-grow flex items-end justify-between gap-2 h-48 relative">
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+<div class="border-t border-blue-900"></div>
+<div class="border-t border-blue-900"></div>
+<div class="border-t border-blue-900"></div>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full h-24 bg-gradient-to-t from-blue-600/10 to-blue-600/30 rounded-t-lg transition-all group-hover:from-blue-600/20 group-hover:to-blue-600/50"></div>
+<span class="mt-4 text-[10px] font-bold text-on-surface-variant">MON</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full h-32 bg-gradient-to-t from-blue-600/10 to-blue-600/30 rounded-t-lg transition-all"></div>
+<span class="mt-4 text-[10px] font-bold text-on-surface-variant">TUE</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full h-16 bg-gradient-to-t from-tertiary/10 to-tertiary/30 rounded-t-lg transition-all"></div>
+<span class="mt-4 text-[10px] font-bold text-tertiary">WED</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full h-20 bg-gradient-to-t from-blue-600/10 to-blue-600/30 rounded-t-lg transition-all"></div>
+<span class="mt-4 text-[10px] font-bold text-on-surface-variant">THU</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full h-28 bg-gradient-to-t from-blue-600/10 to-blue-600/30 rounded-t-lg transition-all"></div>
+<span class="mt-4 text-[10px] font-bold text-on-surface-variant">FRI</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full h-36 bg-gradient-to-t from-blue-600/10 to-blue-600/30 rounded-t-lg transition-all border-x-2 border-primary/20"></div>
+<span class="mt-4 text-[10px] font-bold text-on-surface">SAT</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full h-40 bg-gradient-to-t from-blue-600/10 to-blue-600/30 rounded-t-lg transition-all"></div>
+<span class="mt-4 text-[10px] font-bold text-on-surface-variant">SUN</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Caregiver Notes Section -->
+<div class="space-y-6">
+<div class="flex items-center justify-between px-2">
+<div>
+<h3 class="text-2xl font-extrabold font-manrope text-on-surface">Caregiver Notes</h3>
+<p class="text-sm text-on-surface-variant">Manual observations and daily journals</p>
+</div>
+<button @click="showModal = true; editMode = false" class="flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-full shadow-lg shadow-primary/25 hover:scale-[1.02] active:scale-95 transition-all">
+<span class="material-symbols-outlined text-xl">add</span>
+<span>Add Mood Note</span>
+</button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Note Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl border border-outline-variant/30 hover:border-primary/30 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-secondary/10 text-secondary rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">sentiment_satisfied</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Stable Mood</h5>
+<p class="text-xs text-on-surface-variant">May 20, 2024 • 04:30 PM</p>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors rounded-lg hover:bg-error-container/20">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                        Patient enjoyed lunch and was very communicative about their childhood stories. No signs of agitation during the afternoon transition.
+                    </p>
+</div>
+<!-- Note Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-3xl border border-outline-variant/30 hover:border-tertiary/30 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-tertiary/10 text-tertiary rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">sentiment_dissatisfied</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Anxious/Confused</h5>
+<p class="text-xs text-on-surface-variant">May 19, 2024 • 07:15 PM</p>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors rounded-lg hover:bg-error-container/20">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                        Started pacing around 6 PM. Seemed to be looking for someone from the past. Sundowning symptoms quite evident tonight. Guided to calming music which helped slightly.
+                    </p>
+</div>
+</div>
+<div class="text-center">
+<button class="text-sm font-bold text-primary hover:underline underline-offset-4">View All Journal Entries</button>
+</div>
+</div>
+<!-- Insights & Alerts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Negative Trend Alert -->
+<div class="bg-error-container/40 rounded-3xl p-8 border-l-4 border-error flex gap-6 items-start">
+<div class="bg-error-container p-3 rounded-2xl text-on-error-container">
+<span class="material-symbols-outlined" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<h4 class="text-on-error-container font-extrabold text-lg font-manrope mb-2">3-day negative trend detected</h4>
+<p class="text-on-error-container/80 font-body leading-relaxed">
+                        Increased anxiety and confusion observed during evening hours (Sundowning symptoms). Cognitive clarity score down 12% from previous week.
+                    </p>
+<div class="mt-4 flex gap-4">
+<button class="text-xs font-bold uppercase tracking-wider text-error underline underline-offset-4 hover:opacity-70 transition-opacity">Dismiss Alert</button>
+<button class="text-xs font-bold uppercase tracking-wider text-error underline underline-offset-4 hover:opacity-70 transition-opacity">Log Event</button>
+</div>
+</div>
+</div>
+<!-- AI Summary Insights -->
+<div class="bg-surface-container-highest/50 rounded-3xl p-8 border border-white/20 relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined !text-[120px]" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+<h4 class="text-on-surface font-bold font-manrope">AI Summary Insights</h4>
+</div>
+<p class="text-on-surface-variant font-body text-base leading-relaxed italic">
+                    “Patient appears more anxious this week, possibly related to missed morning meds on Wednesday. Sleep duration has decreased by 45 minutes on average, contributing to irritability during physical therapy sessions.”
+                </p>
+<div class="mt-6 pt-6 border-t border-outline-variant/30 flex items-center justify-between">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Powered by CareLink Intelligence</span>
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-blue-200"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-teal-200"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Suggested Actions -->
+<div class="space-y-6">
+<div class="flex items-end justify-between px-2">
+<h3 class="text-2xl font-extrabold font-manrope text-on-surface">Suggested Actions</h3>
+<p class="text-sm font-medium text-primary">View specialized care plan →</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Action Card 1 -->
+<div class="group bg-surface-container-lowest rounded-3xl p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary-container/20">
+<div class="w-12 h-12 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</div>
+<h5 class="text-lg font-bold text-on-surface font-manrope mb-2">Schedule a call</h5>
+<p class="text-sm text-on-surface-variant mb-6 font-body">Connect with the specialist to discuss the recent anxiety spikes.</p>
+<button class="w-full py-3 px-4 bg-surface-container-high text-on-surface text-sm font-bold rounded-full hover:bg-primary transition-all hover:text-white">
+                        Set Reminder
+                    </button>
+</div>
+<!-- Action Card 2 -->
+<div class="group bg-surface-container-lowest rounded-3xl p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary-container/20">
+<div class="w-12 h-12 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+<span class="material-symbols-outlined" data-icon="volume_up">volume_up</span>
+</div>
+<h5 class="text-lg font-bold text-on-surface font-manrope mb-2">Adjust Reminder Volume</h5>
+<p class="text-sm text-on-surface-variant mb-6 font-body">Increase volume for morning medication alerts on the device.</p>
+<button class="w-full py-3 px-4 bg-primary-container text-white text-sm font-bold rounded-full shadow-lg shadow-primary-container/30 hover:scale-[1.02] transition-all">
+                        Adjust Now
+                    </button>
+</div>
+<!-- Action Card 3 -->
+<div class="group bg-surface-container-lowest rounded-3xl p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary-container/20">
+<div class="w-12 h-12 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+<span class="material-symbols-outlined" data-icon="light_mode">light_mode</span>
+</div>
+<h5 class="text-lg font-bold text-on-surface font-manrope mb-2">Morning Sunlight</h5>
+<p class="text-sm text-on-surface-variant mb-6 font-body">Encourage 15 mins of outdoor exposure to regulate circadian rhythm.</p>
+<button class="w-full py-3 px-4 bg-surface-container-high text-on-surface text-sm font-bold rounded-full hover:bg-primary transition-all hover:text-white">
+                        Add to Daily Plan
+                    </button>
+</div>
+</div>
+</div>
+<!-- Footer Spacing -->
+<div class="h-12"></div>
+</div>
+</main>
+<!-- Add Mood Note Modal -->
+<div aria-modal="true" class="fixed inset-0 z-[60] flex items-center justify-center p-4" role="dialog" x-cloak="" x-show="showModal">
+<!-- Overlay -->
+<div @click="showModal = false" class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm" x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-end="opacity-100" x-transition:enter-start="opacity-0" x-transition:leave="ease-in duration-200" x-transition:leave-end="opacity-0" x-transition:leave-start="opacity-100"></div>
+<!-- Modal Content -->
+<div class="relative w-full max-w-lg bg-surface rounded-[2rem] shadow-2xl overflow-hidden border border-outline-variant/30" x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:enter-start="opacity-0 translate-y-8 sm:scale-95" x-transition:leave="ease-in duration-200" x-transition:leave-end="opacity-0 translate-y-8 sm:scale-95" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100">
+<div class="p-8">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-2xl font-extrabold font-manrope text-on-surface" x-text="editMode ? 'Edit Mood Note' : 'Add Mood Note'"></h3>
+<button @click="showModal = false" class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<form @submit.prevent="showModal = false" class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1">Date &amp; Time</label>
+<input class="w-full bg-surface-container-low border-outline-variant rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all" required="" type="datetime-local"/>
+</div>
+<div class="space-y-2">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1">Overall Mood</label>
+<select class="w-full bg-surface-container-low border-outline-variant rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all" required="">
+<option value="">Select Mood</option>
+<option>Stable</option>
+<option>Anxious</option>
+<option>Confused</option>
+<option>Agitated</option>
+<option>Happy/Engaged</option>
+</select>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1">Caregiver Observations</label>
+<textarea class="w-full bg-surface-container-low border-outline-variant rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none" placeholder="Describe the patient's behavior, interactions, or any specific triggers observed..." required="" rows="4"></textarea>
+</div>
+<div class="pt-4 flex gap-3">
+<button @click="showModal = false" class="flex-1 py-4 text-on-surface font-bold rounded-full hover:bg-surface-container-high transition-all" type="button">
+                        Cancel
+                    </button>
+<button class="flex-1 py-4 bg-primary text-white font-bold rounded-full shadow-lg shadow-primary/25 hover:opacity-90 transition-all" type="submit">
+<span x-text="editMode ? 'Update Note' : 'Save Note'"></span>
+</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-xl flex justify-around items-center p-4 z-50 border-t border-outline-variant/10">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-bold">Dash</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="medication">medication</span>
+<span class="text-[10px] font-bold">Meds</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-blue-700" href="#">
+<span class="material-symbols-outlined" data-icon="psychology" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="text-[10px] font-bold">Mood</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+<span class="text-[10px] font-bold">Chat</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-bold">Set</span>
+</a>
+</nav>
+</body></html>

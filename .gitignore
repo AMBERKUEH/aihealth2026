@@ -1,0 +1,10 @@
+.Python
+env/
+venv/
+.env
+.venv
+
+# Secret/Config
+.env.local
+.secrets
+config.local.*
