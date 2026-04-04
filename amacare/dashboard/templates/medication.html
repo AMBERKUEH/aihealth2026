@@ -1,560 +1,737 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "tertiary-container": "#bc4800",
-              "on-secondary": "#ffffff",
-              "inverse-on-surface": "#eaf1ff",
-              "on-primary-fixed": "#00174b",
-              "surface-tint": "#0053db",
-              "on-secondary-container": "#006f66",
-              "surface-dim": "#ccdbf3",
-              "on-secondary-fixed-variant": "#005049",
-              "tertiary-fixed-dim": "#ffb596",
-              "surface-container-high": "#dce9ff",
-              "surface-bright": "#f8f9ff",
-              "error-container": "#ffdad6",
-              "secondary-container": "#86f2e4",
-              "surface-container": "#e6eeff",
-              "on-error-container": "#93000a",
-              "surface-container-highest": "#d5e3fc",
-              "on-tertiary-fixed-variant": "#7d2d00",
-              "outline-variant": "#c3c6d7",
-              "on-secondary-fixed": "#00201d",
-              "secondary-fixed-dim": "#6bd8cb",
-              "surface-container-low": "#eff4ff",
-              "on-primary-fixed-variant": "#003ea8",
-              "outline": "#737686",
-              "tertiary-fixed": "#ffdbcd",
-              "on-error": "#ffffff",
-              "on-surface-variant": "#434655",
-              "on-tertiary": "#ffffff",
-              "primary-fixed": "#dbe1ff",
-              "on-primary-container": "#eeefff",
-              "on-tertiary-container": "#ffede6",
-              "on-background": "#0d1c2e",
-              "surface-container-lowest": "#ffffff",
-              "error": "#ba1a1a",
-              "tertiary": "#943700",
-              "primary-fixed-dim": "#b4c5ff",
-              "background": "#f8f9ff",
-              "on-primary": "#ffffff",
-              "primary-container": "#2563eb",
-              "surface": "#f8f9ff",
-              "on-surface": "#0d1c2e",
-              "inverse-surface": "#233144",
-              "secondary": "#006a61",
-              "inverse-primary": "#b4c5ff",
-              "surface-variant": "#d5e3fc",
-              "on-tertiary-fixed": "#360f00",
-              "primary": "#004ac6",
-              "secondary-fixed": "#89f5e7"
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-container": "#bc4800",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-fixed": "#00174b",
+                        "surface-tint": "#0053db",
+                        "on-secondary-container": "#006f66",
+                        "surface-dim": "#ccdbf3",
+                        "on-secondary-fixed-variant": "#005049",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#86f2e4",
+                        "surface-container": "#e6eeff",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#d5e3fc",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-fixed": "#00201d",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "surface-container-low": "#eff4ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "outline": "#737686",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary-container": "#ffede6",
+                        "on-background": "#0d1c2e",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary": "#943700",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "background": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#0d1c2e",
+                        "inverse-surface": "#233144",
+                        "secondary": "#006a61",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-variant": "#d5e3fc",
+                        "on-tertiary-fixed": "#360f00",
+                        "primary": "#004ac6",
+                        "secondary-fixed": "#89f5e7"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
             },
-            fontFamily: {
-              "headline": ["Manrope"],
-              "body": ["Inter"],
-              "label": ["Inter"]
-            },
-            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-          },
-        },
-      }
+        }
     </script>
-<style>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
-        .glass-nav { backdrop-filter: blur(12px); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .glass-nav {
+            backdrop-filter: blur(12px);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
         /* Modal Transitions */
-        .modal-overlay { transition: opacity 0.3s ease; }
-        .modal-content { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .hidden-modal { opacity: 0; pointer-events: none; }
-        .hidden-modal .modal-content { transform: scale(0.95) translateY(20px); }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hidden-modal {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .hidden-modal .modal-content {
+            transform: scale(0.95) translateY(20px);
+        }
     </style>
 </head>
+
 <body class="bg-surface text-on-surface min-h-screen">
-<!-- SideNavBar -->
-<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface-container-low z-40 hidden md:flex flex-col gap-y-2 p-6 font-semibold">
-<div class="text-xl font-extrabold text-blue-700 dark:text-blue-400 mb-8">AmaCare</div>
-<nav class="flex flex-col space-y-2">
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'dashboard' %}">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span>Dashboard</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'location' %}">
-<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
-<span>Location</span>
-</a>
-<!-- Active Tab: Medication -->
-<a class="flex items-center gap-3 px-4 py-3 text-blue-700 bg-blue-50/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'medication' %}">
-<span class="material-symbols-outlined" data-icon="medication" style="font-variation-settings: 'FILL' 1;">medication</span>
-<span>Medication</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'chat' %}">
-<span class="material-symbols-outlined" data-icon="chat">chat</span>
-<span>Chat History</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150" href="{% url 'mood' %}">
-<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
-<span>Mood &amp; Wellbeing</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150 mt-auto" href="{% url 'settings' %}">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span>Settings</span>
-</a>
-</nav>
-<div class="mt-auto pt-6">
-<div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
-<img alt="Caregiver Profile" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBwbMlNMgrjU-kmjPHtMGBRoP_4BIoFvF1zKai9qMVjf1cwXvn0sKwfIEfMTqVtTu0M5bWVbNjrWpdyfEor4UkwdUGqPGFYyaZXI-1mBMgGTYvQqMq96x7lvSHC2CPnM1phPiKVcszRHxDMKJFW4v8Tqb_Yut_DC24OsQ3gWKMSNpkoOX41k11IYHQxKjQUOy0XfxD1kQeMVbSFwuIy7m5P-C_j8X_RFleHv5ws5WXzOfMuVC5fyNo2DrW32Z0c5gRc3iVXwNnsIrX"/>
-<div class="overflow-hidden">
-<p class="text-xs font-bold truncate">Dr. Sarah Chen</p>
-<p class="text-[10px] text-slate-500 truncate">Caregiver Portal</p>
-</div>
-</div>
-</div>
-</aside>
-<main class="md:ml-64 min-h-screen">
-<!-- TopNavBar -->
-<header class="bg-surface/70 backdrop-blur-xl docked full-width top-0 sticky z-30 flex justify-between items-center w-full px-6 py-3 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)]">
-<div class="flex items-center gap-4">
-<h1 class="text-2xl font-bold tracking-tight text-blue-700 font-manrope">Medication</h1>
-</div>
-<div class="flex items-center gap-4">
-<button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full relative">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
-</button>
-<button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full">
-<span class="material-symbols-outlined" data-icon="contrast">contrast</span>
-</button>
-<button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full">
-<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
-</button>
-</div>
-</header>
-<!-- Content Canvas -->
-<div class="p-6 md:p-8 space-y-8">
-<!-- Header Action Row -->
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-<div>
-<h2 class="text-3xl font-extrabold text-on-surface tracking-tight">Active Schedule</h2>
-<p class="text-on-surface-variant font-medium mt-1">Patient: Arthur Vance • Week of Oct 23</p>
-</div>
-<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity active:scale-95" onclick="toggleModal('medicationModal')">
-<span class="material-symbols-outlined text-xl" data-icon="add">add</span>
-<span>Add Medication</span>
-</button>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-<!-- Main Schedule Section -->
-<div class="lg:col-span-9 space-y-6">
-<!-- Weekly Medication Grid -->
-<div class="bg-surface-container-low rounded-3xl p-6 overflow-hidden">
-<div class="overflow-x-auto no-scrollbar">
-<div class="min-w-[800px]">
-<!-- Table Header: Days -->
-<div class="grid grid-cols-8 gap-4 mb-6">
-<div class="col-span-1"></div>
-<div class="text-center font-bold text-on-surface-variant text-sm">Mon</div>
-<div class="text-center font-bold text-on-surface-variant text-sm">Tue</div>
-<div class="text-center font-bold text-on-surface-variant text-sm">Wed</div>
-<div class="text-center font-bold text-on-surface-variant text-sm">Thu</div>
-<div class="text-center font-bold text-on-surface-variant text-sm">Fri</div>
-<div class="text-center font-bold text-on-surface-variant text-sm">Sat</div>
-<div class="text-center font-bold text-on-surface-variant text-sm">Sun</div>
-</div>
-<!-- Rows for Morning, Afternoon, Evening -->
-<div class="space-y-4">
-<!-- Morning -->
-<div class="grid grid-cols-8 gap-4 items-center">
-<div class="flex items-center gap-2 text-blue-600 bg-blue-50/80 p-3 rounded-2xl">
-<span class="material-symbols-outlined text-lg" data-icon="light_mode">light_mode</span>
-<span class="text-xs font-bold uppercase tracking-wider">Morning</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-<span class="material-symbols-outlined text-secondary text-3xl" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-<span class="material-symbols-outlined text-secondary text-3xl" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-<span class="material-symbols-outlined text-secondary text-3xl" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30">
-<span class="material-symbols-outlined text-primary text-3xl" data-icon="schedule">schedule</span>
-<span class="text-[10px] mt-1 font-bold text-primary uppercase">Pending</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-</div>
-<!-- Noon -->
-<div class="grid grid-cols-8 gap-4 items-center">
-<div class="flex items-center gap-2 text-tertiary-container bg-tertiary-fixed p-3 rounded-2xl">
-<span class="material-symbols-outlined text-lg" data-icon="wb_sunny">wb_sunny</span>
-<span class="text-xs font-bold uppercase tracking-wider">Noon</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-<span class="material-symbols-outlined text-secondary text-3xl" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-</div>
-<div class="bg-error-container/30 h-24 rounded-2xl flex flex-col items-center justify-center border border-error/20">
-<span class="material-symbols-outlined text-error text-3xl" data-icon="cancel" style="font-variation-settings: 'FILL' 1;">cancel</span>
-<span class="text-[10px] mt-1 font-bold text-error uppercase">Missed</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-<span class="material-symbols-outlined text-secondary text-3xl" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-</div>
-<!-- Evening -->
-<div class="grid grid-cols-8 gap-4 items-center">
-<div class="flex items-center gap-2 text-primary-container bg-primary-fixed p-3 rounded-2xl">
-<span class="material-symbols-outlined text-lg" data-icon="dark_mode">dark_mode</span>
-<span class="text-xs font-bold uppercase tracking-wider">Night</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-<span class="material-symbols-outlined text-secondary text-3xl" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-<span class="material-symbols-outlined text-secondary text-3xl" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-<span class="material-symbols-outlined text-secondary text-3xl" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-<div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-<span class="material-symbols-outlined text-outline text-3xl" data-icon="circle">circle</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Detailed Dose Log -->
-<div class="space-y-4">
-<div class="flex items-center justify-between">
-<h3 class="text-xl font-bold text-on-surface">Medication List &amp; Records</h3>
-<button class="text-primary font-bold text-sm hover:underline">View All History</button>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<!-- Dose Item 1 -->
-<div class="group bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:border-primary/20 transition-all">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-<span class="material-symbols-outlined" data-icon="pill">pill</span>
-</div>
-<div>
-<div class="flex items-center gap-2">
-<h4 class="font-bold text-on-surface">Lisinopril 10mg</h4>
-<span class="w-2 h-2 rounded-full bg-secondary"></span>
-</div>
-<p class="text-xs text-on-surface-variant font-medium">Daily • Morning • Start: Oct 12</p>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<button class="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors" onclick="openEditModal('Lisinopril', '10mg')">
-<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
-</button>
-<button class="p-2 text-slate-400 hover:text-error hover:bg-error/5 rounded-lg transition-colors" onclick="openDeleteConfirmation('Lisinopril 10mg')">
-<span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
-</button>
-</div>
-</div>
-<!-- Dose Item 2 -->
-<div class="group bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:border-primary/20 transition-all">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-tertiary-container">
-<span class="material-symbols-outlined" data-icon="vaccines">vaccines</span>
-</div>
-<div>
-<div class="flex items-center gap-2">
-<h4 class="font-bold text-on-surface">Metformin 500mg</h4>
-<span class="w-2 h-2 rounded-full bg-secondary"></span>
-</div>
-<p class="text-xs text-on-surface-variant font-medium">Daily • Noon • Start: Oct 05</p>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<button class="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors" onclick="openEditModal('Metformin', '500mg')">
-<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
-</button>
-<button class="p-2 text-slate-400 hover:text-error hover:bg-error/5 rounded-lg transition-colors" onclick="openDeleteConfirmation('Metformin 500mg')">
-<span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Sidebar Refill & Inventory -->
-<div class="lg:col-span-3 space-y-6">
-<!-- Refill Reminders Card -->
-<div class="bg-surface-container-highest/50 rounded-3xl p-6 border border-primary/5">
-<div class="flex items-center gap-2 mb-6">
-<span class="material-symbols-outlined text-tertiary" data-icon="warning">warning</span>
-<h3 class="font-bold text-on-surface">Refill Needed</h3>
-</div>
-<div class="space-y-4">
-<div class="bg-surface-container-lowest p-4 rounded-2xl border border-tertiary-container/10">
-<p class="text-sm font-bold text-on-surface">Atorvastatin</p>
-<p class="text-xs text-on-surface-variant mt-1">2 days left • 4 pills remaining</p>
-<button class="mt-4 w-full bg-tertiary-container text-white text-xs font-bold py-2 rounded-xl hover:opacity-90 transition-opacity uppercase tracking-wider">Order Now</button>
-</div>
-<div class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/20">
-<p class="text-sm font-bold text-on-surface">Omeprazole</p>
-<p class="text-xs text-on-surface-variant mt-1">5 days left • 10 pills remaining</p>
-<button class="mt-4 w-full bg-surface-container-high text-on-surface-variant text-xs font-bold py-2 rounded-xl hover:bg-surface-container-highest transition-colors uppercase tracking-wider">Scheduled</button>
-</div>
-</div>
-</div>
-<!-- Adherence Rate -->
-<div class="bg-gradient-to-br from-primary to-primary-container p-6 rounded-3xl text-white relative overflow-hidden">
-<div class="relative z-10">
-<p class="text-sm font-medium opacity-90">Adherence Rate</p>
-<h4 class="text-4xl font-extrabold mt-1">94%</h4>
-<div class="mt-6 flex items-center gap-2">
-<span class="material-symbols-outlined text-secondary-container" data-icon="trending_up">trending_up</span>
-<span class="text-xs font-bold text-secondary-container uppercase">+2% from last week</span>
-</div>
-</div>
-<div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
-</div>
-<!-- Pharmacy Contact -->
-<div class="bg-surface-container-low p-6 rounded-3xl">
-<h4 class="font-bold text-on-surface text-sm mb-4">Pharmacy Contact</h4>
-<div class="flex items-center gap-4">
-<img alt="Pharmacy" class="w-12 h-12 rounded-xl object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV3ZHhf9ptyqKJFWsOaWAsHoAE_OV-p5B3cpCJuooXumKR4g9GEgGY87NO92y0YCQfDCm2hwwHZHhCPvAf7HX1ZZeSjsk6NJeTgV8uKZsgNGv9sF95TNIdWvyOY6_E4sJIKwNypfKh7NRcDU8ldQqeK3F0pkseiKlV9SpGbm485G8IJB203qdHYNIGizMN2tdJffHr7hVpK37eUWEYkvulYQl22nV0vtcERE-9vulNSa0TnklvgmTBFndS_2MV2sTymR_nFoAFy7nV"/>
-<div>
-<p class="text-xs font-bold text-on-surface">CareFirst Pharma</p>
-<p class="text-[10px] text-on-surface-variant">(555) 012-3456</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-<!-- BottomNavBar (Mobile) -->
-<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 glass-nav z-50 px-6 py-4 flex justify-between items-center shadow-[0_-4px_24px_rgba(0,0,0,0.05)]">
-<button class="flex flex-col items-center gap-1 text-slate-500">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-blue-600">
-<span class="material-symbols-outlined" data-icon="medication" style="font-variation-settings: 'FILL' 1;">medication</span>
-<span class="text-[10px] font-bold uppercase tracking-tighter">Meds</span>
-</button>
-<button class="bg-primary text-white p-3 rounded-full -mt-12 shadow-lg shadow-primary/30 border-4 border-surface" onclick="toggleModal('medicationModal')">
-<span class="material-symbols-outlined" data-icon="add">add</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-slate-500">
-<span class="material-symbols-outlined" data-icon="chat">chat</span>
-<span class="text-[10px] font-bold uppercase tracking-tighter">Chat</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-slate-500">
-<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
-<span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
-</button>
-</nav>
-<!-- MODALS -->
-<!-- Add/Edit Medication Modal -->
-<div class="fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay bg-black/40 backdrop-blur-sm hidden-modal" id="medicationModal">
-<div class="bg-surface-container-lowest w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden modal-content flex flex-col max-h-[90vh]">
-<div class="px-8 py-6 flex items-center justify-between border-b border-outline-variant/10">
-<h3 class="text-xl font-extrabold text-on-surface" id="modalTitle">Add Medication</h3>
-<button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500" onclick="toggleModal('medicationModal')">
-<span class="material-symbols-outlined" data-icon="close">close</span>
-</button>
-</div>
-<form class="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar" id="medicationForm" onsubmit="handleFormSubmit(event)">
-<!-- Med Name -->
-<div class="space-y-2">
-<label class="text-sm font-bold text-on-surface-variant px-1" for="medName">Medication Name</label>
-<input class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 font-medium" id="medName" placeholder="e.g. Lisinopril" required="" type="text"/>
-</div>
-<!-- Dosage -->
-<div class="space-y-2">
-<label class="text-sm font-bold text-on-surface-variant px-1" for="dosage">Dosage</label>
-<input class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 font-medium" id="dosage" placeholder="e.g. 10mg" required="" type="text"/>
-</div>
-<!-- Frequency & Status Row -->
-<div class="grid grid-cols-2 gap-4">
-<div class="space-y-2">
-<label class="text-sm font-bold text-on-surface-variant px-1" for="frequency">Frequency</label>
-<select class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 font-medium appearance-none" id="frequency">
-<option>Daily</option>
-<option>Weekly</option>
-<option>Every Other Day</option>
-</select>
-</div>
-<div class="space-y-2">
-<label class="text-sm font-bold text-on-surface-variant px-1">Status</label>
-<div class="flex items-center h-[48px]">
-<label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox"/>
-<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
-<span class="ms-3 text-sm font-bold text-on-surface">Active</span>
-</label>
-</div>
-</div>
-</div>
-<!-- Time Slots -->
-<div class="space-y-2">
-<label class="text-sm font-bold text-on-surface-variant px-1">Scheduled Time Slots</label>
-<div class="grid grid-cols-3 gap-3">
-<label class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&amp;:has(:checked)]:border-primary [&amp;:has(:checked)]:bg-primary/5">
-<input class="hidden peer" name="timeSlot" type="checkbox"/>
-<span class="material-symbols-outlined text-slate-400 peer-checked:text-primary" data-icon="light_mode">light_mode</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 peer-checked:text-primary">Morning</span>
-</label>
-<label class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&amp;:has(:checked)]:border-primary [&amp;:has(:checked)]:bg-primary/5">
-<input class="hidden peer" name="timeSlot" type="checkbox"/>
-<span class="material-symbols-outlined text-slate-400 peer-checked:text-primary" data-icon="wb_sunny">wb_sunny</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 peer-checked:text-primary">Noon</span>
-</label>
-<label class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&amp;:has(:checked)]:border-primary [&amp;:has(:checked)]:bg-primary/5">
-<input class="hidden peer" name="timeSlot" type="checkbox"/>
-<span class="material-symbols-outlined text-slate-400 peer-checked:text-primary" data-icon="dark_mode">dark_mode</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 peer-checked:text-primary">Night</span>
-</label>
-</div>
-</div>
-<!-- Date Range -->
-<div class="grid grid-cols-2 gap-4">
-<div class="space-y-2">
-<label class="text-sm font-bold text-on-surface-variant px-1" for="startDate">Start Date</label>
-<input class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 font-medium" id="startDate" type="date"/>
-</div>
-<div class="space-y-2">
-<label class="text-sm font-bold text-on-surface-variant px-1" for="endDate">End Date</label>
-<input class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 font-medium" id="endDate" placeholder="Optional" type="date"/>
-</div>
-</div>
-<!-- Action Buttons -->
-<div class="pt-6 flex gap-4">
-<button class="flex-1 py-3 rounded-2xl font-bold text-on-surface-variant bg-surface-container-high hover:bg-surface-container-highest transition-colors" onclick="toggleModal('medicationModal')" type="button">Cancel</button>
-<button class="flex-1 py-3 rounded-2xl font-bold text-white bg-primary shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all" type="submit">Save Medication</button>
-</div>
-</form>
-</div>
-</div>
-<!-- Delete Confirmation Modal -->
-<div class="fixed inset-0 z-[70] flex items-center justify-center p-4 modal-overlay bg-black/40 backdrop-blur-sm hidden-modal" id="deleteModal">
-<div class="bg-surface-container-lowest w-full max-w-sm rounded-[2rem] shadow-2xl p-8 modal-content text-center">
-<div class="w-16 h-16 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-6">
-<span class="material-symbols-outlined text-3xl" data-icon="delete_forever">delete_forever</span>
-</div>
-<h3 class="text-xl font-extrabold text-on-surface mb-2">Delete Medication?</h3>
-<p class="text-on-surface-variant text-sm mb-8">Are you sure you want to remove <span class="font-bold text-on-surface" id="deleteItemName">this medication</span> from Arthur's schedule? This action cannot be undone.</p>
-<div class="flex flex-col gap-3">
-<button class="w-full py-3 rounded-2xl font-bold text-white bg-error shadow-lg shadow-error/20 hover:opacity-90 active:scale-[0.98] transition-all" onclick="confirmDelete()">Yes, Delete Medication</button>
-<button class="w-full py-3 rounded-2xl font-bold text-on-surface-variant bg-surface-container-low hover:bg-surface-container-high transition-colors" onclick="toggleModal('deleteModal')">Go Back</button>
-</div>
-</div>
-</div>
-<script>
-    function toggleModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal.classList.contains('hidden-modal')) {
-            modal.classList.remove('hidden-modal');
-            document.body.style.overflow = 'hidden';
-        } else {
-            modal.classList.add('hidden-modal');
-            document.body.style.overflow = '';
-            // Reset form if it's the main modal
-            if(modalId === 'medicationModal') {
-                setTimeout(() => {
-                    document.getElementById('medicationForm').reset();
-                    document.getElementById('modalTitle').innerText = 'Add Medication';
-                }, 300);
+    <!-- SideNavBar -->
+    <aside
+        class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface-container-low z-40 hidden md:flex flex-col gap-y-2 p-6 font-semibold">
+        <div class="text-xl font-extrabold text-blue-700 dark:text-blue-400 mb-8">AmaCare</div>
+        <nav class="flex flex-col space-y-2">
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150"
+                href="{% url 'dashboard' %}">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150"
+                href="{% url 'location' %}">
+                <span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+                <span>Location</span>
+            </a>
+            <!-- Active Tab: Medication -->
+            <a class="flex items-center gap-3 px-4 py-3 text-blue-700 bg-blue-50/50 rounded-xl transition-all active:scale-95 duration-150"
+                href="{% url 'medication' %}">
+                <span class="material-symbols-outlined" data-icon="medication"
+                    style="font-variation-settings: 'FILL' 1;">medication</span>
+                <span>Medication</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150"
+                href="{% url 'chat' %}">
+                <span class="material-symbols-outlined" data-icon="chat">chat</span>
+                <span>Chat History</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150"
+                href="{% url 'mood' %}">
+                <span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+                <span>Mood &amp; Wellbeing</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100/50 rounded-xl transition-all active:scale-95 duration-150 mt-auto"
+                href="{% url 'settings' %}">
+                <span class="material-symbols-outlined" data-icon="settings">settings</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+        <div class="mt-auto pt-6">
+            <div
+                class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
+                <img alt="Caregiver Profile" class="w-10 h-10 rounded-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBwbMlNMgrjU-kmjPHtMGBRoP_4BIoFvF1zKai9qMVjf1cwXvn0sKwfIEfMTqVtTu0M5bWVbNjrWpdyfEor4UkwdUGqPGFYyaZXI-1mBMgGTYvQqMq96x7lvSHC2CPnM1phPiKVcszRHxDMKJFW4v8Tqb_Yut_DC24OsQ3gWKMSNpkoOX41k11IYHQxKjQUOy0XfxD1kQeMVbSFwuIy7m5P-C_j8X_RFleHv5ws5WXzOfMuVC5fyNo2DrW32Z0c5gRc3iVXwNnsIrX" />
+                <div class="overflow-hidden">
+                    <p class="text-xs font-bold truncate">Dr. Sarah Chen</p>
+                    <p class="text-[10px] text-slate-500 truncate">Caregiver Portal</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <main class="md:ml-64 min-h-screen">
+        <!-- TopNavBar -->
+        <header
+            class="bg-surface/70 backdrop-blur-xl docked full-width top-0 sticky z-30 flex justify-between items-center w-full px-6 py-3 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)]">
+            <div class="flex items-center gap-4">
+                <h1 class="text-2xl font-bold tracking-tight text-blue-700 font-manrope">Medication</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full relative">
+                    <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+                </button>
+                <button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full">
+                    <span class="material-symbols-outlined" data-icon="contrast">contrast</span>
+                </button>
+                <button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full">
+                    <span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+                </button>
+            </div>
+        </header>
+        <!-- Content Canvas -->
+        <div class="p-6 md:p-8 space-y-8">
+            <!-- Header Action Row -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-on-surface tracking-tight">Active Schedule</h2>
+                    <p class="text-on-surface-variant font-medium mt-1">Patient: Arthur Vance • Week of Oct 23</p>
+                </div>
+                <button
+                    class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity active:scale-95"
+                    onclick="toggleModal('medicationModal')">
+                    <span class="material-symbols-outlined text-xl" data-icon="add">add</span>
+                    <span>Add Medication</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Main Schedule Section -->
+                <div class="lg:col-span-9 space-y-6">
+                    <!-- Weekly Medication Grid -->
+                    <div class="bg-surface-container-low rounded-3xl p-6 overflow-hidden">
+                        <div class="overflow-x-auto no-scrollbar">
+                            <div class="min-w-[800px]">
+                                <!-- Table Header: Days -->
+                                <div class="grid grid-cols-8 gap-4 mb-6">
+                                    <div class="col-span-1"></div>
+                                    <div class="text-center font-bold text-on-surface-variant text-sm">Mon</div>
+                                    <div class="text-center font-bold text-on-surface-variant text-sm">Tue</div>
+                                    <div class="text-center font-bold text-on-surface-variant text-sm">Wed</div>
+                                    <div class="text-center font-bold text-on-surface-variant text-sm">Thu</div>
+                                    <div class="text-center font-bold text-on-surface-variant text-sm">Fri</div>
+                                    <div class="text-center font-bold text-on-surface-variant text-sm">Sat</div>
+                                    <div class="text-center font-bold text-on-surface-variant text-sm">Sun</div>
+                                </div>
+                                <!-- Rows for Morning, Afternoon, Evening -->
+                                <div class="space-y-4">
+                                    <!-- Morning -->
+                                    <div class="grid grid-cols-8 gap-4 items-center">
+                                        <div
+                                            class="flex items-center gap-2 text-blue-600 bg-blue-50/80 p-3 rounded-2xl">
+                                            <span class="material-symbols-outlined text-lg"
+                                                data-icon="light_mode">light_mode</span>
+                                            <span class="text-xs font-bold uppercase tracking-wider">Morning</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
+                                            <span class="material-symbols-outlined text-secondary text-3xl"
+                                                data-icon="check_circle"
+                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            <span
+                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
+                                            <span class="material-symbols-outlined text-secondary text-3xl"
+                                                data-icon="check_circle"
+                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            <span
+                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
+                                            <span class="material-symbols-outlined text-secondary text-3xl"
+                                                data-icon="check_circle"
+                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            <span
+                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30">
+                                            <span class="material-symbols-outlined text-primary text-3xl"
+                                                data-icon="schedule">schedule</span>
+                                            <span
+                                                class="text-[10px] mt-1 font-bold text-primary uppercase">Pending</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                    </div>
+                                    <!-- Noon -->
+                                    <div class="grid grid-cols-8 gap-4 items-center">
+                                        <div
+                                            class="flex items-center gap-2 text-tertiary-container bg-tertiary-fixed p-3 rounded-2xl">
+                                            <span class="material-symbols-outlined text-lg"
+                                                data-icon="wb_sunny">wb_sunny</span>
+                                            <span class="text-xs font-bold uppercase tracking-wider">Noon</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
+                                            <span class="material-symbols-outlined text-secondary text-3xl"
+                                                data-icon="check_circle"
+                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            <span
+                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
+                                        </div>
+                                        <div
+                                            class="bg-error-container/30 h-24 rounded-2xl flex flex-col items-center justify-center border border-error/20">
+                                            <span class="material-symbols-outlined text-error text-3xl"
+                                                data-icon="cancel"
+                                                style="font-variation-settings: 'FILL' 1;">cancel</span>
+                                            <span class="text-[10px] mt-1 font-bold text-error uppercase">Missed</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
+                                            <span class="material-symbols-outlined text-secondary text-3xl"
+                                                data-icon="check_circle"
+                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            <span
+                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                    </div>
+                                    <!-- Evening -->
+                                    <div class="grid grid-cols-8 gap-4 items-center">
+                                        <div
+                                            class="flex items-center gap-2 text-primary-container bg-primary-fixed p-3 rounded-2xl">
+                                            <span class="material-symbols-outlined text-lg"
+                                                data-icon="dark_mode">dark_mode</span>
+                                            <span class="text-xs font-bold uppercase tracking-wider">Night</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
+                                            <span class="material-symbols-outlined text-secondary text-3xl"
+                                                data-icon="check_circle"
+                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            <span
+                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
+                                            <span class="material-symbols-outlined text-secondary text-3xl"
+                                                data-icon="check_circle"
+                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            <span
+                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
+                                            <span class="material-symbols-outlined text-secondary text-3xl"
+                                                data-icon="check_circle"
+                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            <span
+                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                        <div
+                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
+                                            <span class="material-symbols-outlined text-outline text-3xl"
+                                                data-icon="circle">circle</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Detailed Dose Log -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-on-surface">Medication List &amp; Records</h3>
+                            <button class="text-primary font-bold text-sm hover:underline">View All History</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Dose Item 1 -->
+                            <div
+                                class="group bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:border-primary/20 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                        <span class="material-symbols-outlined" data-icon="pill">pill</span>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-on-surface">Lisinopril 10mg</h4>
+                                            <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                                        </div>
+                                        <p class="text-xs text-on-surface-variant font-medium">Daily • Morning • Start:
+                                            Oct 12</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                                        onclick="openEditModal('Lisinopril', '10mg')">
+                                        <span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+                                    </button>
+                                    <button
+                                        class="p-2 text-slate-400 hover:text-error hover:bg-error/5 rounded-lg transition-colors"
+                                        onclick="openDeleteConfirmation('Lisinopril 10mg')">
+                                        <span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Dose Item 2 -->
+                            <div
+                                class="group bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:border-primary/20 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-tertiary-container">
+                                        <span class="material-symbols-outlined" data-icon="vaccines">vaccines</span>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-on-surface">Metformin 500mg</h4>
+                                            <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                                        </div>
+                                        <p class="text-xs text-on-surface-variant font-medium">Daily • Noon • Start: Oct
+                                            05</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button
+                                        class="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                                        onclick="openEditModal('Metformin', '500mg')">
+                                        <span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+                                    </button>
+                                    <button
+                                        class="p-2 text-slate-400 hover:text-error hover:bg-error/5 rounded-lg transition-colors"
+                                        onclick="openDeleteConfirmation('Metformin 500mg')">
+                                        <span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar Refill & Inventory -->
+                <div class="lg:col-span-3 space-y-6">
+                    <!-- Refill Reminders Card -->
+                    <div class="bg-surface-container-highest/50 rounded-3xl p-6 border border-primary/5">
+                        <div class="flex items-center gap-2 mb-6">
+                            <span class="material-symbols-outlined text-tertiary" data-icon="warning">warning</span>
+                            <h3 class="font-bold text-on-surface">Refill Needed</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div
+                                class="bg-surface-container-lowest p-4 rounded-2xl border border-tertiary-container/10">
+                                <p class="text-sm font-bold text-on-surface">Atorvastatin</p>
+                                <p class="text-xs text-on-surface-variant mt-1">2 days left • 4 pills remaining</p>
+                                <button
+                                    class="mt-4 w-full bg-tertiary-container text-white text-xs font-bold py-2 rounded-xl hover:opacity-90 transition-opacity uppercase tracking-wider">Order
+                                    Now</button>
+                            </div>
+                            <div class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/20">
+                                <p class="text-sm font-bold text-on-surface">Omeprazole</p>
+                                <p class="text-xs text-on-surface-variant mt-1">5 days left • 10 pills remaining</p>
+                                <button
+                                    class="mt-4 w-full bg-surface-container-high text-on-surface-variant text-xs font-bold py-2 rounded-xl hover:bg-surface-container-highest transition-colors uppercase tracking-wider">Scheduled</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Adherence Rate -->
+                    <div
+                        class="bg-gradient-to-br from-primary to-primary-container p-6 rounded-3xl text-white relative overflow-hidden">
+                        <div class="relative z-10">
+                            <p class="text-sm font-medium opacity-90">Adherence Rate</p>
+                            <h4 class="text-4xl font-extrabold mt-1">94%</h4>
+                            <div class="mt-6 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-secondary-container"
+                                    data-icon="trending_up">trending_up</span>
+                                <span class="text-xs font-bold text-secondary-container uppercase">+2% from last
+                                    week</span>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+                    </div>
+                    <!-- Pharmacy Contact -->
+                    <div class="bg-surface-container-low p-6 rounded-3xl">
+                        <h4 class="font-bold text-on-surface text-sm mb-4">Pharmacy Contact</h4>
+                        <div class="flex items-center gap-4">
+                            <img alt="Pharmacy" class="w-12 h-12 rounded-xl object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV3ZHhf9ptyqKJFWsOaWAsHoAE_OV-p5B3cpCJuooXumKR4g9GEgGY87NO92y0YCQfDCm2hwwHZHhCPvAf7HX1ZZeSjsk6NJeTgV8uKZsgNGv9sF95TNIdWvyOY6_E4sJIKwNypfKh7NRcDU8ldQqeK3F0pkseiKlV9SpGbm485G8IJB203qdHYNIGizMN2tdJffHr7hVpK37eUWEYkvulYQl22nV0vtcERE-9vulNSa0TnklvgmTBFndS_2MV2sTymR_nFoAFy7nV" />
+                            <div>
+                                <p class="text-xs font-bold text-on-surface">CareFirst Pharma</p>
+                                <p class="text-[10px] text-on-surface-variant">(555) 012-3456</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- BottomNavBar (Mobile) -->
+    <nav
+        class="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 glass-nav z-50 px-6 py-4 flex justify-between items-center shadow-[0_-4px_24px_rgba(0,0,0,0.05)]">
+        <button class="flex flex-col items-center gap-1 text-slate-500">
+            <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            <span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-blue-600">
+            <span class="material-symbols-outlined" data-icon="medication"
+                style="font-variation-settings: 'FILL' 1;">medication</span>
+            <span class="text-[10px] font-bold uppercase tracking-tighter">Meds</span>
+        </button>
+        <button
+            class="bg-primary text-white p-3 rounded-full -mt-12 shadow-lg shadow-primary/30 border-4 border-surface"
+            onclick="toggleModal('medicationModal')">
+            <span class="material-symbols-outlined" data-icon="add">add</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-slate-500">
+            <span class="material-symbols-outlined" data-icon="chat">chat</span>
+            <span class="text-[10px] font-bold uppercase tracking-tighter">Chat</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-slate-500">
+            <span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+            <span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
+        </button>
+    </nav>
+    <!-- MODALS -->
+    <!-- Add/Edit Medication Modal -->
+    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay bg-black/40 backdrop-blur-sm hidden-modal"
+        id="medicationModal">
+        <div
+            class="bg-surface-container-lowest w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden modal-content flex flex-col max-h-[90vh]">
+            <div class="px-8 py-6 flex items-center justify-between border-b border-outline-variant/10">
+                <h3 class="text-xl font-extrabold text-on-surface" id="modalTitle">Add Medication</h3>
+                <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500"
+                    onclick="toggleModal('medicationModal')">
+                    <span class="material-symbols-outlined" data-icon="close">close</span>
+                </button>
+            </div>
+            <form class="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar" id="medicationForm"
+                onsubmit="handleFormSubmit(event)">
+                <!-- Med Name -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-on-surface-variant px-1" for="medName">Medication Name</label>
+                    <input
+                        class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 font-medium"
+                        id="medName" placeholder="e.g. Lisinopril" required="" type="text" />
+                </div>
+                <!-- Dosage -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-on-surface-variant px-1" for="dosage">Dosage</label>
+                    <input
+                        class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 font-medium"
+                        id="dosage" placeholder="e.g. 10mg" required="" type="text" />
+                </div>
+                <!-- Frequency & Status Row -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant px-1" for="frequency">Frequency</label>
+                        <select
+                            class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 font-medium appearance-none"
+                            id="frequency">
+                            <option>Daily</option>
+                            <option>Weekly</option>
+                            <option>Every Other Day</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant px-1">Status</label>
+                        <div class="flex items-center h-[48px]">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input checked="" class="sr-only peer" type="checkbox" />
+                                <div
+                                    class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary">
+                                </div>
+                                <span class="ms-3 text-sm font-bold text-on-surface">Active</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Time Slots -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-on-surface-variant px-1">Scheduled Time Slots</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label
+                            class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&amp;:has(:checked)]:border-primary [&amp;:has(:checked)]:bg-primary/5">
+                            <input class="hidden peer" name="timeSlot" type="checkbox" />
+                            <span class="material-symbols-outlined text-slate-400 peer-checked:text-primary"
+                                data-icon="light_mode">light_mode</span>
+                            <span
+                                class="text-[10px] font-bold uppercase tracking-wider text-slate-500 peer-checked:text-primary">Morning</span>
+                        </label>
+                        <label
+                            class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&amp;:has(:checked)]:border-primary [&amp;:has(:checked)]:bg-primary/5">
+                            <input class="hidden peer" name="timeSlot" type="checkbox" />
+                            <span class="material-symbols-outlined text-slate-400 peer-checked:text-primary"
+                                data-icon="wb_sunny">wb_sunny</span>
+                            <span
+                                class="text-[10px] font-bold uppercase tracking-wider text-slate-500 peer-checked:text-primary">Noon</span>
+                        </label>
+                        <label
+                            class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&amp;:has(:checked)]:border-primary [&amp;:has(:checked)]:bg-primary/5">
+                            <input class="hidden peer" name="timeSlot" type="checkbox" />
+                            <span class="material-symbols-outlined text-slate-400 peer-checked:text-primary"
+                                data-icon="dark_mode">dark_mode</span>
+                            <span
+                                class="text-[10px] font-bold uppercase tracking-wider text-slate-500 peer-checked:text-primary">Night</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Date Range -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant px-1" for="startDate">Start Date</label>
+                        <input
+                            class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 font-medium"
+                            id="startDate" type="date" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant px-1" for="endDate">End Date</label>
+                        <input
+                            class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 font-medium"
+                            id="endDate" placeholder="Optional" type="date" />
+                    </div>
+                </div>
+                <!-- Action Buttons -->
+                <div class="pt-6 flex gap-4">
+                    <button
+                        class="flex-1 py-3 rounded-2xl font-bold text-on-surface-variant bg-surface-container-high hover:bg-surface-container-highest transition-colors"
+                        onclick="toggleModal('medicationModal')" type="button">Cancel</button>
+                    <button
+                        class="flex-1 py-3 rounded-2xl font-bold text-white bg-primary shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all"
+                        type="submit">Save Medication</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Delete Confirmation Modal -->
+    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 modal-overlay bg-black/40 backdrop-blur-sm hidden-modal"
+        id="deleteModal">
+        <div
+            class="bg-surface-container-lowest w-full max-w-sm rounded-[2rem] shadow-2xl p-8 modal-content text-center">
+            <div class="w-16 h-16 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-3xl" data-icon="delete_forever">delete_forever</span>
+            </div>
+            <h3 class="text-xl font-extrabold text-on-surface mb-2">Delete Medication?</h3>
+            <p class="text-on-surface-variant text-sm mb-8">Are you sure you want to remove <span
+                    class="font-bold text-on-surface" id="deleteItemName">this medication</span> from Arthur's schedule?
+                This action cannot be undone.</p>
+            <div class="flex flex-col gap-3">
+                <button
+                    class="w-full py-3 rounded-2xl font-bold text-white bg-error shadow-lg shadow-error/20 hover:opacity-90 active:scale-[0.98] transition-all"
+                    onclick="confirmDelete()">Yes, Delete Medication</button>
+                <button
+                    class="w-full py-3 rounded-2xl font-bold text-on-surface-variant bg-surface-container-low hover:bg-surface-container-high transition-colors"
+                    onclick="toggleModal('deleteModal')">Go Back</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal.classList.contains('hidden-modal')) {
+                modal.classList.remove('hidden-modal');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.add('hidden-modal');
+                document.body.style.overflow = '';
+                // Reset form if it's the main modal
+                if (modalId === 'medicationModal') {
+                    setTimeout(() => {
+                        document.getElementById('medicationForm').reset();
+                        document.getElementById('modalTitle').innerText = 'Add Medication';
+                    }, 300);
+                }
             }
         }
-    }
 
-    function openEditModal(name, dose) {
-        document.getElementById('modalTitle').innerText = 'Edit Medication';
-        document.getElementById('medName').value = name;
-        document.getElementById('dosage').value = dose;
-        // Pre-checking some checkboxes for demo
-        const checkboxes = document.querySelectorAll('#medicationForm input[type="checkbox"]');
-        if(checkboxes.length > 0) checkboxes[0].checked = true;
-        
-        toggleModal('medicationModal');
-    }
+        function openEditModal(name, dose) {
+            document.getElementById('modalTitle').innerText = 'Edit Medication';
+            document.getElementById('medName').value = name;
+            document.getElementById('dosage').value = dose;
+            // Pre-checking some checkboxes for demo
+            const checkboxes = document.querySelectorAll('#medicationForm input[type="checkbox"]');
+            if (checkboxes.length > 0) checkboxes[0].checked = true;
 
-    function openDeleteConfirmation(name) {
-        document.getElementById('deleteItemName').innerText = name;
-        toggleModal('deleteModal');
-    }
+            toggleModal('medicationModal');
+        }
 
-    function confirmDelete() {
-        // Logic for deletion would go here
-        alert('Medication deleted successfully');
-        toggleModal('deleteModal');
-    }
+        function openDeleteConfirmation(name) {
+            document.getElementById('deleteItemName').innerText = name;
+            toggleModal('deleteModal');
+        }
 
-    function handleFormSubmit(e) {
-        e.preventDefault();
-        // Form validation is handled by 'required' attribute
-        // Logic for saving would go here
-        alert('Changes saved successfully');
-        toggleModal('medicationModal');
-    }
+        function confirmDelete() {
+            // Logic for deletion would go here
+            alert('Medication deleted successfully');
+            toggleModal('deleteModal');
+        }
 
-    // Close on overlay click
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                toggleModal(overlay.id);
-            }
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            // Form validation is handled by 'required' attribute
+            // Logic for saving would go here
+            alert('Changes saved successfully');
+            toggleModal('medicationModal');
+        }
+
+        // Close on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    toggleModal(overlay.id);
+                }
+            });
         });
-    });
-</script>
-</body></html>
+    </script>
+</body>
+
+</html>
