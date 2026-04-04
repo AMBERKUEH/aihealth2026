@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 
 <html class="light" lang="en">
@@ -7,12 +8,10 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>AmaCare | Location Tracking</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -67,53 +66,105 @@
                         "primary": "#004ac6",
                         "secondary-fixed": "#89f5e7"
                     },
-                    fontFamily: {
-                        "headline": ["Manrope"],
-                        "body": ["Inter"],
-                        "label": ["Inter"]
-                    },
+                    fontFamily: { "headline": ["Manrope"], "body": ["Inter"], "label": ["Inter"] },
                     borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
                 },
             },
         }
     </script>
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+ 
+        /* Leaflet overrides */
+        #map { z-index: 0; }
+        .leaflet-control-zoom { display: none !important; }
+        .leaflet-control-attribution { font-size: 9px !important; opacity: 0.6; }
+ 
+        /* Patient marker */
+        .patient-marker-wrap {
+            position: relative;
+            width: 64px;
+            height: 64px;
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
+        .patient-pulse {
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            background: rgba(0, 74, 198, 0.2);
+            animation: pulse 2s ease-out infinite;
         }
-
-        h1,
-        h2,
-        h3 {
-            font-family: 'Manrope', sans-serif;
+        @keyframes pulse {
+            0%   { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
         }
-
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
+        .patient-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
         }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
+ 
+        /* Modal overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            background: rgba(13,28,46,0.4);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
+        .modal-overlay.active { display: flex; }
+ 
+        /* Toast notification */
+        #toast {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #0d1c2e;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+            white-space: nowrap;
+            pointer-events: none;
         }
-
-        /* Modal Backdrop */
-        #safe-zone-modal:target,
-        #delete-confirm:target {
-            display: flex;
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
+ 
+        /* Status dot animation */
+        .live-dot { animation: livePulse 2s ease-in-out infinite; }
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+ 
+        /* Safe zone circle on map */
+        .leaflet-interactive { cursor: default !important; }
     </style>
 </head>
 
 <body class="bg-surface text-on-surface">
+    <div id="toast"></div>
+    
     <!-- SideNavBar -->
     <aside
         class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface-container-low z-50 hidden md:flex flex-col gap-y-2 p-6 font-manrope text-sm font-semibold">
@@ -164,9 +215,9 @@
     </aside>
     <!-- Main Content Area -->
     <main class="md:ml-64 min-h-screen flex flex-col">
+ 
         <!-- TopNavBar -->
-        <header
-            class="bg-surface/70 backdrop-blur-xl sticky top-0 z-40 flex justify-between items-center w-full px-8 py-4 font-manrope text-sm font-medium">
+        <header class="bg-surface/70 backdrop-blur-xl sticky top-0 z-40 flex justify-between items-center w-full px-8 py-4 font-manrope text-sm font-medium">
             <div class="flex items-center gap-4">
                 <h1 class="text-2xl font-bold tracking-tight text-blue-700">Location Tracking</h1>
             </div>
@@ -182,193 +233,162 @@
                 </button>
             </div>
         </header>
+ 
         <!-- Context Canvas -->
         <div class="p-8 flex flex-col gap-8 flex-1">
+ 
             <!-- Hero Stats / Status Bar -->
             <section class="flex flex-col lg:flex-row gap-6">
+ 
                 <!-- Last Location Status Card -->
-                <div
-                    class="flex-1 bg-surface-container-lowest p-6 rounded-2xl shadow-[0_8px_32px_0_rgba(0,23,75,0.05)] border border-blue-50">
+                <div class="flex-1 bg-surface-container-lowest p-6 rounded-2xl shadow-[0_8px_32px_0_rgba(0,23,75,0.05)] border border-blue-50">
                     <div class="flex items-center justify-between mb-4">
-                        <span
-                            class="text-xs font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span> Live Status
+                        <span class="text-xs font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-secondary live-dot"></span> Live Status
                         </span>
-                        <span class="text-xs text-slate-400 font-medium">Updated 2m ago</span>
+                        <span class="text-xs text-slate-400 font-medium" id="last-updated">Locating...</span>
                     </div>
                     <div class="flex items-end justify-between">
                         <div>
-                            <h3 class="text-3xl font-extrabold text-on-surface mb-1">Home - Living Room</h3>
-                            <p class="text-slate-500 font-medium">Stationary for 45 minutes</p>
+                            <h3 class="text-3xl font-extrabold text-on-surface mb-1" id="current-place">
+                                {% if current_log %}{{ current_log.place_name }}{% else %}Waiting for GPS...{% endif %}
+                            </h3>
+                            <p class="text-slate-500 font-medium" id="current-duration">
+                                {% if current_log %}Stationary for {{ current_log.duration_minutes }} min{% else %}Location not yet available{% endif %}
+                            </p>
                         </div>
                         <div class="p-3 bg-secondary-container/30 rounded-xl">
                             <span class="material-symbols-outlined text-secondary text-3xl">chair</span>
                         </div>
                     </div>
                 </div>
+ 
                 <!-- Safe Zone Metric -->
-                <div
-                    class="w-full lg:w-96 bg-surface-container-low p-6 rounded-2xl border border-white/50 flex flex-col justify-between">
+                <div class="w-full lg:w-96 bg-surface-container-low p-6 rounded-2xl border border-white/50 flex flex-col justify-between">
                     <div class="flex justify-between items-start mb-2">
                         <div>
-                            <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Current Safe Zone
-                            </p>
+                            <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Current Safe Zone</p>
                             <div class="flex items-center gap-3">
                                 <div class="relative w-10 h-10 flex items-center justify-center">
                                     <div class="absolute inset-0 bg-blue-100 rounded-full opacity-40"></div>
-                                    <span
-                                        class="material-symbols-outlined text-blue-600 text-xl z-10">verified_user</span>
+                                    <span class="material-symbols-outlined text-blue-600 text-xl z-10">verified_user</span>
                                 </div>
                                 <div>
-                                    <p class="text-lg font-bold text-on-surface">Main Residence</p>
-                                    <p class="text-xs text-slate-500">50m Perimeter</p>
+                                    <p class="text-lg font-bold text-on-surface" id="zone-name">
+                                        {% if safe_zone %}{{ safe_zone.name }}{% else %}No safe zone set{% endif %}
+                                    </p>
+                                    <p class="text-xs text-slate-500" id="zone-radius">
+                                        {% if safe_zone %}{{ safe_zone.radius_meters }}m Perimeter{% else %}Add one below{% endif %}
+                                    </p>
                                 </div>
                             </div>
                         </div>
                         <div class="flex gap-1">
-                            <a class="p-1.5 hover:bg-white rounded-lg text-slate-400 hover:text-primary transition-colors"
-                                href="#safe-zone-modal">
+                            <button onclick="openSafeZoneModal({% if safe_zone %}{{ safe_zone.id }}{% else %}null{% endif %})"
+                                class="p-1.5 hover:bg-white rounded-lg text-slate-400 hover:text-primary transition-colors">
                                 <span class="material-symbols-outlined text-lg">edit</span>
-                            </a>
-                            <a class="p-1.5 hover:bg-white rounded-lg text-slate-400 hover:text-error transition-colors"
-                                href="#delete-confirm">
+                            </button>
+                            <button onclick="openDeleteModal({% if safe_zone %}{{ safe_zone.id }}{% else %}null{% endif %})"
+                                class="p-1.5 hover:bg-white rounded-lg text-slate-400 hover:text-error transition-colors">
                                 <span class="material-symbols-outlined text-lg">delete</span>
-                            </a>
+                            </button>
                         </div>
                     </div>
-                    <a class="mt-4 flex items-center justify-center gap-2 py-2.5 bg-primary text-white rounded-xl text-xs font-bold shadow-md hover:bg-primary/90 transition-all"
-                        href="#safe-zone-modal">
+                    <button onclick="openSafeZoneModal(null)"
+                        class="mt-4 flex items-center justify-center gap-2 py-2.5 bg-primary text-white rounded-xl text-xs font-bold shadow-md hover:bg-primary/90 transition-all">
                         <span class="material-symbols-outlined text-sm">add_circle</span>
                         ADD NEW SAFE ZONE
-                    </a>
+                    </button>
                 </div>
             </section>
+ 
             <!-- Main Interactive Map Section -->
             <section class="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-8 min-h-[600px]">
-                <!-- Large Interactive Map -->
-                <div
-                    class="lg:col-span-3 relative rounded-3xl overflow-hidden bg-surface-container shadow-inner border-4 border-white">
-                    <!-- Mock Map UI -->
-                    <div class="absolute inset-0 grayscale-[0.2] contrast-[0.9]"
-                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCaJ72b_dEJezM9NNukp2m3wdP_rGMdu_LSfCGD36CQwfgUzWa_D3bljjn3huYCTFexhpeaAvj8F_5w1i84SG2AA_D4Js3qhb3KxJXmPmbouq5QLptmig2-tmPhT3qDe2mDEg3-axOUupKitHkEx8iFKs7rkFJb0Jf4fWSz9HKKM-T90Sv6C9DCD7YSDm3TTc5zzB6H9aEUnE9svzHHD5iXXT8fPbEq4v4Xl7Myx_qu7o8p5geVSisC-9pnPBCyQuiAHPbFd4PtCieJ'); background-size: cover; background-position: center;">
-                    </div>
-                    <!-- Safe Zone Radius Overlay -->
-                    <div
-                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-primary/10 border-2 border-primary/30 border-dashed backdrop-blur-[1px]">
-                    </div>
-                    <!-- Patient Marker -->
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                        <div class="relative group cursor-pointer">
-                            <div class="absolute -inset-4 bg-primary/20 rounded-full animate-ping"></div>
-                            <div
-                                class="w-16 h-16 rounded-full border-4 border-white shadow-2xl overflow-hidden relative z-10">
-                                <img alt="Arthur Clarke" class="w-full h-full object-cover"
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhpZ154rG3JcnWcan2osL_LdsujVHaveoMOA1b3A-G7qPgg-WdrANb7cbpIXoGZ-voXxJCFjyMu6ktQovzc0sLwWHkWc2IF_Z5phYUK2YHMgHxUbJSn5VY5f3GMfdweFsprIH-7_uQk24WUmE6cdcMRlJvb-HFjVOhwlx-wnz5xIHM3mFA0OdcGCSN5jMD0TdTMtV_w_mWwUdLlAyqrI2ZngZqsJhsHeru2g3d0TXymbnFIzV_kjhac-hCS4haGsT9Nb8GYvrXStnc" />
-                            </div>
-                            <div
-                                class="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-on-surface text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-lg uppercase">
-                                Arthur Clarke
-                            </div>
-                        </div>
-                    </div>
+ 
+                <!-- Leaflet Map -->
+                <div class="lg:col-span-3 relative rounded-3xl overflow-hidden bg-surface-container shadow-inner border-4 border-white">
+                    <!-- The map div -->
+                    <div id="map" class="absolute inset-0 w-full h-full"></div>
+ 
                     <!-- Map Controls Floating -->
-                    <div class="absolute bottom-8 left-8 flex flex-col gap-2">
-                        <div
-                            class="bg-surface-container-lowest/80 backdrop-blur-md p-1 rounded-xl shadow-xl flex flex-col gap-1 border border-white/40">
-                            <button
+                    <div class="absolute bottom-8 left-8 flex flex-col gap-2 z-10">
+                        <div class="bg-surface-container-lowest/80 backdrop-blur-md p-1 rounded-xl shadow-xl flex flex-col gap-1 border border-white/40">
+                            <button onclick="mapZoomIn()"
                                 class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-blue-50 rounded-lg transition-all">
                                 <span class="material-symbols-outlined">add</span>
                             </button>
                             <div class="h-[1px] bg-outline-variant/30 mx-2"></div>
-                            <button
+                            <button onclick="mapZoomOut()"
                                 class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-blue-50 rounded-lg transition-all">
                                 <span class="material-symbols-outlined">remove</span>
                             </button>
                         </div>
-                        <button
+                        <button onclick="centerOnPatient()"
                             class="bg-surface-container-lowest/80 backdrop-blur-md p-3 rounded-xl shadow-xl border border-white/40 text-primary">
                             <span class="material-symbols-outlined">my_location</span>
                         </button>
                     </div>
+ 
                     <!-- Overlay Layer Toggle -->
-                    <div class="absolute top-8 right-8 flex gap-3">
-                        <button
+                    <div class="absolute top-8 right-8 flex gap-3 z-10">
+                        <div id="safe-zone-badge"
                             class="bg-primary px-4 py-2 rounded-full text-white text-xs font-bold shadow-lg flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">security</span> Safe Zone Active
-                        </button>
-                        <button
+                            <span class="material-symbols-outlined text-sm">security</span>
+                            <span id="safe-zone-status">{% if safe_zone %}Safe Zone Active{% else %}No Safe Zone{% endif %}</span>
+                        </div>
+                        <button onclick="toggleSatellite()"
                             class="bg-surface-container-lowest/80 backdrop-blur-md px-4 py-2 rounded-full text-on-surface text-xs font-bold shadow-lg border border-white/40 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">layers</span> Satelite
+                            <span class="material-symbols-outlined text-sm">layers</span> Satellite
                         </button>
                     </div>
-                    <!-- Playback Controls -->
-                    <div class="absolute bottom-8 right-8 left-32">
-                        <div
-                            class="bg-surface-container-lowest/90 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/50 flex items-center gap-6">
-                            <button class="p-2 text-primary hover:bg-primary/10 rounded-full">
-                                <span class="material-symbols-outlined"
-                                    style="font-variation-settings: 'FILL' 1;">play_circle</span>
-                            </button>
-                            <div class="flex-1 relative h-1 bg-slate-200 rounded-full">
-                                <div class="absolute inset-y-0 left-0 w-3/4 bg-primary rounded-full"></div>
-                                <div
-                                    class="absolute top-1/2 left-3/4 -translate-y-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md">
-                                </div>
+ 
+                    <!-- GPS Status bar at bottom -->
+                    <div class="absolute bottom-8 right-8 left-32 z-10">
+                        <div class="bg-surface-container-lowest/90 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/50 flex items-center gap-4">
+                            <span class="material-symbols-outlined text-primary" id="gps-icon">gps_not_fixed</span>
+                            <div class="flex-1">
+                                <p class="text-[11px] font-bold text-on-surface" id="gps-status-text">Acquiring GPS signal...</p>
+                                <p class="text-[10px] text-slate-400 font-mono" id="gps-coords">-- , --</p>
                             </div>
-                            <span class="text-[10px] font-bold text-slate-500 tabular-nums">11:45 AM</span>
+                            <div class="text-[10px] font-bold text-slate-400 tabular-nums" id="gps-accuracy"></div>
                         </div>
                     </div>
                 </div>
+ 
                 <!-- Movement History Sidebar -->
                 <aside class="bg-surface-container-low/50 rounded-3xl p-6 flex flex-col h-full border border-white/20">
                     <h2 class="text-lg font-bold text-on-surface mb-6 flex items-center justify-between">
                         History
                         <span class="material-symbols-outlined text-slate-400">history</span>
                     </h2>
-                    <div class="flex-1 space-y-0 overflow-y-auto pr-2 custom-scrollbar">
-                        <!-- Timeline Item -->
-                        <div class="relative pl-8 pb-8 group">
-                            <div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
-                            <div
-                                class="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-primary bg-white z-10">
+                    <div class="flex-1 space-y-0 overflow-y-auto pr-2 custom-scrollbar" id="history-timeline">
+                        {% if recent_logs %}
+                            {% for log in recent_logs %}
+                            <div class="relative pl-8 pb-8 group history-item" data-id="{{ log.id }}">
+                                <div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
+                                <div class="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 {% if log.is_current %}border-primary{% else %}border-slate-300{% endif %} bg-white z-10"></div>
+                                <p class="text-[10px] font-bold {% if log.is_current %}text-primary{% else %}text-slate-400{% endif %} uppercase tracking-tighter mb-1">
+                                    {{ log.arrived_at|date:"h:i A" }}
+                                </p>
+                                <h4 class="text-sm font-bold text-on-surface">{{ log.place_name }}</h4>
+                                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                                    {% if log.is_current %}
+                                        Currently here &middot; {{ log.duration_minutes }} min
+                                    {% else %}
+                                        Stayed {{ log.duration_minutes }} min
+                                    {% endif %}
+                                </p>
                             </div>
-                            <p class="text-[10px] font-bold text-primary uppercase tracking-tighter mb-1">11:15 AM</p>
-                            <h4 class="text-sm font-bold text-on-surface">Garden Terrace</h4>
-                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">Movement detected near the north
-                                gazebo.</p>
-                        </div>
-                        <!-- Timeline Item -->
-                        <div class="relative pl-8 pb-8 group">
-                            <div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
-                            <div
-                                class="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-slate-300 bg-white z-10">
+                            {% endfor %}
+                        {% else %}
+                            <div class="flex flex-col items-center justify-center h-full text-center px-4" id="empty-history">
+                                <span class="material-symbols-outlined text-slate-300 text-4xl mb-3">history_toggle_off</span>
+                                <p class="text-sm text-slate-400 font-medium">No location history yet.</p>
+                                <p class="text-xs text-slate-300 mt-1">History will appear once GPS is active.</p>
                             </div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">10:45 AM</p>
-                            <h4 class="text-sm font-bold text-on-surface">Kitchen</h4>
-                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">Stationary for 30 minutes.</p>
-                        </div>
-                        <!-- Timeline Item -->
-                        <div class="relative pl-8 pb-8 group">
-                            <div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
-                            <div
-                                class="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-slate-300 bg-white z-10">
-                            </div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">10:30 AM</p>
-                            <h4 class="text-sm font-bold text-on-surface">Living Room</h4>
-                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">Transition from Bedroom.</p>
-                        </div>
-                        <!-- Timeline Item -->
-                        <div class="relative pl-8 pb-8 group">
-                            <div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
-                            <div
-                                class="absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-slate-300 bg-white z-10">
-                            </div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">08:00 AM</p>
-                            <h4 class="text-sm font-bold text-on-surface">Master Bedroom</h4>
-                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">Wake up routine initiated.</p>
-                        </div>
+                        {% endif %}
                     </div>
-                    <button
+                    <button onclick="loadFullLogs()"
                         class="mt-6 w-full py-3 bg-white text-primary text-xs font-bold rounded-xl border border-blue-50 hover:bg-blue-50 transition-all">
                         VIEW FULL LOGS
                     </button>
@@ -377,36 +397,34 @@
         </div>
     </main>
     <!-- Safe Zone Management Modal -->
-    <div class="fixed inset-0 z-[60] bg-on-surface/40 backdrop-blur-sm hidden items-center justify-center p-4"
-        id="safe-zone-modal">
-        <div
-            class="bg-surface-container-lowest w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-white">
+    <div class="modal-overlay" id="safe-zone-modal">
+        <div class="bg-surface-container-lowest w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-white">
             <div class="p-6 border-b border-outline-variant/10 flex items-center justify-between">
-                <h2 class="text-xl font-bold text-on-surface">Manage Safe Zone</h2>
-                <a class="text-slate-400 hover:text-on-surface transition-colors" href="#">
+                <h2 class="text-xl font-bold text-on-surface" id="modal-title">Manage Safe Zone</h2>
+                <button onclick="closeSafeZoneModal()" class="text-slate-400 hover:text-on-surface transition-colors">
                     <span class="material-symbols-outlined">close</span>
-                </a>
+                </button>
             </div>
-            <form class="p-6 flex flex-col gap-5">
+            <div class="p-6 flex flex-col gap-5">
+                <input type="hidden" id="zone-id-input" value="" />
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Location Name</label>
-                    <input
+                    <input id="zone-name-input"
                         class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
                         placeholder="e.g. Garden, Park, Home" type="text" value="Main Residence" />
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Radius (meters)</label>
-                        <input
+                        <input id="zone-radius-input"
                             class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
-                            type="number" value="50" />
+                            type="number" value="50" min="10" max="5000" />
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Coordinates</label>
-                        <div
-                            class="w-full bg-slate-100 rounded-xl px-4 py-3 text-[10px] text-slate-500 font-mono flex items-center gap-2">
+                        <div class="w-full bg-slate-100 rounded-xl px-4 py-3 text-[10px] text-slate-500 font-mono flex items-center gap-2">
                             <span class="material-symbols-outlined text-xs">location_pin</span>
-                            30.2672° N, 97.7431° W
+                            <span id="zone-coord-display">Use current GPS</span>
                         </div>
                     </div>
                 </div>
@@ -419,20 +437,17 @@
                         </div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input checked="" class="sr-only peer" type="checkbox" />
-                        <div
-                            class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
-                        </div>
+                        <input id="zone-alerts-input" checked class="sr-only peer" type="checkbox" />
+                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                 </div>
                 <div class="flex gap-3 pt-4">
-                    <a class="flex-1 py-3 text-center bg-slate-100 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-200 transition-all"
-                        href="#">CANCEL</a>
-                    <button
-                        class="flex-1 py-3 bg-primary text-white text-xs font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all"
-                        type="submit">SAVE CHANGES</button>
+                    <button onclick="closeSafeZoneModal()"
+                        class="flex-1 py-3 text-center bg-slate-100 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-200 transition-all">CANCEL</button>
+                    <button onclick="saveSafeZone()"
+                        class="flex-1 py-3 bg-primary text-white text-xs font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">SAVE CHANGES</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
     <!-- Delete Confirmation Dialog -->
@@ -473,6 +488,414 @@
             <span class="material-symbols-outlined">person</span>
         </button>
     </nav>
+
+        <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+ 
+    <script>
+        // ─── Config ───────────────────────────────────────────────────────────────
+        const PATIENT_ID = 1;
+        const POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+        const SAME_PLACE_THRESHOLD = 100; // metres (must match backend)
+    
+        const CSRF_TOKEN = '{{ csrf_token }}';
+    
+        // ─── State ────────────────────────────────────────────────────────────────
+        let map, patientMarker, safeZoneCircle, satelliteLayer, streetLayer;
+        let currentLat = null, currentLon = null;
+        let currentSafeZone = {% if safe_zone %}{
+            id: {{ safe_zone.id }},
+            name: "{{ safe_zone.name }}",
+            latitude: {{ safe_zone.latitude }},
+            longitude: {{ safe_zone.longitude }},
+            radius_meters: {{ safe_zone.radius_meters }},
+            alerts_enabled: {{ safe_zone.alerts_enabled|lower }}
+        }{% else %}null{% endif %};
+        let deleteTargetId = null;
+        let isSatellite = false;
+    
+        // ─── Map Init ─────────────────────────────────────────────────────────────
+        function initMap() {
+            map = L.map('map', { zoomControl: false, attributionControl: true }).setView([3.1390, 101.6869], 15);
+    
+            streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+    
+            satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; Esri',
+                maxZoom: 19
+            });
+    
+            // Draw safe zone circle if exists
+            if (currentSafeZone) {
+                drawSafeZone(currentSafeZone);
+            }
+        }
+    
+        // ─── Safe Zone circle ─────────────────────────────────────────────────────
+        function drawSafeZone(zone) {
+            if (safeZoneCircle) { map.removeLayer(safeZoneCircle); }
+            safeZoneCircle = L.circle([zone.latitude, zone.longitude], {
+                radius: zone.radius_meters,
+                color: '#004ac6',
+                fillColor: '#004ac6',
+                fillOpacity: 0.08,
+                dashArray: '8 6',
+                weight: 2
+            }).addTo(map);
+        }
+    
+        // ─── Patient Marker ───────────────────────────────────────────────────────
+        function createPatientIcon() {
+            return L.divIcon({
+                className: '',
+                html: `
+                    <div class="patient-marker-wrap">
+                        <div class="patient-pulse"></div>
+                        <img class="patient-avatar"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhpZ154rG3JcnWcan2osL_LdsujVHaveoMOA1b3A-G7qPgg-WdrANb7cbpIXoGZ-voXxJCFjyMu6ktQovzc0sLwWHkWc2IF_Z5phYUK2YHMgHxUbJSn5VY5f3GMfdweFsprIH-7_uQk24WUmE6cdcMRlJvb-HFjVOhwlx-wnz5xIHM3mFA0OdcGCSN5jMD0TdTMtV_w_mWwUdLlAyqrI2ZngZqsJhsHeru2g3d0TXymbnFIzV_kjhac-hCS4haGsT9Nb8GYvrXStnc"
+                            alt="Arthur Clarke" />
+                    </div>`,
+                iconSize: [64, 64],
+                iconAnchor: [32, 32],
+                popupAnchor: [0, -40]
+            });
+        }
+    
+        function placeOrMoveMarker(lat, lon) {
+            if (!patientMarker) {
+                patientMarker = L.marker([lat, lon], { icon: createPatientIcon() })
+                    .addTo(map)
+                    .bindPopup('<b>Arthur Clarke</b><br>Current location');
+            } else {
+                patientMarker.setLatLng([lat, lon]);
+            }
+        }
+    
+        function centerOnPatient() {
+            if (currentLat !== null) {
+                map.setView([currentLat, currentLon], 17, { animate: true });
+            } else {
+                showToast('GPS not yet acquired');
+            }
+        }
+    
+        function mapZoomIn()  { map.zoomIn(); }
+        function mapZoomOut() { map.zoomOut(); }
+    
+        function toggleSatellite() {
+            isSatellite = !isSatellite;
+            if (isSatellite) {
+                map.removeLayer(streetLayer);
+                satelliteLayer.addTo(map);
+            } else {
+                map.removeLayer(satelliteLayer);
+                streetLayer.addTo(map);
+            }
+        }
+    
+        // ─── Reverse Geocoding (Nominatim, free) ──────────────────────────────────
+        async function reversGeocode(lat, lon) {
+            try {
+                const res = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+                    { headers: { 'Accept-Language': 'en' } }
+                );
+                const data = await res.json();
+                const a = data.address || {};
+                // Try to get a meaningful short label
+                return a.amenity || a.building || a.road || a.suburb || a.neighbourhood
+                    || a.village || a.town || a.city || data.display_name?.split(',')[0]
+                    || 'Unknown Location';
+            } catch {
+                return 'Unknown Location';
+            }
+        }
+    
+        // ─── GPS Tracking ─────────────────────────────────────────────────────────
+        let watchId = null;
+        let lastPostedLat = null, lastPostedLon = null;
+        let pollTimer = null;
+    
+        function startTracking() {
+            if (!navigator.geolocation) {
+                setGpsStatus('GPS not supported by your browser', false);
+                return;
+            }
+            setGpsStatus('Acquiring GPS signal...', false);
+    
+            watchId = navigator.geolocation.watchPosition(onGpsSuccess, onGpsError, {
+                enableHighAccuracy: true,
+                timeout: 30000,
+                maximumAge: 0
+            });
+        }
+    
+        async function onGpsSuccess(pos) {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const acc = pos.coords.accuracy;
+    
+            currentLat = lat;
+            currentLon = lon;
+    
+            setGpsStatus('GPS signal acquired', true);
+            document.getElementById('gps-coords').textContent = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+            document.getElementById('gps-accuracy').textContent = `+/- ${Math.round(acc)}m`;
+    
+            placeOrMoveMarker(lat, lon);
+    
+            // First fix — centre map
+            if (lastPostedLat === null) {
+                map.setView([lat, lon], 17, { animate: true });
+                await postLocation(lat, lon);
+            }
+        }
+    
+        function onGpsError(err) {
+            const msgs = {
+                1: 'Location permission denied. Please allow location access.',
+                2: 'Position unavailable.',
+                3: 'GPS timeout. Retrying...'
+            };
+            setGpsStatus(msgs[err.code] || 'GPS error', false);
+        }
+    
+        function setGpsStatus(text, ok) {
+            document.getElementById('gps-status-text').textContent = text;
+            document.getElementById('gps-icon').textContent = ok ? 'gps_fixed' : 'gps_not_fixed';
+            document.getElementById('gps-icon').style.color = ok ? '#006a61' : '#004ac6';
+        }
+    
+        // ─── Post location to backend ─────────────────────────────────────────────
+        async function postLocation(lat, lon) {
+            const placeName = await reversGeocode(lat, lon);
+    
+            try {
+                const res = await fetch("{% url 'api_update_location' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': CSRF_TOKEN
+                    },
+                    body: JSON.stringify({
+                        patient_id: PATIENT_ID,
+                        latitude: lat,
+                        longitude: lon,
+                        place_name: placeName
+                    })
+                });
+                const data = await res.json();
+                lastPostedLat = lat;
+                lastPostedLon = lon;
+    
+                updateStatusCard(data.log);
+                if (data.status === 'new') {
+                    prependHistoryItem(data.log);
+                } else {
+                    updateCurrentHistoryItem(data.log);
+                }
+                document.getElementById('last-updated').textContent = 'Updated just now';
+            } catch (e) {
+                console.error('Failed to post location:', e);
+            }
+        }
+    
+        // ─── Periodic poll (every 5 min) ──────────────────────────────────────────
+        function schedulePoll() {
+            pollTimer = setTimeout(async () => {
+                if (currentLat !== null) {
+                    await postLocation(currentLat, currentLon);
+                }
+                schedulePoll();
+            }, POLL_INTERVAL_MS);
+        }
+    
+        // ─── History Timeline UI ──────────────────────────────────────────────────
+        function prependHistoryItem(log) {
+            const empty = document.getElementById('empty-history');
+            if (empty) empty.remove();
+    
+            const timeline = document.getElementById('history-timeline');
+            // Mark all previous items as inactive
+            timeline.querySelectorAll('.history-item').forEach(el => {
+                el.querySelector('.history-dot')?.classList.replace('border-primary', 'border-slate-300');
+                el.querySelector('.history-time')?.classList.replace('text-primary', 'text-slate-400');
+            });
+    
+            const item = document.createElement('div');
+            item.className = 'relative pl-8 pb-8 group history-item';
+            item.dataset.id = log.id;
+            item.innerHTML = `
+                <div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
+                <div class="history-dot absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-primary bg-white z-10"></div>
+                <p class="history-time text-[10px] font-bold text-primary uppercase tracking-tighter mb-1">${log.arrived_at}</p>
+                <h4 class="text-sm font-bold text-on-surface">${log.place_name}</h4>
+                <p class="history-desc text-xs text-slate-500 mt-1 leading-relaxed">Currently here &middot; ${log.duration_minutes} min</p>
+            `;
+            timeline.prepend(item);
+        }
+    
+        function updateCurrentHistoryItem(log) {
+            const timeline = document.getElementById('history-timeline');
+            const first = timeline.querySelector('.history-item');
+            if (first && first.dataset.id == log.id) {
+                const desc = first.querySelector('.history-desc');
+                if (desc) desc.textContent = `Currently here \u00b7 ${log.duration_minutes} min`;
+            }
+        }
+    
+        function updateStatusCard(log) {
+            document.getElementById('current-place').textContent = log.place_name;
+            document.getElementById('current-duration').textContent =
+                log.duration_minutes < 1 ? 'Just arrived' : `Here for ${log.duration_minutes} min`;
+        }
+    
+        async function loadFullLogs() {
+            const res = await fetch(`{% url 'api_location_logs' %}?patient_id=${PATIENT_ID}`);
+            const data = await res.json();
+            renderTimeline(data.logs);
+        }
+    
+        function renderTimeline(logs) {
+            const timeline = document.getElementById('history-timeline');
+            if (!logs.length) {
+                timeline.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-center px-4" id="empty-history">
+                    <span class="material-symbols-outlined text-slate-300 text-4xl mb-3">history_toggle_off</span>
+                    <p class="text-sm text-slate-400 font-medium">No location history yet.</p>
+                </div>`;
+                return;
+            }
+            timeline.innerHTML = logs.map((log, i) => `
+                <div class="relative pl-8 pb-8 group history-item" data-id="${log.id}">
+                    <div class="absolute left-0 top-1 w-0.5 h-full bg-blue-100 group-last:bg-transparent"></div>
+                    <div class="history-dot absolute left-[-4px] top-1.5 w-2.5 h-2.5 rounded-full border-2 ${log.is_current ? 'border-primary' : 'border-slate-300'} bg-white z-10"></div>
+                    <p class="history-time text-[10px] font-bold ${log.is_current ? 'text-primary' : 'text-slate-400'} uppercase tracking-tighter mb-1">${log.arrived_at}</p>
+                    <h4 class="text-sm font-bold text-on-surface">${log.place_name}</h4>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">${log.is_current ? 'Currently here' : 'Stayed'} &middot; ${log.duration}</p>
+                </div>
+            `).join('');
+        }
+    
+        // ─── Safe Zone Modal ──────────────────────────────────────────────────────
+        function openSafeZoneModal(zoneId) {
+            const modal = document.getElementById('safe-zone-modal');
+            if (zoneId && currentSafeZone && currentSafeZone.id == zoneId) {
+                document.getElementById('zone-id-input').value = currentSafeZone.id;
+                document.getElementById('zone-name-input').value = currentSafeZone.name;
+                document.getElementById('zone-radius-input').value = currentSafeZone.radius_meters;
+                document.getElementById('zone-alerts-input').checked = currentSafeZone.alerts_enabled;
+                document.getElementById('zone-coord-display').textContent =
+                    `${parseFloat(currentSafeZone.latitude).toFixed(4)}, ${parseFloat(currentSafeZone.longitude).toFixed(4)}`;
+                document.getElementById('modal-title').textContent = 'Edit Safe Zone';
+            } else {
+                document.getElementById('zone-id-input').value = '';
+                document.getElementById('zone-name-input').value = '';
+                document.getElementById('zone-radius-input').value = '50';
+                document.getElementById('zone-alerts-input').checked = true;
+                document.getElementById('zone-coord-display').textContent =
+                    currentLat ? `${currentLat.toFixed(4)}, ${currentLon.toFixed(4)}` : 'Use current GPS';
+                document.getElementById('modal-title').textContent = 'Add Safe Zone';
+            }
+            modal.classList.add('active');
+        }
+    
+        function closeSafeZoneModal() {
+            document.getElementById('safe-zone-modal').classList.remove('active');
+        }
+    
+        async function saveSafeZone() {
+            const zoneId = document.getElementById('zone-id-input').value;
+            const name = document.getElementById('zone-name-input').value.trim();
+            const radius = parseInt(document.getElementById('zone-radius-input').value);
+            const alerts = document.getElementById('zone-alerts-input').checked;
+    
+            if (!name) { showToast('Please enter a location name'); return; }
+    
+            let lat = currentLat;
+            let lon = currentLon;
+            if (zoneId && currentSafeZone) {
+                lat = currentSafeZone.latitude;
+                lon = currentSafeZone.longitude;
+            }
+            if (lat === null) { showToast('GPS not acquired yet. Cannot set zone.'); return; }
+    
+            const body = {
+                patient_id: PATIENT_ID,
+                name, radius_meters: radius, alerts_enabled: alerts,
+                latitude: lat, longitude: lon
+            };
+            if (zoneId) body.id = parseInt(zoneId);
+    
+            try {
+                const res = await fetch("{% url 'api_safe_zones' %}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                currentSafeZone = data;
+                drawSafeZone(data);
+                document.getElementById('zone-name').textContent = data.name;
+                document.getElementById('zone-radius').textContent = `${data.radius_meters}m Perimeter`;
+                document.getElementById('safe-zone-status').textContent = 'Safe Zone Active';
+                closeSafeZoneModal();
+                showToast('Safe zone saved');
+            } catch (e) {
+                showToast('Failed to save safe zone');
+            }
+        }
+    
+        // ─── Delete Modal ─────────────────────────────────────────────────────────
+        function openDeleteModal(zoneId) {
+            if (!zoneId) { showToast('No safe zone to delete'); return; }
+            deleteTargetId = zoneId;
+            document.getElementById('delete-confirm').classList.add('active');
+        }
+    
+        function closeDeleteModal() {
+            document.getElementById('delete-confirm').classList.remove('active');
+            deleteTargetId = null;
+        }
+    
+        async function confirmDelete() {
+            if (!deleteTargetId) return;
+            try {
+                await fetch(`/api/safe-zones/${deleteTargetId}/delete/?patient_id=${PATIENT_ID}`, {
+                    method: 'DELETE',
+                    headers: { 'X-CSRFToken': CSRF_TOKEN }
+                });
+                if (safeZoneCircle) { map.removeLayer(safeZoneCircle); safeZoneCircle = null; }
+                currentSafeZone = null;
+                document.getElementById('zone-name').textContent = 'No safe zone set';
+                document.getElementById('zone-radius').textContent = 'Add one below';
+                document.getElementById('safe-zone-status').textContent = 'No Safe Zone';
+                closeDeleteModal();
+                showToast('Safe zone deleted');
+            } catch {
+                showToast('Failed to delete safe zone');
+            }
+        }
+    
+        // ─── Toast ────────────────────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    
+        // ─── Boot ─────────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            startTracking();
+            schedulePoll();
+        });
+    </script>
 </body>
 
 </html>
