@@ -55,10 +55,11 @@ ROOT_URLCONF = 'amacare.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],   # or your app's templates folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -66,6 +67,11 @@ TEMPLATES = [
         },
     },
 ]
+ 
+# Auth redirect URLs
+LOGIN_URL          = '/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'   # change to your post-login page
+LOGOUT_REDIRECT_URL = '/login/'
 
 WSGI_APPLICATION = 'amacare.wsgi.application'
 

@@ -1,15 +1,29 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 from . import views
 
 urlpatterns = [
-    path("", views.home, name="dashboard"),
-    path("settings/", views.settings, name="settings"),
-    path("medication/", views.medication, name="medication"),
-    path("chat/", views.chat, name="chat"),
-    path("mood/", views.mood, name="mood"),
-    path("location/", views.location, name="location"),
+    # Authentication URLs
+    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    
+    # Protected URLs (will redirect to login if not authenticated)
+    path("", login_required(views.home), name="dashboard"),
+    path("settings/", login_required(views.settings), name="settings"),
+    path("medication/", login_required(views.medication), name="medication"),
+    path("chat/", login_required(views.chat), name="chat"),
+    path("mood/", login_required(views.mood), name="mood"),
+    path("location/", login_required(views.location), name="location"),
+    
+    # API URLs
     path('api/location/update/', views.api_update_location, name='api_update_location'),
     path('api/location/logs/', views.api_location_logs, name='api_location_logs'),
     path('api/safe-zones/', views.api_safe_zones, name='api_safe_zones'),
     path('api/safe-zones/<int:zone_id>/delete/', views.api_safe_zone_delete, name='api_safe_zone_delete'),
+    path("api/update-dose/",          views.update_dose,        name="update_dose"),
+    path("api/get-doses/",            views.get_doses,          name="get_doses"),
+    path("api/save-medication/",      views.save_medication,    name="save_medication"),
+    path("api/delete-medication/",    views.delete_medication,  name="delete_medication"),
+    path("api/send-refill-alert/",    views.send_refill_alert,  name="send_refill_alert"),
 ]

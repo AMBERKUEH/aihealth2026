@@ -202,14 +202,26 @@
                 <span>Settings</span>
             </a>
         </nav>
-        <div class="mt-auto pt-8 border-t border-outline-variant/10">
-            <div class="flex items-center gap-3 px-2">
-                <img alt="professional female caregiver" class="w-10 h-10 rounded-full object-cover shadow-sm"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCue-8RHyUgMNUmrXkW9qr41U7eAhx7k8OHg521JIU9uG451uPWTyP7Sv-tl1mzaboSEYBIapReeZBmii_BjIzzaNK0L4VoLtjHWVZbgkpHXg9vBXQWidBEjjd1Ri_wtdQ5Q1dEpz1VhN7dznFWW5aNcwiN_W7UEqBaeC08udxCecSfxH26bEDhyTCLtw7W-RDy8C4ftb7zY5Ybi9lvSZ2kKnlj_Q6KBy3meIuPKhT9d_K5ctIAnjZt4AVw80hNmCpX6Y3KnVpci3LH" />
-                <div>
-                    <p class="text-xs font-bold text-on-surface">Sarah Johnson</p>
-                    <p class="text-[10px] text-slate-500 uppercase tracking-wider">Registered Nurse</p>
-                </div>
+        <div class="mt-auto pt-6">
+            <div
+                class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
+                {% if user.is_authenticated %}
+                    <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">person</span>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-xs font-bold truncate">{{ user.get_full_name|default:user.username }}</p>
+                        <p class="text-[10px] text-slate-500 truncate">Caregiver Portal</p>
+                    </div>
+                {% else %}
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-gray-500">person</span>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-xs font-bold truncate">Guest</p>
+                        <p class="text-[10px] text-slate-500 truncate">Not logged in</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </aside>

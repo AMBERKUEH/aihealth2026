@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ama Care — Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─────────────────────────────────────────────
+       CSS VARIABLES — Ethereal Clinic Design System
+    ───────────────────────────────────────────── */
+    :root {
+      --primary:                  #004ac6;
+      --primary-alt:              #2563eb;
+      --primary-container:        #d6e4ff;
+      --primary-fixed:            #eef3ff;
+      --secondary:                #006a61;
+      --surface:                  #f8f9ff;
+      --surface-dim:              #eceef8;
+      --surface-container-low:    #f0f2fc;
+      --surface-container:        #eaecf6;
+      --surface-container-high:   #e4e6f0;
+      --surface-container-highest:#dde0ea;
+      --on-surface:               #1a1c27;
+      --on-surface-variant:       #44475a;
+      --outline-variant:          rgba(68,71,90,0.15);
+      --tinted-shadow:            rgba(0,23,75,0.05);
+      --font-display:             'Manrope', sans-serif;
+      --font-body:                'Inter', sans-serif;
+    }
+
+    /* ─── RESET ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── PAGE SHELL ─── */
+    html, body {
+      height: 100%;
+      font-family: var(--font-body);
+      background-color: var(--surface);
+      color: var(--on-surface);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── LEFT PANEL — Editorial Illustration ─── */
+    .panel-left {
+      position: relative;
+      background: linear-gradient(160deg, #001d6e 0%, #003aa0 45%, #006a61 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 3rem 3.5rem;
+      overflow: hidden;
+    }
+
+    /* Floating orb layers for depth */
+    .panel-left::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: -80px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37,99,235,0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .panel-left::after {
+      content: '';
+      position: absolute;
+      bottom: 60px;
+      right: -100px;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,106,97,0.4) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* Subtle grid texture */
+    .panel-left .grid-texture {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    /* Floating glass card */
+    .panel-left .glass-card {
+      position: absolute;
+      top: 11%;
+      left: 50%;
+      transform: translateX(-42%);
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 1.25rem;
+      padding: 1.4rem 1.6rem;
+      width: 220px;
+      animation: float 6s ease-in-out infinite;
+    }
+    .glass-card .gc-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 0.5rem;
+    }
+    .glass-card .gc-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.25rem;
+    }
+    .glass-card .gc-status {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.65);
+    }
+    .gc-status .pulse-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 0 3px rgba(74,222,128,0.25);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Second floating card */
+    .panel-left .glass-card-2 {
+      position: absolute;
+      top: 38%;
+      left: 16%;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 1rem 1.2rem;
+      width: 170px;
+      animation: float 8s ease-in-out infinite reverse;
+    }
+    .glass-card-2 .gc2-label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 0.6rem;
+    }
+    .glass-card-2 .gc2-stat {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+    }
+    .glass-card-2 .gc2-sub {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 0.2rem;
+    }
+
+    /* Pill tags */
+    .pill-group {
+      position: absolute;
+      top: 58%;
+      right: 8%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      animation: float 7s ease-in-out 1s infinite;
+    }
+    .pill {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+    .pill-icon {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.55rem;
+    }
+    .pill-icon.teal { background: rgba(0,106,97,0.7); }
+    .pill-icon.blue { background: rgba(37,99,235,0.7); }
+
+    /* Editorial copy */
+    .panel-left .editorial-copy {
+      position: relative;
+      z-index: 2;
+    }
+    .editorial-copy .tagline {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 1rem;
+    }
+    .editorial-copy h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #ffffff;
+      margin-bottom: 1.25rem;
+    }
+    .editorial-copy h1 em {
+      font-style: normal;
+      color: rgba(255,255,255,0.45);
+    }
+    .editorial-copy p {
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.55);
+      max-width: 340px;
+    }
+
+    /* ─── RIGHT PANEL — Login Form ─── */
+    .panel-right {
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 5rem 4rem 4.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle background blob */
+    .panel-right::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37,99,235,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 3.5rem;
+    }
+    .logo-mark {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-alt) 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 24px rgba(0,74,198,0.3);
+    }
+    .logo-mark svg { width: 18px; height: 18px; fill: none; stroke: white; stroke-width: 2; }
+    .logo-text {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--on-surface);
+      letter-spacing: -0.01em;
+    }
+    .logo-text span { color: var(--primary); }
+
+    /* Heading block */
+    .form-heading {
+      margin-bottom: 2.5rem;
+    }
+    .form-heading h2 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--on-surface);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .form-heading p {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      font-weight: 400;
+    }
+
+    /* Error messages from Django */
+    .messages-container {
+      margin-bottom: 1.5rem;
+    }
+    .msg-error {
+      background: rgba(220, 38, 38, 0.06);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: #dc2626;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .msg-error::before { content: '⚠'; font-size: 0.9rem; }
+
+    /* Form */
+    .login-form { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .field-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+
+    .field-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .field-icon {
+      position: absolute;
+      left: 1rem;
+      color: var(--on-surface-variant);
+      opacity: 0.5;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .field-icon svg { width: 16px; height: 16px; }
+
+    .form-input {
+      width: 100%;
+      background: var(--surface-container-highest);
+      border: none;
+      outline: none;
+      border-radius: 0.75rem;
+      padding: 0.875rem 1rem 0.875rem 2.75rem;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      color: var(--on-surface);
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder { color: rgba(68,71,90,0.4); }
+    .form-input:focus {
+      background: var(--primary-fixed);
+      box-shadow: 0 0 0 2px rgba(0,74,198,0.2);
+    }
+    .form-input:focus + .field-icon { opacity: 0.8; }
+
+    /* Password toggle */
+    .toggle-pw {
+      position: absolute;
+      right: 0.9rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.2rem;
+      color: var(--on-surface-variant);
+      opacity: 0.45;
+      transition: opacity 0.2s;
+      display: flex; align-items: center;
+    }
+    .toggle-pw:hover { opacity: 0.9; }
+    .toggle-pw svg { width: 16px; height: 16px; }
+
+    /* Remember / forgot row */
+    .form-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: -0.25rem;
+    }
+    .remember-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--on-surface-variant);
+      user-select: none;
+    }
+    .remember-check {
+      width: 16px; height: 16px;
+      accent-color: var(--primary);
+      border-radius: 4px;
+    }
+    .forgot-link {
+      font-size: 0.8rem;
+      color: var(--primary-alt);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    .forgot-link:hover { opacity: 0.7; }
+
+    /* Primary CTA */
+    .btn-primary {
+      margin-top: 0.5rem;
+      width: 100%;
+      padding: 0.9rem 1.5rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-alt) 100%);
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      border: none;
+      border-radius: 3rem;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+      box-shadow: 0 8px 28px rgba(0,74,198,0.28);
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 36px rgba(0,74,198,0.35);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary svg { width: 16px; height: 16px; }
+
+    /* Divider */
+    .divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .divider-line {
+      flex: 1; height: 1px;
+      background: var(--outline-variant);
+    }
+    .divider-text {
+      font-size: 0.72rem;
+      color: var(--on-surface-variant);
+      opacity: 0.6;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Role selector */
+    .role-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .role-btn {
+      background: var(--surface-container-high);
+      border: none;
+      border-radius: 0.875rem;
+      padding: 0.8rem 0.5rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .role-btn:hover { background: var(--surface-container-highest); }
+    .role-btn .rb-icon { font-size: 1.1rem; }
+    .role-btn .rb-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      font-family: var(--font-body);
+    }
+
+    /* Footer note */
+    .form-footer {
+      margin-top: 2rem;
+      font-size: 0.72rem;
+      color: var(--on-surface-variant);
+      opacity: 0.55;
+      text-align: center;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) translateX(-42%); }
+      50%       { transform: translateY(-14px) translateX(-42%); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(74,222,128,0.25); }
+      50%       { box-shadow: 0 0 0 6px rgba(74,222,128,0.1); }
+    }
+
+    /* Page entrance */
+    .panel-right > * {
+      animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .panel-right > *:nth-child(1) { animation-delay: 0.05s; }
+    .panel-right > *:nth-child(2) { animation-delay: 0.12s; }
+    .panel-right > *:nth-child(3) { animation-delay: 0.18s; }
+    .panel-right > *:nth-child(4) { animation-delay: 0.24s; }
+    .panel-right > *:nth-child(5) { animation-delay: 0.3s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 860px) {
+      body { grid-template-columns: 1fr; }
+      .panel-left { display: none; }
+      .panel-right { padding: 3rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════ LEFT PANEL ════════════ -->
+  <aside class="panel-left">
+    <div class="grid-texture"></div>
+
+    <!-- Floating card 1 — patient context -->
+    <div class="glass-card">
+      <div class="gc-label">Active Patient</div>
+      <div class="gc-name">Tan Ah Kow, 78</div>
+      <div class="gc-status">
+        <span class="pulse-dot"></span>
+        <span>Location confirmed · 3 min ago</span>
+      </div>
+    </div>
+
+    <!-- Floating card 2 — stat -->
+    <div class="glass-card-2">
+      <div class="gc2-label">Meds Dispensed</div>
+      <div class="gc2-stat">98<span style="font-size:1rem;opacity:0.5">%</span></div>
+      <div class="gc2-sub">Compliance · This week</div>
+    </div>
+
+    <!-- Pill tags -->
+    <div class="pill-group">
+      <div class="pill">
+        <span class="pill-icon teal">✦</span>
+        Facial Recognition Active
+      </div>
+      <div class="pill">
+        <span class="pill-icon blue">⬡</span>
+        GPS Monitoring On
+      </div>
+      <div class="pill">
+        <span class="pill-icon teal">♬</span>
+        Voice Companion Ready
+      </div>
+    </div>
+
+    <!-- Bottom editorial copy -->
+    <div class="editorial-copy">
+      <p class="tagline">Ama Care · Dementia Support Platform</p>
+      <h1>Care that<br/>remembers,<br/><em>even when<br/>memory fades.</em></h1>
+      <p>A unified platform combining secure dispensing, real-time location, and voice companionship for families living with dementia.</p>
+    </div>
+  </aside>
+
+  <!-- ════════════ RIGHT PANEL ════════════ -->
+  <main class="panel-right">
+
+    <!-- Logo -->
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 3.25 2.04 6.02 4.94 7.1L12 22l2.06-5.9C16.96 15.02 19 12.25 19 9c0-3.87-3.13-7-7-7z" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="9" r="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">Ama<span>Care</span></span>
+    </div>
+
+    <!-- Heading -->
+    <div class="form-heading">
+      <h2>Welcome back</h2>
+      <p>Sign in to your caregiver account to continue.</p>
+    </div>
+
+    <!-- Django messages (errors) -->
+    {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+        <div class="msg-error">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Login Form -->
+    <form class="login-form" method="POST" action="{% url 'login' %}">
+      {% csrf_token %}
+
+      <!-- Username -->
+      <div class="field-group">
+        <label class="field-label" for="id_username">Username</label>
+        <div class="field-wrap">
+          <input
+            class="form-input"
+            type="text"
+            id="id_username"
+            name="username"
+            placeholder="Enter your username"
+            autocomplete="username"
+            required
+            value="{{ form.username.value|default:'' }}"
+          />
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="field-group">
+        <label class="field-label" for="id_password">Password</label>
+        <div class="field-wrap">
+          <input
+            class="form-input"
+            type="password"
+            id="id_password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          />
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <button type="button" class="toggle-pw" onclick="togglePassword()" aria-label="Show password">
+            <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Meta row -->
+      <div class="form-meta">
+        <label class="remember-label">
+          <input class="remember-check" type="checkbox" name="remember_me" />
+          Keep me signed in
+        </label>
+        <a class="forgot-link" href="{% url 'password_reset' %}">Forgot password?</a>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn-primary" type="submit">
+        Sign in to Ama Care
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+    </form>
+
+    <!-- Footer note -->
+    <p class="form-footer">
+      Protected by Django Authentication &amp; Authorization.<br/>
+      Access restricted to authorised Ama Care personnel only.
+    </p>
+
+  </main>
+
+  <script>
+    function togglePassword() {
+      const input = document.getElementById('id_password');
+      const icon  = document.getElementById('eye-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.innerHTML = `
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="1" y1="1" x2="23" y2="23" stroke-linecap="round" stroke-linejoin="round"/>`;
+      } else {
+        input.type = 'password';
+        icon.innerHTML = `
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+      }
+    }
+  </script>
+
+</body>
+</html>

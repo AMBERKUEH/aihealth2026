@@ -6,12 +6,8 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -80,46 +76,40 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        h1,
-        h2,
-        h3 {
-            font-family: 'Manrope', sans-serif;
-        }
-
-        .glass-nav {
-            backdrop-filter: blur(12px);
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Modal Transitions */
-        .modal-overlay {
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-content {
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .hidden-modal {
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .glass-nav { backdrop-filter: blur(12px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .modal-overlay { transition: opacity 0.3s ease; }
+        .modal-content { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .hidden-modal { opacity: 0; pointer-events: none; }
+        .hidden-modal .modal-content { transform: scale(0.95) translateY(20px); }
+ 
+        /* Toast notification */
+        #toast {
+            position: fixed;
+            bottom: 6rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            z-index: 9999;
             opacity: 0;
+            transition: all 0.3s ease;
             pointer-events: none;
         }
-
-        .hidden-modal .modal-content {
-            transform: scale(0.95) translateY(20px);
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
     </style>
 </head>
 
 <body class="bg-surface text-on-surface min-h-screen">
+    <!-- Toast Notification -->
+    <div id="toast" class="px-6 py-3 rounded-2xl shadow-xl font-semibold text-sm text-white bg-on-surface flex items-center gap-2">
+        <span class="material-symbols-outlined text-base" id="toastIcon">check_circle</span>
+        <span id="toastMsg">Action completed.</span>
+    </div>
+    
     <!-- SideNavBar -->
     <aside
         class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface-container-low z-40 hidden md:flex flex-col gap-y-2 p-6 font-semibold">
@@ -161,354 +151,155 @@
         <div class="mt-auto pt-6">
             <div
                 class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
-                <img alt="Caregiver Profile" class="w-10 h-10 rounded-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBwbMlNMgrjU-kmjPHtMGBRoP_4BIoFvF1zKai9qMVjf1cwXvn0sKwfIEfMTqVtTu0M5bWVbNjrWpdyfEor4UkwdUGqPGFYyaZXI-1mBMgGTYvQqMq96x7lvSHC2CPnM1phPiKVcszRHxDMKJFW4v8Tqb_Yut_DC24OsQ3gWKMSNpkoOX41k11IYHQxKjQUOy0XfxD1kQeMVbSFwuIy7m5P-C_j8X_RFleHv5ws5WXzOfMuVC5fyNo2DrW32Z0c5gRc3iVXwNnsIrX" />
-                <div class="overflow-hidden">
-                    <p class="text-xs font-bold truncate">Dr. Sarah Chen</p>
-                    <p class="text-[10px] text-slate-500 truncate">Caregiver Portal</p>
-                </div>
+                {% if user.is_authenticated %}
+                    <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">person</span>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-xs font-bold truncate">{{ user.get_full_name|default:user.username }}</p>
+                        <p class="text-[10px] text-slate-500 truncate">Caregiver Portal</p>
+                    </div>
+                {% else %}
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-gray-500">person</span>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-xs font-bold truncate">Guest</p>
+                        <p class="text-[10px] text-slate-500 truncate">Not logged in</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </aside>
+
     <main class="md:ml-64 min-h-screen">
         <!-- TopNavBar -->
         <header
-            class="bg-surface/70 backdrop-blur-xl docked full-width top-0 sticky z-30 flex justify-between items-center w-full px-6 py-3 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)]">
+            class="bg-surface/70 backdrop-blur-xl top-0 sticky z-30 flex justify-between items-center w-full px-6 py-3 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)]">
             <div class="flex items-center gap-4">
                 <h1 class="text-2xl font-bold tracking-tight text-blue-700 font-manrope">Medication</h1>
             </div>
             <div class="flex items-center gap-4">
                 <button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full relative">
-                    <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+                    <span class="material-symbols-outlined">notifications</span>
                     <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
                 </button>
-                <button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full">
-                    <span class="material-symbols-outlined" data-icon="contrast">contrast</span>
+                <button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full"
+                    onclick="toggleDark()">
+                    <span class="material-symbols-outlined">contrast</span>
                 </button>
                 <button class="p-2 text-slate-500 hover:bg-blue-50/50 transition-colors rounded-full">
-                    <span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+                    <span class="material-symbols-outlined">account_circle</span>
                 </button>
             </div>
         </header>
+    
         <!-- Content Canvas -->
         <div class="p-6 md:p-8 space-y-8">
+    
             <!-- Header Action Row -->
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h2 class="text-3xl font-extrabold text-on-surface tracking-tight">Active Schedule</h2>
-                    <p class="text-on-surface-variant font-medium mt-1">Patient: Arthur Vance • Week of Oct 23</p>
+                    <p class="text-on-surface-variant font-medium mt-1" id="scheduleSubtitle">Patient: 
+                        {% if patient %}{{ patient.first_name }} {{ patient.last_name }}{% else %}No Patient Assigned{% endif %} &bull;
+                        Week of <span id="weekLabel"></span></p>
                 </div>
                 <button
                     class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity active:scale-95"
-                    onclick="toggleModal('medicationModal')">
-                    <span class="material-symbols-outlined text-xl" data-icon="add">add</span>
+                    onclick="openAddModal()">
+                    <span class="material-symbols-outlined text-xl">add</span>
                     <span>Add Medication</span>
                 </button>
             </div>
+    
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
                 <!-- Main Schedule Section -->
                 <div class="lg:col-span-9 space-y-6">
+    
                     <!-- Weekly Medication Grid -->
                     <div class="bg-surface-container-low rounded-3xl p-6 overflow-hidden">
                         <div class="overflow-x-auto no-scrollbar">
                             <div class="min-w-[800px]">
                                 <!-- Table Header: Days -->
-                                <div class="grid grid-cols-8 gap-4 mb-6">
+                                <div class="grid grid-cols-8 gap-4 mb-6" id="dayHeaders">
                                     <div class="col-span-1"></div>
-                                    <div class="text-center font-bold text-on-surface-variant text-sm">Mon</div>
-                                    <div class="text-center font-bold text-on-surface-variant text-sm">Tue</div>
-                                    <div class="text-center font-bold text-on-surface-variant text-sm">Wed</div>
-                                    <div class="text-center font-bold text-on-surface-variant text-sm">Thu</div>
-                                    <div class="text-center font-bold text-on-surface-variant text-sm">Fri</div>
-                                    <div class="text-center font-bold text-on-surface-variant text-sm">Sat</div>
-                                    <div class="text-center font-bold text-on-surface-variant text-sm">Sun</div>
+                                    <!-- JS fills these with correct dates -->
                                 </div>
-                                <!-- Rows for Morning, Afternoon, Evening -->
-                                <div class="space-y-4">
-                                    <!-- Morning -->
-                                    <div class="grid grid-cols-8 gap-4 items-center">
-                                        <div
-                                            class="flex items-center gap-2 text-blue-600 bg-blue-50/80 p-3 rounded-2xl">
-                                            <span class="material-symbols-outlined text-lg"
-                                                data-icon="light_mode">light_mode</span>
-                                            <span class="text-xs font-bold uppercase tracking-wider">Morning</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-                                            <span class="material-symbols-outlined text-secondary text-3xl"
-                                                data-icon="check_circle"
-                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                            <span
-                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-                                            <span class="material-symbols-outlined text-secondary text-3xl"
-                                                data-icon="check_circle"
-                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                            <span
-                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-                                            <span class="material-symbols-outlined text-secondary text-3xl"
-                                                data-icon="check_circle"
-                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                            <span
-                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30">
-                                            <span class="material-symbols-outlined text-primary text-3xl"
-                                                data-icon="schedule">schedule</span>
-                                            <span
-                                                class="text-[10px] mt-1 font-bold text-primary uppercase">Pending</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                    </div>
-                                    <!-- Noon -->
-                                    <div class="grid grid-cols-8 gap-4 items-center">
-                                        <div
-                                            class="flex items-center gap-2 text-tertiary-container bg-tertiary-fixed p-3 rounded-2xl">
-                                            <span class="material-symbols-outlined text-lg"
-                                                data-icon="wb_sunny">wb_sunny</span>
-                                            <span class="text-xs font-bold uppercase tracking-wider">Noon</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-                                            <span class="material-symbols-outlined text-secondary text-3xl"
-                                                data-icon="check_circle"
-                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                            <span
-                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-                                        </div>
-                                        <div
-                                            class="bg-error-container/30 h-24 rounded-2xl flex flex-col items-center justify-center border border-error/20">
-                                            <span class="material-symbols-outlined text-error text-3xl"
-                                                data-icon="cancel"
-                                                style="font-variation-settings: 'FILL' 1;">cancel</span>
-                                            <span class="text-[10px] mt-1 font-bold text-error uppercase">Missed</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-                                            <span class="material-symbols-outlined text-secondary text-3xl"
-                                                data-icon="check_circle"
-                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                            <span
-                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                    </div>
-                                    <!-- Evening -->
-                                    <div class="grid grid-cols-8 gap-4 items-center">
-                                        <div
-                                            class="flex items-center gap-2 text-primary-container bg-primary-fixed p-3 rounded-2xl">
-                                            <span class="material-symbols-outlined text-lg"
-                                                data-icon="dark_mode">dark_mode</span>
-                                            <span class="text-xs font-bold uppercase tracking-wider">Night</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-                                            <span class="material-symbols-outlined text-secondary text-3xl"
-                                                data-icon="check_circle"
-                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                            <span
-                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-                                            <span class="material-symbols-outlined text-secondary text-3xl"
-                                                data-icon="check_circle"
-                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                            <span
-                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10">
-                                            <span class="material-symbols-outlined text-secondary text-3xl"
-                                                data-icon="check_circle"
-                                                style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                            <span
-                                                class="text-[10px] mt-1 font-bold text-secondary uppercase">Taken</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                        <div
-                                            class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50">
-                                            <span class="material-symbols-outlined text-outline text-3xl"
-                                                data-icon="circle">circle</span>
-                                        </div>
-                                    </div>
+                                <!-- Rows for Morning, Noon, Night -->
+                                <div class="space-y-4" id="scheduleGrid">
+                                    <!-- JS renders rows -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Detailed Dose Log -->
+    
+                    <!-- Medication List -->
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
                             <h3 class="text-xl font-bold text-on-surface">Medication List &amp; Records</h3>
-                            <button class="text-primary font-bold text-sm hover:underline">View All History</button>
+                            <button class="text-primary font-bold text-sm hover:underline" onclick="openHistoryModal()">View
+                                All History</button>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Dose Item 1 -->
-                            <div
-                                class="group bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:border-primary/20 transition-all">
-                                <div class="flex items-center gap-4">
-                                    <div
-                                        class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                                        <span class="material-symbols-outlined" data-icon="pill">pill</span>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <h4 class="font-bold text-on-surface">Lisinopril 10mg</h4>
-                                            <span class="w-2 h-2 rounded-full bg-secondary"></span>
-                                        </div>
-                                        <p class="text-xs text-on-surface-variant font-medium">Daily • Morning • Start:
-                                            Oct 12</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <button
-                                        class="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
-                                        onclick="openEditModal('Lisinopril', '10mg')">
-                                        <span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
-                                    </button>
-                                    <button
-                                        class="p-2 text-slate-400 hover:text-error hover:bg-error/5 rounded-lg transition-colors"
-                                        onclick="openDeleteConfirmation('Lisinopril 10mg')">
-                                        <span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <!-- Dose Item 2 -->
-                            <div
-                                class="group bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:border-primary/20 transition-all">
-                                <div class="flex items-center gap-4">
-                                    <div
-                                        class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-tertiary-container">
-                                        <span class="material-symbols-outlined" data-icon="vaccines">vaccines</span>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <h4 class="font-bold text-on-surface">Metformin 500mg</h4>
-                                            <span class="w-2 h-2 rounded-full bg-secondary"></span>
-                                        </div>
-                                        <p class="text-xs text-on-surface-variant font-medium">Daily • Noon • Start: Oct
-                                            05</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <button
-                                        class="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
-                                        onclick="openEditModal('Metformin', '500mg')">
-                                        <span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
-                                    </button>
-                                    <button
-                                        class="p-2 text-slate-400 hover:text-error hover:bg-error/5 rounded-lg transition-colors"
-                                        onclick="openDeleteConfirmation('Metformin 500mg')">
-                                        <span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="medicationList">
+                            <!-- JS renders cards -->
                         </div>
                     </div>
                 </div>
-                <!-- Sidebar Refill & Inventory -->
+    
+                <!-- Sidebar -->
                 <div class="lg:col-span-3 space-y-6">
+    
                     <!-- Refill Reminders Card -->
                     <div class="bg-surface-container-highest/50 rounded-3xl p-6 border border-primary/5">
                         <div class="flex items-center gap-2 mb-6">
-                            <span class="material-symbols-outlined text-tertiary" data-icon="warning">warning</span>
+                            <span class="material-symbols-outlined text-tertiary">warning</span>
                             <h3 class="font-bold text-on-surface">Refill Needed</h3>
                         </div>
-                        <div class="space-y-4">
-                            <div
-                                class="bg-surface-container-lowest p-4 rounded-2xl border border-tertiary-container/10">
-                                <p class="text-sm font-bold text-on-surface">Atorvastatin</p>
-                                <p class="text-xs text-on-surface-variant mt-1">2 days left • 4 pills remaining</p>
-                                <button
-                                    class="mt-4 w-full bg-tertiary-container text-white text-xs font-bold py-2 rounded-xl hover:opacity-90 transition-opacity uppercase tracking-wider">Order
-                                    Now</button>
-                            </div>
-                            <div class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/20">
-                                <p class="text-sm font-bold text-on-surface">Omeprazole</p>
-                                <p class="text-xs text-on-surface-variant mt-1">5 days left • 10 pills remaining</p>
-                                <button
-                                    class="mt-4 w-full bg-surface-container-high text-on-surface-variant text-xs font-bold py-2 rounded-xl hover:bg-surface-container-highest transition-colors uppercase tracking-wider">Scheduled</button>
-                            </div>
+                        <div class="space-y-4" id="refillList">
+                            <!-- JS renders refill cards -->
                         </div>
+                        <p class="text-xs text-on-surface-variant mt-4 text-center hidden" id="noRefillMsg">All medications
+                            are sufficiently stocked.</p>
                     </div>
+    
                     <!-- Adherence Rate -->
                     <div
                         class="bg-gradient-to-br from-primary to-primary-container p-6 rounded-3xl text-white relative overflow-hidden">
                         <div class="relative z-10">
                             <p class="text-sm font-medium opacity-90">Adherence Rate</p>
-                            <h4 class="text-4xl font-extrabold mt-1">94%</h4>
+                            <h4 class="text-4xl font-extrabold mt-1" id="adherenceRate">--</h4>
                             <div class="mt-6 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-secondary-container"
-                                    data-icon="trending_up">trending_up</span>
-                                <span class="text-xs font-bold text-secondary-container uppercase">+2% from last
-                                    week</span>
+                                <span class="material-symbols-outlined text-secondary-container">trending_up</span>
+                                <span class="text-xs font-bold text-secondary-container uppercase"
+                                    id="adherenceNote">Calculating...</span>
                             </div>
                         </div>
                         <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
                     </div>
+    
                     <!-- Pharmacy Contact -->
                     <div class="bg-surface-container-low p-6 rounded-3xl">
                         <h4 class="font-bold text-on-surface text-sm mb-4">Pharmacy Contact</h4>
                         <div class="flex items-center gap-4">
-                            <img alt="Pharmacy" class="w-12 h-12 rounded-xl object-cover"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV3ZHhf9ptyqKJFWsOaWAsHoAE_OV-p5B3cpCJuooXumKR4g9GEgGY87NO92y0YCQfDCm2hwwHZHhCPvAf7HX1ZZeSjsk6NJeTgV8uKZsgNGv9sF95TNIdWvyOY6_E4sJIKwNypfKh7NRcDU8ldQqeK3F0pkseiKlV9SpGbm485G8IJB203qdHYNIGizMN2tdJffHr7hVpK37eUWEYkvulYQl22nV0vtcERE-9vulNSa0TnklvgmTBFndS_2MV2sTymR_nFoAFy7nV" />
-                            <div>
-                                <p class="text-xs font-bold text-on-surface">CareFirst Pharma</p>
-                                <p class="text-[10px] text-on-surface-variant">(555) 012-3456</p>
-                            </div>
+                            {% if patient and patient.pharmacy %}
+                                <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary">local_pharmacy</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-on-surface">{{ patient.pharmacy.name }}</p>
+                                    <p class="text-[10px] text-on-surface-variant">{{ patient.pharmacy.phone }}</p>
+                                </div>
+                            {% else %}
+                                <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-500">local_pharmacy</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-on-surface">No Pharmacy Linked</p>
+                                    <p class="text-[10px] text-on-surface-variant">Add in settings</p>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -516,28 +307,24 @@
         </div>
     </main>
     <!-- BottomNavBar (Mobile) -->
-    <nav
-        class="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 glass-nav z-50 px-6 py-4 flex justify-between items-center shadow-[0_-4px_24px_rgba(0,0,0,0.05)]">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 glass-nav z-50 px-6 py-4 flex justify-between items-center shadow-[0_-4px_24px_rgba(0,0,0,0.05)]">
         <button class="flex flex-col items-center gap-1 text-slate-500">
-            <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            <span class="material-symbols-outlined">dashboard</span>
             <span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
         </button>
         <button class="flex flex-col items-center gap-1 text-blue-600">
-            <span class="material-symbols-outlined" data-icon="medication"
-                style="font-variation-settings: 'FILL' 1;">medication</span>
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">medication</span>
             <span class="text-[10px] font-bold uppercase tracking-tighter">Meds</span>
         </button>
-        <button
-            class="bg-primary text-white p-3 rounded-full -mt-12 shadow-lg shadow-primary/30 border-4 border-surface"
-            onclick="toggleModal('medicationModal')">
-            <span class="material-symbols-outlined" data-icon="add">add</span>
+        <button class="bg-primary text-white p-3 rounded-full -mt-12 shadow-lg shadow-primary/30 border-4 border-surface" onclick="openAddModal()">
+            <span class="material-symbols-outlined">add</span>
         </button>
         <button class="flex flex-col items-center gap-1 text-slate-500">
-            <span class="material-symbols-outlined" data-icon="chat">chat</span>
+            <span class="material-symbols-outlined">chat</span>
             <span class="text-[10px] font-bold uppercase tracking-tighter">Chat</span>
         </button>
         <button class="flex flex-col items-center gap-1 text-slate-500">
-            <span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+            <span class="material-symbols-outlined">account_circle</span>
             <span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
         </button>
     </nav>
@@ -550,26 +337,29 @@
             <div class="px-8 py-6 flex items-center justify-between border-b border-outline-variant/10">
                 <h3 class="text-xl font-extrabold text-on-surface" id="modalTitle">Add Medication</h3>
                 <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500"
-                    onclick="toggleModal('medicationModal')">
-                    <span class="material-symbols-outlined" data-icon="close">close</span>
+                    onclick="closeModal('medicationModal')">
+                    <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <form class="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar" id="medicationForm"
-                onsubmit="handleFormSubmit(event)">
+            <div class="flex-1 overflow-y-auto p-8 space-y-6">
+                <input type="hidden" id="editingId" value="" />
+    
                 <!-- Med Name -->
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-on-surface-variant px-1" for="medName">Medication Name</label>
                     <input
                         class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 font-medium"
-                        id="medName" placeholder="e.g. Lisinopril" required="" type="text" />
+                        id="medName" placeholder="e.g. Lisinopril" type="text" />
                 </div>
+    
                 <!-- Dosage -->
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-on-surface-variant px-1" for="dosage">Dosage</label>
                     <input
                         class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 font-medium"
-                        id="dosage" placeholder="e.g. 10mg" required="" type="text" />
+                        id="dosage" placeholder="e.g. 10mg" type="text" />
                 </div>
+    
                 <!-- Frequency & Status Row -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-2">
@@ -577,16 +367,16 @@
                         <select
                             class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 font-medium appearance-none"
                             id="frequency">
-                            <option>Daily</option>
-                            <option>Weekly</option>
-                            <option>Every Other Day</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="every_other_day">Every Other Day</option>
                         </select>
                     </div>
                     <div class="space-y-2">
                         <label class="text-sm font-bold text-on-surface-variant px-1">Status</label>
                         <div class="flex items-center h-[48px]">
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input checked="" class="sr-only peer" type="checkbox" />
+                                <input id="isActive" checked class="sr-only peer" type="checkbox" />
                                 <div
                                     class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary">
                                 </div>
@@ -595,36 +385,55 @@
                         </div>
                     </div>
                 </div>
+    
+                <!-- Pills Inventory -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant px-1" for="totalPills">Total Pills</label>
+                        <input
+                            class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 font-medium"
+                            id="totalPills" placeholder="e.g. 30" type="number" min="0" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant px-1" for="pillsRemaining">Pills
+                            Remaining</label>
+                        <input
+                            class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 font-medium"
+                            id="pillsRemaining" placeholder="e.g. 28" type="number" min="0" />
+                    </div>
+                </div>
+    
                 <!-- Time Slots -->
                 <div class="space-y-2">
-                    <label class="text-sm font-bold text-on-surface-variant px-1">Scheduled Time Slots</label>
+                    <label class="text-sm font-bold text-on-surface-variant px-1">Scheduled Time Slots <span
+                            class="text-error">*</span></label>
                     <div class="grid grid-cols-3 gap-3">
                         <label
-                            class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&amp;:has(:checked)]:border-primary [&amp;:has(:checked)]:bg-primary/5">
-                            <input class="hidden peer" name="timeSlot" type="checkbox" />
-                            <span class="material-symbols-outlined text-slate-400 peer-checked:text-primary"
-                                data-icon="light_mode">light_mode</span>
+                            class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&:has(:checked)]:border-primary [&:has(:checked)]:bg-primary/5">
+                            <input class="hidden peer" id="slotMorning" name="timeSlot" type="checkbox" />
+                            <span
+                                class="material-symbols-outlined text-slate-400 peer-checked:text-primary">light_mode</span>
                             <span
                                 class="text-[10px] font-bold uppercase tracking-wider text-slate-500 peer-checked:text-primary">Morning</span>
                         </label>
                         <label
-                            class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&amp;:has(:checked)]:border-primary [&amp;:has(:checked)]:bg-primary/5">
-                            <input class="hidden peer" name="timeSlot" type="checkbox" />
-                            <span class="material-symbols-outlined text-slate-400 peer-checked:text-primary"
-                                data-icon="wb_sunny">wb_sunny</span>
+                            class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&:has(:checked)]:border-primary [&:has(:checked)]:bg-primary/5">
+                            <input class="hidden peer" id="slotNoon" name="timeSlot" type="checkbox" />
+                            <span class="material-symbols-outlined text-slate-400 peer-checked:text-primary">wb_sunny</span>
                             <span
                                 class="text-[10px] font-bold uppercase tracking-wider text-slate-500 peer-checked:text-primary">Noon</span>
                         </label>
                         <label
-                            class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&amp;:has(:checked)]:border-primary [&amp;:has(:checked)]:bg-primary/5">
-                            <input class="hidden peer" name="timeSlot" type="checkbox" />
-                            <span class="material-symbols-outlined text-slate-400 peer-checked:text-primary"
-                                data-icon="dark_mode">dark_mode</span>
+                            class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 border-outline-variant/10 cursor-pointer hover:border-primary/20 transition-all [&:has(:checked)]:border-primary [&:has(:checked)]:bg-primary/5">
+                            <input class="hidden peer" id="slotNight" name="timeSlot" type="checkbox" />
+                            <span
+                                class="material-symbols-outlined text-slate-400 peer-checked:text-primary">dark_mode</span>
                             <span
                                 class="text-[10px] font-bold uppercase tracking-wider text-slate-500 peer-checked:text-primary">Night</span>
                         </label>
                     </div>
                 </div>
+    
                 <!-- Date Range -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-2">
@@ -640,97 +449,773 @@
                             id="endDate" placeholder="Optional" type="date" />
                     </div>
                 </div>
+    
+                <!-- Notes -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-on-surface-variant px-1" for="medNotes">Notes (optional)</label>
+                    <textarea
+                        class="w-full bg-surface-container-low border-none rounded-2xl px-4 py-3 focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 font-medium resize-none"
+                        id="medNotes" rows="2" placeholder="e.g. Take with food"></textarea>
+                </div>
+    
                 <!-- Action Buttons -->
-                <div class="pt-6 flex gap-4">
+                <div class="pt-2 flex gap-4">
                     <button
                         class="flex-1 py-3 rounded-2xl font-bold text-on-surface-variant bg-surface-container-high hover:bg-surface-container-highest transition-colors"
-                        onclick="toggleModal('medicationModal')" type="button">Cancel</button>
+                        onclick="closeModal('medicationModal')" type="button">Cancel</button>
                     <button
                         class="flex-1 py-3 rounded-2xl font-bold text-white bg-primary shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all"
-                        type="submit">Save Medication</button>
+                        onclick="saveMedication()" type="button">Save Medication</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
+
     <!-- Delete Confirmation Modal -->
-    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 modal-overlay bg-black/40 backdrop-blur-sm hidden-modal"
-        id="deleteModal">
-        <div
-            class="bg-surface-container-lowest w-full max-w-sm rounded-[2rem] shadow-2xl p-8 modal-content text-center">
+    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 modal-overlay bg-black/40 backdrop-blur-sm hidden-modal" id="deleteModal">
+        <div class="bg-surface-container-lowest w-full max-w-sm rounded-[2rem] shadow-2xl p-8 modal-content text-center">
             <div class="w-16 h-16 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-6">
-                <span class="material-symbols-outlined text-3xl" data-icon="delete_forever">delete_forever</span>
+                <span class="material-symbols-outlined text-3xl">delete_forever</span>
             </div>
             <h3 class="text-xl font-extrabold text-on-surface mb-2">Delete Medication?</h3>
-            <p class="text-on-surface-variant text-sm mb-8">Are you sure you want to remove <span
-                    class="font-bold text-on-surface" id="deleteItemName">this medication</span> from Arthur's schedule?
-                This action cannot be undone.</p>
+            <p class="text-on-surface-variant text-sm mb-8">Are you sure you want to remove <span class="font-bold text-on-surface" id="deleteItemName">this medication</span> from the schedule? This action cannot be undone.</p>
             <div class="flex flex-col gap-3">
-                <button
-                    class="w-full py-3 rounded-2xl font-bold text-white bg-error shadow-lg shadow-error/20 hover:opacity-90 active:scale-[0.98] transition-all"
-                    onclick="confirmDelete()">Yes, Delete Medication</button>
-                <button
-                    class="w-full py-3 rounded-2xl font-bold text-on-surface-variant bg-surface-container-low hover:bg-surface-container-high transition-colors"
-                    onclick="toggleModal('deleteModal')">Go Back</button>
+                <button class="w-full py-3 rounded-2xl font-bold text-white bg-error shadow-lg shadow-error/20 hover:opacity-90 active:scale-[0.98] transition-all" onclick="confirmDelete()">Yes, Delete Medication</button>
+                <button class="w-full py-3 rounded-2xl font-bold text-on-surface-variant bg-surface-container-low hover:bg-surface-container-high transition-colors" onclick="closeModal('deleteModal')">Go Back</button>
             </div>
         </div>
     </div>
+
+    <!-- Dose Detail Modal -->
+    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay bg-black/40 backdrop-blur-sm hidden-modal" id="doseModal">
+        <div class="bg-surface-container-lowest w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden modal-content flex flex-col max-h-[85vh]">
+            <div class="px-8 py-6 flex items-center justify-between border-b border-outline-variant/10">
+                <div>
+                    <h3 class="text-xl font-extrabold text-on-surface" id="doseModalTitle">Morning Doses</h3>
+                    <p class="text-xs text-on-surface-variant mt-1" id="doseModalDate"></p>
+                </div>
+                <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500" onclick="closeModal('doseModal')">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-3" id="doseModalList">
+                <!-- JS fills this -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Email Alert Confirmation Modal -->
+    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 modal-overlay bg-black/40 backdrop-blur-sm hidden-modal" id="emailAlertModal">
+        <div class="bg-surface-container-lowest w-full max-w-sm rounded-[2rem] shadow-2xl p-8 modal-content text-center">
+            <div class="w-16 h-16 bg-blue-50 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-3xl">mail</span>
+            </div>
+            <h3 class="text-xl font-extrabold text-on-surface mb-2">Send Refill Alert</h3>
+            <p class="text-on-surface-variant text-sm mb-2">An email alert will be sent to the caregiver for:</p>
+            <p class="font-bold text-on-surface mb-6" id="alertMedName"></p>
+            <div class="bg-surface-container-low rounded-2xl p-4 mb-6 text-left">
+                <p class="text-xs text-on-surface-variant font-medium">To: <span class="text-on-surface font-bold">Caregiver Email</span></p>
+                <p class="text-xs text-on-surface-variant font-medium mt-1">Subject: <span class="text-on-surface font-semibold" id="alertSubject"></span></p>
+            </div>
+            <div class="flex flex-col gap-3">
+                <button class="w-full py-3 rounded-2xl font-bold text-white bg-primary shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all" onclick="confirmSendAlert()">Send Email Alert</button>
+                <button class="w-full py-3 rounded-2xl font-bold text-on-surface-variant bg-surface-container-low hover:bg-surface-container-high transition-colors" onclick="closeModal('emailAlertModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- History Modal -->
+    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 modal-overlay bg-black/40 backdrop-blur-sm hidden-modal" id="historyModal">
+        <div class="bg-surface-container-lowest w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden modal-content flex flex-col max-h-[85vh]">
+            <div class="px-8 py-6 flex items-center justify-between border-b border-outline-variant/10">
+                <h3 class="text-xl font-extrabold text-on-surface">Full Dose History</h3>
+                <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500" onclick="closeModal('historyModal')">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-3" id="historyList"></div>
+        </div>
+    </div>
+
     <script>
-        function toggleModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal.classList.contains('hidden-modal')) {
-                modal.classList.remove('hidden-modal');
-                document.body.style.overflow = 'hidden';
-            } else {
-                modal.classList.add('hidden-modal');
-                document.body.style.overflow = '';
-                // Reset form if it's the main modal
-                if (modalId === 'medicationModal') {
-                    setTimeout(() => {
-                        document.getElementById('medicationForm').reset();
-                        document.getElementById('modalTitle').innerText = 'Add Medication';
-                    }, 300);
+        // CSRF Token for API calls
+        const CSRF_TOKEN = '{{ csrf_token }}';
+        
+        // ============================================================
+        //  DATA - Injected by Django
+        // ============================================================
+        const medicationsFromDjango = {{ medications_json|default:'[]'|safe }};
+        const doseLogFromDjango     = {{ dose_log_json|default:'{}'|safe }};
+        
+        // ============================================================
+        //  STATE
+        // ============================================================
+        let medications = medicationsFromDjango.map(m => ({
+            id:                 m.id,
+            name:               m.name,
+            dosage:             m.dosage,
+            frequency:          m.frequency,
+            isActive:           m.is_active,
+            startDate:          m.start_date,
+            endDate:            m.end_date || '',
+            morning:            m.morning,
+            noon:               m.noon,
+            night:              m.night,
+            totalPills:         m.total_pills,
+            pillsRemaining:     m.pills_remaining,
+            lowStockThreshold:  m.low_stock_threshold,
+            notes:              m.notes || '',
+        }));
+        
+        let doseLog = { ...doseLogFromDjango };
+        let nextLocalId = -1;
+        let deleteTargetId = null;
+        let alertTargetId = null;
+
+        // ============================================================
+        //  CONSTANTS
+        // ============================================================
+        const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const SLOT_ICONS = { morning: 'light_mode', noon: 'wb_sunny', night: 'dark_mode' };
+        const SLOT_LABELS = { morning: 'Morning', noon: 'Noon', night: 'Night' };
+        const SLOT_COLORS = {
+            morning: 'text-blue-600 bg-blue-50/80',
+            noon: 'text-tertiary-container bg-tertiary-fixed',
+            night: 'text-primary-container bg-primary-fixed',
+        };
+
+        // ============================================================
+        //  HELPERS
+        // ============================================================
+        function getWeekDates() {
+            const today = new Date();
+            const diff = (today.getDay() === 0 ? -6 : 1 - today.getDay());
+            const mon = new Date(today);
+            mon.setDate(today.getDate() + diff);
+            return Array.from({ length: 7 }, (_, i) => {
+                const d = new Date(mon);
+                d.setDate(mon.getDate() + i);
+                return d;
+            });
+        }
+
+        function fmt(date) { return date.toISOString().split('T')[0]; }
+
+        function getDoseStatus(medId, dateStr, slot) {
+            const key = `${medId}_${dateStr}_${slot}`;
+            const today = fmt(new Date());
+            if (doseLog[key]) return doseLog[key];
+            if (dateStr < today) return 'missed';
+            if (dateStr === today) return 'pending';
+            return 'future';
+        }
+
+        function getCookie(name) {
+            for (const cookie of document.cookie.split(';')) {
+                const [k, v] = cookie.trim().split('=');
+                if (k === name) return decodeURIComponent(v);
+            }
+            return null;
+        }
+
+        async function apiFetch(url, method = 'GET', body = null) {
+            const opts = {
+                method,
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN || getCookie('csrftoken')
+                },
+            };
+            if (method !== 'GET' && body) {
+                opts.body = JSON.stringify(body);
+            }
+            const res = await fetch(url, opts);
+            return res.json();
+        }
+
+        // ============================================================
+        //  RENDER FUNCTIONS
+        // ============================================================
+        function renderAll() {
+            renderWeekHeaders();
+            renderScheduleGrid();
+            renderMedicationList();
+            renderRefillSidebar();
+            renderAdherence();
+        }
+
+        function renderWeekHeaders() {
+            const dates = getWeekDates();
+            const today = fmt(new Date());
+            const container = document.getElementById('dayHeaders');
+            container.innerHTML = '<div class="col-span-1"></div>';
+            dates.forEach((d, i) => {
+                const isToday = fmt(d) === today;
+                container.innerHTML += `
+                <div class="text-center">
+                    <div class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">${DAY_NAMES[i]}</div>
+                    <div class="text-sm font-extrabold mt-1 ${isToday ? 'text-primary' : 'text-on-surface-variant'}">${d.getDate()}</div>
+                    ${isToday ? '<div class="w-1.5 h-1.5 bg-primary rounded-full mx-auto mt-1"></div>' : ''}
+                </div>`;
+            });
+            const first = dates[0], last = dates[6];
+            const opts = { month: 'short', day: 'numeric' };
+            document.getElementById('weekLabel').textContent =
+                `${first.toLocaleDateString('en-US', opts)} - ${last.toLocaleDateString('en-US', opts)}`;
+        }
+
+        function renderScheduleGrid() {
+            const dates = getWeekDates();
+            const today = fmt(new Date());
+            const grid = document.getElementById('scheduleGrid');
+            grid.innerHTML = '';
+
+            ['morning', 'noon', 'night'].forEach(slot => {
+                const medsForSlot = medications.filter(m => m.isActive && m[slot]);
+                const row = document.createElement('div');
+                row.className = 'grid grid-cols-8 gap-4 items-center';
+
+                row.innerHTML = `
+                <div class="flex items-center gap-2 ${SLOT_COLORS[slot]} p-3 rounded-2xl">
+                    <span class="material-symbols-outlined text-lg">${SLOT_ICONS[slot]}</span>
+                    <span class="text-xs font-bold uppercase tracking-wider">${SLOT_LABELS[slot]}</span>
+                </div>`;
+
+                dates.forEach(d => {
+                    const dateStr = fmt(d);
+                    const isFuture = dateStr > today;
+                    const total = medsForSlot.length;
+
+                    if (total === 0) {
+                        row.innerHTML += `
+                        <div class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 ${isFuture ? 'opacity-50' : ''}">
+                            <span class="material-symbols-outlined text-outline text-3xl">circle</span>
+                        </div>`;
+                        return;
+                    }
+
+                    const statuses = medsForSlot.map(m => getDoseStatus(m.id, dateStr, slot));
+                    const takenCount = statuses.filter(s => s === 'taken').length;
+                    const missedAll = statuses.every(s => s === 'missed');
+                    const allTaken = takenCount === total;
+                    const hasPending = statuses.some(s => s === 'pending');
+
+                    const clickAttr = `onclick="openDoseModal('${slot}','${dateStr}')"`;
+
+                    if (isFuture) {
+                        row.innerHTML += `
+                        <button ${clickAttr} class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 opacity-50 w-full hover:opacity-70 transition-opacity">
+                            <span class="material-symbols-outlined text-outline text-2xl">circle</span>
+                            <span class="text-[9px] mt-1 font-bold text-outline uppercase">${total} med${total > 1 ? 's' : ''}</span>
+                        </button>`;
+                    } else if (allTaken) {
+                        row.innerHTML += `
+                        <button ${clickAttr} class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-secondary/10 w-full hover:border-secondary/30 transition-all">
+                            <span class="material-symbols-outlined text-secondary text-2xl" style="font-variation-settings:'FILL' 1;">check_circle</span>
+                            <span class="text-[9px] mt-1 font-bold text-secondary uppercase">All Taken</span>
+                        </button>`;
+                    } else if (missedAll) {
+                        row.innerHTML += `
+                        <button ${clickAttr} class="bg-error-container/30 h-24 rounded-2xl flex flex-col items-center justify-center border border-error/20 w-full hover:border-error/40 transition-all">
+                            <span class="material-symbols-outlined text-error text-2xl" style="font-variation-settings:'FILL' 1;">cancel</span>
+                            <span class="text-[9px] mt-1 font-bold text-error uppercase">Missed</span>
+                        </button>`;
+                    } else if (hasPending) {
+                        row.innerHTML += `
+                        <button ${clickAttr} class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/30 w-full hover:border-primary/30 transition-all">
+                            <span class="material-symbols-outlined text-primary text-2xl">schedule</span>
+                            <span class="text-[9px] mt-1 font-bold text-primary uppercase">${takenCount}/${total}</span>
+                        </button>`;
+                    } else {
+                        row.innerHTML += `
+                        <button ${clickAttr} class="bg-surface-container-lowest h-24 rounded-2xl flex flex-col items-center justify-center border border-outline-variant/20 w-full hover:border-primary/20 transition-all">
+                            <span class="material-symbols-outlined text-primary text-2xl">pending</span>
+                            <span class="text-[9px] mt-1 font-bold text-primary uppercase">${takenCount}/${total}</span>
+                        </button>`;
+                    }
+                });
+
+                grid.appendChild(row);
+            });
+        }
+
+        function renderMedicationList() {
+            const list = document.getElementById('medicationList');
+            const icons = ['pill', 'vaccines', 'medication_liquid', 'ecg_heart', 'science', 'monitor_heart'];
+            const bgs = ['bg-blue-50 text-blue-600', 'bg-orange-50 text-tertiary-container', 'bg-teal-50 text-secondary',
+                'bg-purple-50 text-purple-600', 'bg-green-50 text-green-600', 'bg-red-50 text-red-600'];
+            list.innerHTML = '';
+
+            if (medications.length === 0) {
+                list.innerHTML = `<div class="col-span-2 text-center py-12 text-on-surface-variant font-medium">No medications added yet.</div>`;
+                return;
+            }
+
+            medications.forEach((med, idx) => {
+                const slots = ['morning', 'noon', 'night'].filter(s => med[s]).map(s => SLOT_LABELS[s]).join(', ') || 'No slot set';
+                const icon = icons[idx % icons.length];
+                const bg = bgs[idx % bgs.length];
+                const isFinished = med.pillsRemaining === 0;
+                const isLow = med.pillsRemaining > 0 && med.pillsRemaining <= med.lowStockThreshold;
+
+                const badge = isFinished
+                    ? `<span class="text-[9px] px-2 py-0.5 rounded-full bg-error/10 text-error font-bold uppercase">Finished</span>`
+                    : isLow
+                        ? `<span class="text-[9px] px-2 py-0.5 rounded-full bg-tertiary-fixed text-tertiary-container font-bold uppercase">Low Stock</span>`
+                        : '';
+
+                list.innerHTML += `
+            <div class="group bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:border-primary/20 transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl ${bg} flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined">${icon}</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h4 class="font-bold text-on-surface">${med.name} ${med.dosage}</h4>
+                            <span class="w-2 h-2 rounded-full ${med.isActive ? 'bg-secondary' : 'bg-outline'}"></span>
+                            ${badge}
+                        </div>
+                        <p class="text-xs text-on-surface-variant font-medium">${med.frequency.replace('_', ' ')} &bull; ${slots} &bull; Start: ${med.startDate}</p>
+                        <p class="text-xs text-on-surface-variant mt-0.5">${med.pillsRemaining} pills remaining</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button class="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors" onclick="openEditModal(${med.id})">
+                        <span class="material-symbols-outlined text-xl">edit</span>
+                    </button>
+                    <button class="p-2 text-slate-400 hover:text-error hover:bg-error/5 rounded-lg transition-colors" onclick="openDeleteConfirmation(${med.id})">
+                        <span class="material-symbols-outlined text-xl">delete</span>
+                    </button>
+                </div>
+            </div>`;
+            });
+        }
+
+        function renderRefillSidebar() {
+            const list = document.getElementById('refillList');
+            const noMsg = document.getElementById('noRefillMsg');
+            list.innerHTML = '';
+
+            const refillMeds = medications.filter(m => m.isActive && m.pillsRemaining <= m.lowStockThreshold);
+            if (refillMeds.length === 0) { 
+                noMsg.classList.remove('hidden'); 
+                return; 
+            }
+            noMsg.classList.add('hidden');
+
+            refillMeds.forEach(med => {
+                const isFinished = med.pillsRemaining === 0;
+                const perDay = (med.morning ? 1 : 0) + (med.noon ? 1 : 0) + (med.night ? 1 : 0);
+                const daysLeft = perDay > 0 && !isFinished ? Math.floor(med.pillsRemaining / perDay) : 0;
+
+                list.innerHTML += `
+            <div class="bg-surface-container-lowest p-4 rounded-2xl border ${isFinished ? 'border-error/20 bg-error-container/10' : 'border-tertiary-container/10'}">
+                <p class="text-sm font-bold text-on-surface">${med.name} ${med.dosage}</p>
+                <p class="text-xs text-on-surface-variant mt-1">
+                    ${isFinished ? 'Medication finished - 0 pills' : `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left &bull; ${med.pillsRemaining} pills remaining`}
+                </p>
+                <button onclick="openEmailAlert(${med.id})"
+                    class="mt-4 w-full ${isFinished ? 'bg-error' : 'bg-tertiary-container'} text-white text-xs font-bold py-2 rounded-xl hover:opacity-90 transition-opacity uppercase tracking-wider">
+                    ${isFinished ? 'Alert Finished' : 'Alert Caregiver'}
+                </button>
+            </div>`;
+            });
+        }
+
+        function renderAdherence() {
+            const dates = getWeekDates();
+            const today = fmt(new Date());
+            let total = 0, taken = 0;
+
+            medications.filter(m => m.isActive).forEach(med => {
+                ['morning', 'noon', 'night'].forEach(slot => {
+                    if (!med[slot]) return;
+                    dates.forEach(d => {
+                        const ds = fmt(d);
+                        if (ds > today) return;
+                        total++;
+                        if (getDoseStatus(med.id, ds, slot) === 'taken') taken++;
+                    });
+                });
+            });
+
+            const rate = total > 0 ? Math.round((taken / total) * 100) : 0;
+            document.getElementById('adherenceRate').textContent = rate + '%';
+            document.getElementById('adherenceNote').textContent = `${taken} of ${total} doses this week`;
+        }
+
+        // ============================================================
+        //  MODAL HELPERS
+        // ============================================================
+        function openModal(id) { 
+            document.getElementById(id).classList.remove('hidden-modal'); 
+            document.body.style.overflow = 'hidden'; 
+        }
+        
+        function closeModal(id) { 
+            document.getElementById(id).classList.add('hidden-modal'); 
+            document.body.style.overflow = ''; 
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(o => {
+            o.addEventListener('click', e => { 
+                if (e.target === o) closeModal(o.id); 
+            });
+        });
+
+        // ============================================================
+        //  ADD / EDIT MEDICATION
+        // ============================================================
+        function clearForm() {
+            ['editingId', 'medName', 'dosage', 'totalPills', 'pillsRemaining', 'medNotes', 'endDate'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            const frequencyEl = document.getElementById('frequency');
+            if (frequencyEl) frequencyEl.value = 'daily';
+            
+            const isActiveEl = document.getElementById('isActive');
+            if (isActiveEl) isActiveEl.checked = true;
+            
+            const morningEl = document.getElementById('slotMorning');
+            const noonEl = document.getElementById('slotNoon');
+            const nightEl = document.getElementById('slotNight');
+            if (morningEl) morningEl.checked = false;
+            if (noonEl) noonEl.checked = false;
+            if (nightEl) nightEl.checked = false;
+            
+            const startDateEl = document.getElementById('startDate');
+            if (startDateEl) startDateEl.value = fmt(new Date());
+        }
+
+        function openAddModal() {
+            clearForm();
+            const modalTitle = document.getElementById('modalTitle');
+            if (modalTitle) modalTitle.textContent = 'Add Medication';
+            openModal('medicationModal');
+        }
+
+        function openEditModal(id) {
+            const med = medications.find(m => m.id === id);
+            if (!med) return;
+            clearForm();
+            const modalTitle = document.getElementById('modalTitle');
+            if (modalTitle) modalTitle.textContent = 'Edit Medication';
+            
+            const editingId = document.getElementById('editingId');
+            const medName = document.getElementById('medName');
+            const dosage = document.getElementById('dosage');
+            const frequency = document.getElementById('frequency');
+            const isActive = document.getElementById('isActive');
+            const totalPills = document.getElementById('totalPills');
+            const pillsRemaining = document.getElementById('pillsRemaining');
+            const slotMorning = document.getElementById('slotMorning');
+            const slotNoon = document.getElementById('slotNoon');
+            const slotNight = document.getElementById('slotNight');
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+            const medNotes = document.getElementById('medNotes');
+            
+            if (editingId) editingId.value = id;
+            if (medName) medName.value = med.name;
+            if (dosage) dosage.value = med.dosage;
+            if (frequency) frequency.value = med.frequency;
+            if (isActive) isActive.checked = med.isActive;
+            if (totalPills) totalPills.value = med.totalPills;
+            if (pillsRemaining) pillsRemaining.value = med.pillsRemaining;
+            if (slotMorning) slotMorning.checked = med.morning;
+            if (slotNoon) slotNoon.checked = med.noon;
+            if (slotNight) slotNight.checked = med.night;
+            if (startDate) startDate.value = med.startDate;
+            if (endDate) endDate.value = med.endDate || '';
+            if (medNotes) medNotes.value = med.notes || '';
+            
+            openModal('medicationModal');
+        }
+
+        async function saveMedication() {
+            const name = document.getElementById('medName')?.value.trim();
+            const dosage = document.getElementById('dosage')?.value.trim();
+            const morning = document.getElementById('slotMorning')?.checked || false;
+            const noon = document.getElementById('slotNoon')?.checked || false;
+            const night = document.getElementById('slotNight')?.checked || false;
+
+            if (!name) { showToast('Please enter the medication name.', 'error'); return; }
+            if (!dosage) { showToast('Please enter the dosage.', 'error'); return; }
+            if (!morning && !noon && !night) { showToast('Please select at least one time slot.', 'error'); return; }
+
+            const editId = document.getElementById('editingId')?.value;
+            const payload = {
+                id: editId ? parseInt(editId) : null,
+                name: name,
+                dosage: dosage,
+                frequency: document.getElementById('frequency')?.value || 'daily',
+                isActive: document.getElementById('isActive')?.checked || true,
+                morning: morning,
+                noon: noon,
+                night: night,
+                totalPills: parseInt(document.getElementById('totalPills')?.value) || 0,
+                pillsRemaining: parseInt(document.getElementById('pillsRemaining')?.value) || 0,
+                lowStockThreshold: 5,
+                startDate: document.getElementById('startDate')?.value || fmt(new Date()),
+                endDate: document.getElementById('endDate')?.value || '',
+                notes: document.getElementById('medNotes')?.value.trim() || '',
+            };
+
+            try {
+                const result = await apiFetch('/api/save-medication/', 'POST', payload);
+                if (!result.success) { 
+                    showToast(result.error || 'Failed to save.', 'error'); 
+                    return; 
                 }
+
+                if (editId) {
+                    const idx = medications.findIndex(m => m.id === parseInt(editId));
+                    if (idx !== -1) medications[idx] = { ...medications[idx], ...payload, id: parseInt(editId) };
+                    showToast('Medication updated successfully.');
+                } else {
+                    medications.push({ ...payload, id: result.id });
+                    showToast('Medication added successfully.');
+                }
+                
+                closeModal('medicationModal');
+                renderAll();
+            } catch (error) {
+                console.error('Save error:', error);
+                if (editId) {
+                    const idx = medications.findIndex(m => m.id === parseInt(editId));
+                    if (idx !== -1) medications[idx] = { ...medications[idx], ...payload };
+                } else {
+                    medications.push({ ...payload, id: nextLocalId-- });
+                }
+                showToast(editId ? 'Medication updated locally.' : 'Medication added locally.');
+                closeModal('medicationModal');
+                renderAll();
             }
         }
 
-        function openEditModal(name, dose) {
-            document.getElementById('modalTitle').innerText = 'Edit Medication';
-            document.getElementById('medName').value = name;
-            document.getElementById('dosage').value = dose;
-            // Pre-checking some checkboxes for demo
-            const checkboxes = document.querySelectorAll('#medicationForm input[type="checkbox"]');
-            if (checkboxes.length > 0) checkboxes[0].checked = true;
-
-            toggleModal('medicationModal');
+        // ============================================================
+        //  DELETE
+        // ============================================================
+        function openDeleteConfirmation(id) {
+            const med = medications.find(m => m.id === id);
+            if (!med) return;
+            deleteTargetId = id;
+            const deleteItemName = document.getElementById('deleteItemName');
+            if (deleteItemName) deleteItemName.textContent = `${med.name} ${med.dosage}`;
+            openModal('deleteModal');
         }
 
-        function openDeleteConfirmation(name) {
-            document.getElementById('deleteItemName').innerText = name;
-            toggleModal('deleteModal');
+        async function confirmDelete() {
+            if (deleteTargetId === null) return;
+            try {
+                await apiFetch('/api/delete-medication/', 'POST', { medication_id: deleteTargetId });
+            } catch (error) {
+                console.error('Delete error:', error);
+            }
+
+            medications = medications.filter(m => m.id !== deleteTargetId);
+            deleteTargetId = null;
+            closeModal('deleteModal');
+            renderAll();
+            showToast('Medication removed from schedule.');
         }
 
-        function confirmDelete() {
-            // Logic for deletion would go here
-            alert('Medication deleted successfully');
-            toggleModal('deleteModal');
-        }
+        // ============================================================
+        //  DOSE DETAIL MODAL
+        // ============================================================
+        function openDoseModal(slot, dateStr) {
+            const medsForSlot = medications.filter(m => m.isActive && m[slot]);
+            const today = fmt(new Date());
+            const dateObj = new Date(dateStr + 'T00:00:00');
 
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            // Form validation is handled by 'required' attribute
-            // Logic for saving would go here
-            alert('Changes saved successfully');
-            toggleModal('medicationModal');
-        }
+            const doseModalTitle = document.getElementById('doseModalTitle');
+            const doseModalDate = document.getElementById('doseModalDate');
+            if (doseModalTitle) doseModalTitle.textContent = SLOT_LABELS[slot] + ' Doses';
+            if (doseModalDate) doseModalDate.textContent = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-        // Close on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    toggleModal(overlay.id);
+            const container = document.getElementById('doseModalList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (medsForSlot.length === 0) {
+                container.innerHTML = '<p class="text-center text-on-surface-variant py-8">No medications scheduled for this slot.</p>';
+                openModal('doseModal');
+                return;
+            }
+
+            medsForSlot.forEach(med => {
+                const status = getDoseStatus(med.id, dateStr, slot);
+                const isPast = dateStr <= today;
+                let statusUI = '', actions = '';
+
+                if (status === 'taken') {
+                    statusUI = `<span class="flex items-center gap-1 text-secondary text-xs font-bold"><span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1;">check_circle</span> Taken</span>`;
+                    if (isPast) actions = `<button onclick="markDose(${med.id},'${dateStr}','${slot}','missed')" class="text-xs text-error font-bold hover:underline">Mark Missed</button>`;
+                } else if (status === 'missed') {
+                    statusUI = `<span class="flex items-center gap-1 text-error text-xs font-bold"><span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1;">cancel</span> Missed</span>`;
+                    if (isPast) actions = `<button onclick="markDose(${med.id},'${dateStr}','${slot}','taken')" class="text-xs text-primary font-bold hover:underline">Mark Taken</button>`;
+                } else if (status === 'pending') {
+                    statusUI = `<span class="flex items-center gap-1 text-primary text-xs font-bold"><span class="material-symbols-outlined text-base">schedule</span> Pending</span>`;
+                    actions = `
+                    <button onclick="markDose(${med.id},'${dateStr}','${slot}','taken')" class="text-xs bg-secondary text-white font-bold px-3 py-1 rounded-xl hover:opacity-90">Taken</button>
+                    <button onclick="markDose(${med.id},'${dateStr}','${slot}','missed')" class="text-xs bg-error/10 text-error font-bold px-3 py-1 rounded-xl hover:opacity-90">Missed</button>`;
+                } else {
+                    statusUI = `<span class="text-xs text-outline font-medium">Scheduled</span>`;
                 }
+
+                container.innerHTML += `
+            <div class="bg-surface-container-low rounded-2xl p-4 flex items-center justify-between gap-4" id="doseRow_${med.id}">
+                <div>
+                    <p class="font-bold text-on-surface text-sm">${med.name} ${med.dosage}</p>
+                    <div class="mt-1">${statusUI}</div>
+                </div>
+                <div class="flex items-center gap-2">${actions}</div>
+            </div>`;
             });
-        });
+
+            openModal('doseModal');
+        }
+
+        async function markDose(medId, dateStr, slot, newStatus) {
+            const key = `${medId}_${dateStr}_${slot}`;
+            const prevStatus = doseLog[key] || (dateStr < fmt(new Date()) ? 'missed' : 'pending');
+
+            doseLog[key] = newStatus;
+
+            const med = medications.find(m => m.id === medId);
+            if (med) {
+                if (newStatus === 'taken' && prevStatus !== 'taken' && med.pillsRemaining > 0) {
+                    med.pillsRemaining--;
+                } else if (prevStatus === 'taken' && newStatus !== 'taken') {
+                    med.pillsRemaining++;
+                }
+            }
+
+            try {
+                const result = await apiFetch('/api/update-dose/', 'POST', {
+                    medication_id: medId, 
+                    date: dateStr, 
+                    time_slot: slot, 
+                    status: newStatus,
+                });
+                if (result.pills_remaining !== undefined && med) {
+                    med.pillsRemaining = result.pills_remaining;
+                }
+                showToast(`Dose marked as ${newStatus}`, 'success');
+            } catch (error) {
+                console.error('Update dose error:', error);
+                showToast(`Dose marked as ${newStatus} locally`, 'success');
+            }
+
+            closeModal('doseModal');
+            renderAll();
+            setTimeout(() => openDoseModal(slot, dateStr), 60);
+        }
+
+        // ============================================================
+        //  EMAIL ALERTS
+        // ============================================================
+        function openEmailAlert(id) {
+            const med = medications.find(m => m.id === id);
+            if (!med) return;
+            alertTargetId = id;
+            const alertMedName = document.getElementById('alertMedName');
+            const alertSubject = document.getElementById('alertSubject');
+            if (alertMedName) alertMedName.textContent = `${med.name} ${med.dosage}`;
+            if (alertSubject) alertSubject.textContent = `[AmaCare] Medication ${med.pillsRemaining === 0 ? 'Finished' : 'Low Stock'}: ${med.name}`;
+            openModal('emailAlertModal');
+        }
+
+        async function confirmSendAlert() {
+            try {
+                await apiFetch('/api/send-refill-alert/', 'POST', { medication_id: alertTargetId });
+                showToast('Email alert sent to caregiver.', 'success');
+            } catch (error) {
+                console.error('Send alert error:', error);
+                showToast('Alert logged (email would be sent in production).', 'success');
+            }
+            closeModal('emailAlertModal');
+            alertTargetId = null;
+        }
+
+        // ============================================================
+        //  HISTORY MODAL
+        // ============================================================
+        function openHistoryModal() {
+            const container = document.getElementById('historyList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const entries = [];
+            medications.forEach(med => {
+                ['morning', 'noon', 'night'].forEach(slot => {
+                    if (!med[slot]) return;
+                    getWeekDates().forEach(d => {
+                        const ds = fmt(d);
+                        const status = getDoseStatus(med.id, ds, slot);
+                        entries.push({ date: ds, med, slot, status });
+                    });
+                });
+            });
+
+            entries.sort((a, b) => b.date.localeCompare(a.date));
+
+            if (entries.length === 0) {
+                container.innerHTML = '<p class="text-center text-on-surface-variant py-8">No history yet.</p>';
+                openModal('historyModal');
+                return;
+            }
+
+            const cfg = {
+                taken: { icon: 'check_circle', fill: true, cls: 'text-secondary' },
+                missed: { icon: 'cancel', fill: true, cls: 'text-error' },
+                pending: { icon: 'schedule', fill: false, cls: 'text-primary' },
+                future: { icon: 'circle', fill: false, cls: 'text-outline opacity-50' },
+            };
+
+            entries.forEach(e => {
+                const c = cfg[e.status] || cfg.future;
+                const label = new Date(e.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                container.innerHTML += `
+            <div class="flex items-center gap-4 py-3 border-b border-outline-variant/10 last:border-none">
+                <span class="material-symbols-outlined ${c.cls}" style="${c.fill ? "font-variation-settings:'FILL' 1;" : ''}">${c.icon}</span>
+                <div class="flex-1">
+                    <p class="font-bold text-on-surface text-sm">${e.med.name} ${e.med.dosage}</p>
+                    <p class="text-xs text-on-surface-variant">${label} &bull; ${SLOT_LABELS[e.slot]}</p>
+                </div>
+                <span class="text-xs font-bold capitalize ${c.cls}">${e.status}</span>
+            </div>`;
+            });
+
+            openModal('historyModal');
+        }
+
+        // ============================================================
+        //  TOAST
+        // ============================================================
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMsg = document.getElementById('toastMsg');
+            if (!toast || !toastIcon || !toastMsg) return;
+            
+            toastMsg.textContent = msg;
+            toastIcon.textContent = type === 'error' ? 'error' : 'check_circle';
+            toast.className = `px-6 py-3 rounded-2xl shadow-xl font-semibold text-sm text-white flex items-center gap-2 ${type === 'error' ? 'bg-error' : 'bg-on-surface'}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function toggleDark() { 
+            document.documentElement.classList.toggle('dark'); 
+        }
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        renderAll();
     </script>
 </body>
 

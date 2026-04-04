@@ -128,14 +128,24 @@
       </a>
     </nav>
     <div class="mt-auto pt-6">
-      <div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-2xl">
-        <img alt="Caregiver Profile" class="w-10 h-10 rounded-full object-cover"
-          data-alt="professional female caregiver with a warm smile in a clean medical setting, soft natural lighting"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWNqAebTDIjX3byTe1ARoSUSOHrP8hX9HvCI0lv8oAkVabfxM6BxomrCt6Vmn5p2Cc3tvHPSKyctGeh3EPxLpeeZPDEbt6QdSBiPjQ5fUwWLOgK8VtcXySxBX-ccwvQtg4RbQk-0Dz0PcFj0xeXYBQoFvxYAGxwfhZRy8jGKzx3WH5tq81yIC-La2sgC3XP7bwzUAAuuc5T7JagmAHBHmo0821TytrcXQlaqcUN9ecWnMPA-bg6aQDlSW2NUajvctYPJK6YCgOzr4n" />
-        <div class="overflow-hidden">
-          <p class="text-xs font-bold truncate">Sarah Jenkins</p>
-          <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Primary Caregiver</p>
+      <div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
+        {% if user.is_authenticated %}
+        <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary">person</span>
         </div>
+        <div class="overflow-hidden">
+          <p class="text-xs font-bold truncate">{{ user.get_full_name|default:user.username }}</p>
+          <p class="text-[10px] text-slate-500 truncate">Caregiver Portal</p>
+        </div>
+        {% else %}
+        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+          <span class="material-symbols-outlined text-gray-500">person</span>
+        </div>
+        <div class="overflow-hidden">
+          <p class="text-xs font-bold truncate">Guest</p>
+          <p class="text-[10px] text-slate-500 truncate">Not logged in</p>
+        </div>
+        {% endif %}
       </div>
     </div>
   </aside>

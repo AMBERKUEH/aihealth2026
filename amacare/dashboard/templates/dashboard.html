@@ -158,13 +158,39 @@
       </a>
     </nav>
     <div class="mt-auto pt-6">
-      <div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl">
-        <img alt="Caregiver Profile" class="w-10 h-10 rounded-full object-cover"
-          data-alt="professional female doctor with stethoscope in modern clinic setting, warm natural lighting, soft focus background"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBU3Zyi_V3j3SRoQvew7Rv_DpTk0KG9s30_yffxLwagmmkF9ES7T-xjy_jyh3IjUot86Jqv6ZtswGWRuok1OXChiTSHZWweG5WRcR8gzN4l4NHuU3TbMs4fszSA9DnmckQvFcB6D6C9ea6Vcu92WoBtPOnAXU4ufeiTaqPPtjIRqO7BoGe_KbCY0GawyotSRJ3ArwiZi2NiQoaoA51WnoH73Hj2ctz4trx2R3t7XQrnIfSUPJrz8O8Nf0GXGkrbCDCIDo68vlowC5X" />
-        <div class="overflow-hidden">
-          <p class="text-xs font-bold truncate">Dr. Sarah Chen</p>
-          <p class="text-[10px] text-slate-500 truncate">Caregiver Portal</p>
+      <div class="flex flex-col gap-3">
+        <!-- User Profile Section -->
+        <div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
+          {% if user.is_authenticated %}
+          <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary">person</span>
+          </div>
+          <div class="overflow-hidden flex-1">
+            <p class="text-xs font-bold truncate">{{ user.get_full_name|default:user.username }}</p>
+            <p class="text-[10px] text-slate-500 truncate">Caregiver Portal</p>
+          </div>
+          <!-- Logout Button -->
+          <form method="post" action="{% url 'logout' %}" class="m-0 p-0">
+            {% csrf_token %}
+            <button type="submit" class="p-2 text-slate-400 hover:text-error hover:bg-error/5 rounded-lg transition-colors"
+              title="Logout">
+              <span class="material-symbols-outlined text-lg">logout</span>
+            </button>
+          </form>
+          {% else %}
+          <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+            <span class="material-symbols-outlined text-gray-500">person</span>
+          </div>
+          <div class="overflow-hidden flex-1">
+            <p class="text-xs font-bold truncate">Guest</p>
+            <p class="text-[10px] text-slate-500 truncate">Not logged in</p>
+          </div>
+          <!-- Login Button -->
+          <a href="{% url 'admin:login' %}" class="p-2 text-primary hover:bg-primary/5 rounded-lg transition-colors"
+            title="Login">
+            <span class="material-symbols-outlined text-lg">login</span>
+          </a>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -190,6 +216,7 @@
         </button>
       </div>
     </header>
+
     <!-- Dashboard Canvas -->
     <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
       <!-- Bento Hero Section -->
