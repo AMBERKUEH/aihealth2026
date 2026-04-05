@@ -1,18 +1,13 @@
+<!-- settings_page.html -->
 <!DOCTYPE html>
-
 <html class="light" lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>AmaCare Settings</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -78,75 +73,40 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .font-manrope {
-            font-family: 'Manrope', sans-serif;
-        }
-
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Modal states */
-        #patient-modal,
-        #robot-modal {
-            display: none;
-        }
-
-        #patient-modal.active,
-        #robot-modal.active {
-            display: flex;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 
 <body class="bg-surface text-on-surface selection:bg-primary-fixed">
-    <!-- SideNavBar (Authority: JSON) -->
-    <aside
-        class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface dark:bg-surface-dim z-40 hidden md:flex flex-col gap-y-2 p-6 font-manrope text-sm font-semibold">
+
+    <!-- SideNavBar -->
+    <aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface dark:bg-surface-dim z-40 hidden md:flex flex-col gap-y-2 p-6 font-manrope text-sm font-semibold">
         <div class="text-xl font-extrabold text-blue-700 dark:text-blue-400 mb-8">AmaCare</div>
         <nav class="flex-grow space-y-1">
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all"
-                href="{% url 'dashboard' %}">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span>Dashboard</span>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="{% url 'dashboard' %}">
+                <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all"
-                href="{% url 'location' %}">
-                <span class="material-symbols-outlined">location_on</span>
-                <span>Location</span>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="{% url 'location' %}">
+                <span class="material-symbols-outlined">location_on</span><span>Location</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all"
-                href="{% url 'medication' %}">
-                <span class="material-symbols-outlined">medication</span>
-                <span>Medication</span>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="{% url 'medication' %}">
+                <span class="material-symbols-outlined">medication</span><span>Medication</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all"
-                href="{% url 'chat' %}">
-                <span class="material-symbols-outlined">chat</span>
-                <span>Chat History</span>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="{% url 'chat' %}">
+                <span class="material-symbols-outlined">chat</span><span>Chat History</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all"
-                href="{% url 'mood' %}">
-                <span class="material-symbols-outlined">psychology</span>
-                <span>Mood &amp; Wellbeing</span>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="{% url 'mood' %}">
+                <span class="material-symbols-outlined">psychology</span><span>Mood &amp; Wellbeing</span>
             </a>
-            <a class="flex items-center gap-3 px-4 py-3 text-blue-700 dark:text-blue-300 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl"
-                href="{% url 'settings' %}">
-                <span class="material-symbols-outlined">settings</span>
-                <span>Settings</span>
+            <a class="flex items-center gap-3 px-4 py-3 text-blue-700 dark:text-blue-300 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl" href="{% url 'settings' %}">
+                <span class="material-symbols-outlined">settings</span><span>Settings</span>
             </a>
         </nav>
         <div class="mt-auto pt-6">
-            <div
-                class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
+            <div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant/10">
                 {% if user.is_authenticated %}
                     <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                         <span class="material-symbols-outlined text-primary">person</span>
@@ -167,402 +127,377 @@
             </div>
         </div>
     </aside>
+
     <!-- Main Canvas -->
     <main class="md:ml-64 min-h-screen">
-        <!-- TopNavBar (Authority: JSON) -->
-        <header
-            class="bg-surface/70 dark:bg-surface-dim/70 backdrop-blur-xl docked full-width top-0 sticky z-50 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)] flex justify-between items-center w-full px-6 py-3">
+
+        <!-- TopNavBar -->
+        <header class="bg-surface/70 dark:bg-surface-dim/70 backdrop-blur-xl top-0 sticky z-50 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)] flex justify-between items-center w-full px-6 py-3">
             <div class="flex items-center gap-4">
-                <button class="md:hidden text-on-surface">
-                    <span class="material-symbols-outlined">menu</span>
-                </button>
-                <h1 class="text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-400 font-manrope">Settings
-                </h1>
+                <button class="md:hidden text-on-surface"><span class="material-symbols-outlined">menu</span></button>
+                <h1 class="text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-400 font-manrope">Settings</h1>
             </div>
             <div class="flex items-center gap-2">
-                <button
-                    class="p-2 text-slate-500 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors rounded-full">
+                <button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors rounded-full">
                     <span class="material-symbols-outlined">notifications</span>
                 </button>
-                <button
-                    class="p-2 text-slate-500 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors rounded-full">
+                <button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors rounded-full">
                     <span class="material-symbols-outlined">contrast</span>
                 </button>
-                <button
-                    class="p-2 text-slate-500 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors rounded-full">
+                <button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors rounded-full">
                     <span class="material-symbols-outlined">account_circle</span>
                 </button>
             </div>
         </header>
+
         <!-- Content Area -->
         <div class="p-6 md:p-10 max-w-7xl mx-auto space-y-10">
-            <!-- Bento Layout Sections -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- User Profile & Theme Toggle (Col 1-5) -->
-                <div class="lg:col-span-5 space-y-8">
-                    <!-- Profile Card (Patient/Caregiver Mixed context) -->
-                    <section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
-                        <div class="flex items-center justify-between mb-8">
-                            <div class="flex items-center gap-6">
-                                <div class="relative">
-                                    <img alt="Dr. Sarah Jenkins profile"
-                                        class="w-24 h-24 rounded-2xl object-cover ring-4 ring-primary-fixed/30"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4_Wq79na2ddPuym98siTQACwcmauJN8CsvFHG-llrXk9E3BjZVRCK4upcs3xfO6GO0Wx5eu6sYnOjRVgimzrJVMQoTGwIelDxvgW9ICHixRfi3LpHeGLX6NR7xggHAJVEKLgSxxP6dhRGvagqPfRCXRxyCQvjfXVeh1tNQy-bItPunAvsz_7Yt8BxIIX5Am9GLIGgas1hN7Ma_5D8CtLPM4I1o-RwTIRbxP_Hk3NEYl-jN5zVQ7Ho3yfn75TX9075UVYPqjDtUzId" />
-                                </div>
-                                <div>
-                                    <h2 class="text-xl font-bold font-manrope text-on-surface">Dr. Sarah Jenkins</h2>
-                                    <p class="text-sm text-on-surface-variant">Primary Health Caregiver</p>
-                                </div>
+
+            <!-- ═══════════════════════════════════════════════════
+                 SECTION 1: CAREGIVER PROFILE
+            ════════════════════════════════════════════════════ -->
+            <div>
+                <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-4 px-1">Caregiver Account</p>
+                <form id="caregiver-form" method="post" action="{% url 'update_caregiver' %}">
+                    {% csrf_token %}
+                    <section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+
+                        <!-- Profile Header -->
+                        <div class="p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 border-b border-surface-container">
+                            <div class="relative">
+                                <img alt="Caregiver profile photo"
+                                    class="w-20 h-20 rounded-2xl object-cover ring-4 ring-primary-fixed/30"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4_Wq79na2ddPuym98siTQACwcmauJN8CsvFHG-llrXk9E3BjZVRCK4upcs3xfO6GO0Wx5eu6sYnOjRVgimzrJVMQoTGwIelDxvgW9ICHixRfi3LpHeGLX6NR7xggHAJVEKLgSxxP6dhRGvagqPfRCXRxyCQvjfXVeh1tNQy-bItPunAvsz_7Yt8BxIIX5Am9GLIGgas1hN7Ma_5D8CtLPM4I1o-RwTIRbxP_Hk3NEYl-jN5zVQ7Ho3yfn75TX9075UVYPqjDtUzId" />
+                                <button type="button" class="absolute -bottom-2 -right-2 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                                    <span class="material-symbols-outlined text-white text-[14px]">photo_camera</span>
+                                </button>
                             </div>
-                            <button
-                                class="bg-primary/10 text-primary px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-primary/20 transition-colors"
-                                onclick="document.getElementById('patient-modal').classList.add('active')">
-                                <span class="material-symbols-outlined text-[18px]">person_edit</span> Edit Patient
-                            </button>
+                            <div class="flex-1">
+                                <h2 class="text-xl font-bold font-manrope text-on-surface" id="caregiver-name-display">Loading...</h2>
+                                <p class="text-sm text-on-surface-variant mt-0.5">Primary Health Caregiver</p>
+                            </div>
+                            <span class="text-[10px] font-extrabold text-secondary bg-secondary/10 px-3 py-1.5 rounded-full uppercase tracking-widest">Active</span>
                         </div>
-                        <div class="space-y-4">
-                            <div class="space-y-1">
-                                <label
-                                    class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Assigned
-                                    Patient</label>
-                                <div
-                                    class="w-full bg-surface-container px-4 py-3 text-sm rounded-lg flex items-center gap-3">
-                                    <span class="material-symbols-outlined text-primary text-sm">elderly</span>
-                                    <span class="font-medium">Arthur Miller (82) - Alzheimer's</span>
-                                </div>
-                            </div>
-                            <div class="space-y-1">
-                                <label
-                                    class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Account
-                                    Email</label>
-                                <div class="w-full bg-surface-container px-4 py-3 text-sm rounded-lg">
-                                    sarah.jenkins@AmaCare.health</div>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- Theme Toggle Card -->
-                    <section
-                        class="bg-primary/5 dark:bg-primary-container/20 rounded-xl p-6 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary-container/20 p-3 rounded-full">
-                                <span class="material-symbols-outlined text-primary">dark_mode</span>
-                            </div>
-                            <div>
-                                <p class="font-manrope font-bold text-on-surface">Visual Mode</p>
-                                <p class="text-xs text-on-surface-variant">Switch between light and dark</p>
-                            </div>
-                        </div>
-                        <button
-                            class="w-14 h-8 bg-surface-container-highest rounded-full p-1 flex items-center shadow-inner relative transition-colors duration-300">
-                            <div
-                                class="w-6 h-6 bg-primary rounded-full shadow-md flex items-center justify-center transform translate-x-0">
-                                <span class="material-symbols-outlined text-[14px] text-white">light_mode</span>
-                            </div>
-                        </button>
-                    </section>
-                    <!-- Robot Connection -->
-                    <section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-lg font-bold font-manrope">Robot Connection</h3>
-                            <div class="flex items-center gap-1 text-secondary font-semibold text-xs">
-                                <span class="material-symbols-outlined text-sm">signal_cellular_alt</span>
-                                Excellent
-                            </div>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="space-y-1">
-                                <label
-                                    class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Active
-                                    Device IP</label>
-                                <div class="flex gap-2">
-                                    <input
-                                        class="flex-grow bg-surface-container-highest border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20"
-                                        readonly="" type="text" value="192.168.1.104" />
-                                    <button
-                                        class="px-4 py-3 bg-primary text-on-primary rounded-lg font-bold text-sm hover:opacity-90 transition-opacity"
-                                        onclick="document.getElementById('robot-modal').classList.add('active')">
-                                        Configure
-                                    </button>
-                                </div>
-                            </div>
-                            <div
-                                class="p-4 bg-secondary/5 rounded-lg border border-secondary/10 flex items-center gap-3">
-                                <span class="material-symbols-outlined text-secondary"
-                                    style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                <span class="text-xs text-secondary-container font-medium">Device 'CL-Echo-4' is
-                                    currently active and synced.</span>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-                <!-- Main Configuration (Col 6-12) -->
-                <div class="lg:col-span-7 space-y-8">
-                    <!-- Safe Zones (Map Snippet) -->
-                    <section class="bg-surface-container-lowest rounded-xl p-1 overflow-hidden shadow-sm">
-                        <div class="p-7">
-                            <h3 class="text-lg font-bold font-manrope mb-1">Safe Zones</h3>
-                            <p class="text-sm text-on-surface-variant mb-6">Define the radius for automatic proximity
-                                alerts.</p>
-                            <div class="relative h-64 rounded-xl overflow-hidden mb-6">
-                                <img alt="Satellite map of residential area"
-                                    class="w-full h-full object-cover grayscale-[0.5] contrast-[1.1]"
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_u2U7iFQFjb0mXa9uIYUqzudA3TRLUntPA6DQWruqqX6LW2aiKhbm7zrz4dMzbRJk7v1NjfxCKnTCivWhEat8pS6oz9H5COBv6q-Eg0zXPq_P-rgWg5Qah_y-FblUdWfYml8iWxJCjSXi3qiyTJyzxNNsoAieGryrbbI5QAenXsXjbVS25oPuok7CPGgzDcyiCcnYKbhz20ILZlfCaEfmjjNRiy99yeRBvUHYuFxb7dkjy6m6E2rTk1RArTrg6C21vFg8KiJD6UjR" />
-                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                    <div
-                                        class="w-32 h-32 rounded-full border-2 border-primary/40 bg-primary/10 backdrop-blur-[1px] animate-pulse">
-                                    </div>
-                                    <div class="w-2 h-2 bg-primary rounded-full ring-4 ring-white"></div>
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                <div class="flex justify-between items-center text-sm font-semibold">
-                                    <span class="text-on-surface-variant">Detection Radius</span>
-                                    <span class="text-primary font-manrope">250m</span>
-                                </div>
-                                <input
-                                    class="w-full h-2 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary"
-                                    max="500" min="50" type="range" value="250" />
-                                <div
-                                    class="flex justify-between text-[10px] text-outline font-bold uppercase tracking-widest">
-                                    <span>50m</span>
-                                    <span>500m</span>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- Medication Schedule -->
-                    <section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
-                        <div class="flex items-center justify-between mb-8">
-                            <div>
-                                <h3 class="text-lg font-bold font-manrope">Medication Schedule</h3>
-                                <p class="text-sm text-on-surface-variant">Manage daily dosage and timing alerts.</p>
-                            </div>
-                            <button
-                                class="bg-surface-container-high text-primary px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/5 transition-colors">
-                                <span class="material-symbols-outlined text-sm">add</span> Add New
-                            </button>
-                        </div>
-                        <div class="space-y-3">
-                            <!-- Med Item -->
-                            <div
-                                class="group flex items-center justify-between p-4 bg-surface rounded-xl border border-transparent hover:border-primary/20 transition-all">
-                                <div class="flex items-center gap-4">
-                                    <div
-                                        class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-primary">
-                                        <span class="material-symbols-outlined">medication</span>
-                                    </div>
-                                    <div>
-                                        <p class="font-bold text-on-surface">Lisinopril</p>
-                                        <p class="text-xs text-on-surface-variant">10mg • 08:00 AM</p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button class="p-2 text-on-surface-variant hover:text-primary"><span
-                                            class="material-symbols-outlined text-sm">edit</span></button>
-                                    <button class="p-2 text-on-surface-variant hover:text-error"><span
-                                            class="material-symbols-outlined text-sm">delete</span></button>
-                                </div>
-                            </div>
-                            <!-- Med Item -->
-                            <div
-                                class="group flex items-center justify-between p-4 bg-surface rounded-xl border border-transparent hover:border-primary/20 transition-all">
-                                <div class="flex items-center gap-4">
-                                    <div
-                                        class="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-secondary">
-                                        <span class="material-symbols-outlined">pill</span>
-                                    </div>
-                                    <div>
-                                        <p class="font-bold text-on-surface">Metformin</p>
-                                        <p class="text-xs text-on-surface-variant">500mg • 01:00 PM, 08:00 PM</p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button class="p-2 text-on-surface-variant hover:text-primary"><span
-                                            class="material-symbols-outlined text-sm">edit</span></button>
-                                    <button class="p-2 text-on-surface-variant hover:text-error"><span
-                                            class="material-symbols-outlined text-sm">delete</span></button>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- Notification Preferences -->
-                    <section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
-                        <h3 class="text-lg font-bold font-manrope mb-6">Notification Channels</h3>
-                        <div class="overflow-x-auto">
+
+                        <!-- Caregiver Fields Table — no Action column -->
+                        <div class="p-8">
                             <table class="w-full">
                                 <thead>
                                     <tr class="text-left border-b border-surface-container">
-                                        <th
-                                            class="pb-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-                                            Alert Type</th>
-                                        <th
-                                            class="pb-4 text-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-                                            App</th>
-                                        <th
-                                            class="pb-4 text-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-                                            SMS</th>
-                                        <th
-                                            class="pb-4 text-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">
-                                            Email</th>
+                                        <th class="pb-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest w-1/3">Field</th>
+                                        <th class="pb-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest">Current Value</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-surface-container">
                                     <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">Full Name</td>
                                         <td class="py-4">
-                                            <p class="font-semibold text-sm">Distress Signal</p>
-                                            <p class="text-[10px] text-on-surface-variant">Immediate panic button
-                                                triggers</p>
-                                        </td>
-                                        <td class="py-4 text-center">
-                                            <div class="inline-flex items-center">
-                                                <input checked=""
-                                                    class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-                                                    type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td class="py-4 text-center">
-                                            <div class="inline-flex items-center">
-                                                <input checked=""
-                                                    class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-                                                    type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td class="py-4 text-center">
-                                            <div class="inline-flex items-center">
-                                                <input
-                                                    class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-                                                    type="checkbox" />
-                                            </div>
+                                            <input name="full_name" id="caregiver-full-name"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20"
+                                                type="text" value="" />
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">Email Address</td>
                                         <td class="py-4">
-                                            <p class="font-semibold text-sm">Missed Medication</p>
-                                            <p class="text-[10px] text-on-surface-variant">30min delay after schedule
-                                            </p>
+                                            <input name="email" id="caregiver-email"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20"
+                                                type="email" value="" />
                                         </td>
-                                        <td class="py-4 text-center"><input checked=""
-                                                class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-                                                type="checkbox" /></td>
-                                        <td class="py-4 text-center"><input
-                                                class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-                                                type="checkbox" /></td>
-                                        <td class="py-4 text-center"><input checked=""
-                                                class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-                                                type="checkbox" /></td>
                                     </tr>
                                     <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">Phone Number</td>
                                         <td class="py-4">
-                                            <p class="font-semibold text-sm">Safe Zone Exit</p>
-                                            <p class="text-[10px] text-on-surface-variant">Patient leaves defined
-                                                perimeter</p>
+                                            <input name="phone" id="caregiver-phone"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20"
+                                                type="tel" value="" />
                                         </td>
-                                        <td class="py-4 text-center"><input checked=""
-                                                class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-                                                type="checkbox" /></td>
-                                        <td class="py-4 text-center"><input checked=""
-                                                class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-                                                type="checkbox" /></td>
-                                        <td class="py-4 text-center"><input
-                                                class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
-                                                type="checkbox" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">New Password</td>
+                                        <td class="py-4">
+                                            <input name="password" id="caregiver-password"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20"
+                                                type="password" placeholder="Leave blank to keep current password" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">Username</td>
+                                        <td class="py-4">
+                                            <div class="px-4 py-2.5 text-sm text-on-surface-variant bg-surface-container rounded-lg flex items-center justify-between">
+                                                <span id="caregiver-username">-</span>
+                                                <span class="text-[10px] text-outline uppercase tracking-widest font-bold">Fixed</span>
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <!-- Single save button for caregiver form -->
+                            <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-surface-container">
+                                <button type="button" onclick="loadSettingsData()"
+                                    class="px-6 py-2.5 bg-surface-container-highest text-on-surface-variant rounded-full font-bold text-sm transition-all hover:bg-outline-variant/30">
+                                    Discard
+                                </button>
+                                <button type="submit"
+                                    class="px-8 py-2.5 bg-gradient-to-br from-primary to-primary-container text-white rounded-full font-bold text-sm shadow-md shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px]">save</span>
+                                    Save Caregiver Info
+                                </button>
+                            </div>
                         </div>
                     </section>
+                </form>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════
+                 SECTION 2: PATIENT (ELDERLY) PROFILE
+            ════════════════════════════════════════════════════ -->
+            <div>
+                <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-4 px-1">Patient Profile</p>
+                <form id="patient-form" method="post" action="{% url 'update_patient' %}">
+                    {% csrf_token %}
+                    <section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+
+                        <!-- Patient Header -->
+                        <div class="p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 border-b border-surface-container bg-secondary/5">
+                            <div class="w-20 h-20 rounded-2xl bg-secondary/10 flex items-center justify-center ring-4 ring-secondary/10 flex-shrink-0">
+                                <span class="material-symbols-outlined text-secondary" style="font-size: 2.5rem;">elderly</span>
+                            </div>
+                            <div class="flex-1">
+                                <h2 class="text-xl font-bold font-manrope text-on-surface" id="patient-name-display">Loading...</h2>
+                                <p class="text-sm text-on-surface-variant mt-0.5" id="patient-diagnosis-display">-</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Patient Since</p>
+                                <p class="text-sm font-bold text-on-surface" id="patient-since-display">-</p>
+                            </div>
+                        </div>
+
+                        <!-- Patient Fields Table — no Action column -->
+                        <div class="p-8">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left border-b border-surface-container">
+                                        <th class="pb-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest w-1/3">Field</th>
+                                        <th class="pb-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest">Current Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-surface-container">
+                                    <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">First Name</td>
+                                        <td class="py-4">
+                                            <input name="first_name" id="patient-first-name"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-secondary/30"
+                                                type="text" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">Last Name</td>
+                                        <td class="py-4">
+                                            <input name="last_name" id="patient-last-name"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-secondary/30"
+                                                type="text" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">Date of Birth</td>
+                                        <td class="py-4">
+                                            <input name="date_of_birth" id="patient-dob"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-secondary/30"
+                                                type="date" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">Primary Diagnosis</td>
+                                        <td class="py-4">
+                                            <select name="diagnosis" id="patient-diagnosis-select"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-secondary/30">
+                                                <option value="Alzheimer's Disease">Alzheimer's Disease</option>
+                                                <option value="Dementia">Dementia</option>
+                                                <option value="Parkinson's Disease">Parkinson's Disease</option>
+                                                <option value="Post-Op Care">Post-Op Care</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-4 text-sm font-semibold text-on-surface-variant">Emergency Contact</td>
+                                        <td class="py-4">
+                                            <input name="emergency_contact" id="patient-emergency-contact"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-secondary/30"
+                                                type="tel" placeholder="Emergency contact number" value="" />
+                                        </td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td class="py-4 align-top text-sm font-semibold text-on-surface-variant pt-5">Medical Notes</td>
+                                        <td class="py-4">
+                                            <textarea name="medical_notes" id="patient-medical-notes"
+                                                class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-secondary/30 resize-none"
+                                                rows="3"
+                                                placeholder="Additional diagnosis details, known allergies, or clinical notes..."></textarea>
+                                        </td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+
+                            <!-- Single save button for patient form -->
+                            <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-surface-container">
+                                <button type="button" onclick="loadSettingsData()"
+                                    class="px-6 py-2.5 bg-surface-container-highest text-on-surface-variant rounded-full font-bold text-sm transition-all hover:bg-outline-variant/30">
+                                    Discard
+                                </button>
+                                <button type="submit"
+                                    class="px-8 py-2.5 bg-gradient-to-br from-secondary to-on-secondary-container text-white rounded-full font-bold text-sm shadow-md shadow-secondary/20 transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px]">save</span>
+                                    Save Patient Info
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════
+                 SECTION 3: SYSTEM SETTINGS
+                 (Robot + Visual Mode + Notifications — no Safe Zone)
+            ════════════════════════════════════════════════════ -->
+            <div>
+                <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-4 px-1">System Configuration</p>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                    <!-- Left Col: Robot Connection + Visual Mode -->
+                    <div class="lg:col-span-5 space-y-8">
+
+                        <!-- Robot Connection -->
+                        <section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-lg font-bold font-manrope">Robot Connection</h3>
+                                <div class="flex items-center gap-1 text-secondary font-semibold text-xs">
+                                    <span class="material-symbols-outlined text-sm">signal_cellular_alt</span>
+                                    Excellent
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-on-surface-variant px-1 uppercase tracking-wider">Active Device IP</label>
+                                    <div class="flex gap-2">
+                                        <input class="flex-grow bg-surface-container-highest border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20" type="text" value="192.168.1.104" />
+                                        <button type="button" class="px-4 py-3 bg-primary text-on-primary rounded-lg font-bold text-sm hover:opacity-90 transition-opacity"
+                                            onclick="document.getElementById('robot-modal').style.display='flex'">
+                                            Configure
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-secondary/5 rounded-lg border border-secondary/10 flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                    <span class="text-xs text-secondary-container font-medium">Device 'CL-Echo-4' is currently active and synced.</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Visual Mode -->
+                        <section class="bg-primary/5 dark:bg-primary-container/20 rounded-xl p-6 flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-primary-container/20 p-3 rounded-full">
+                                    <span class="material-symbols-outlined text-primary">dark_mode</span>
+                                </div>
+                                <div>
+                                    <p class="font-manrope font-bold text-on-surface">Visual Mode</p>
+                                    <p class="text-xs text-on-surface-variant">Switch between light and dark</p>
+                                </div>
+                            </div>
+                            <button id="theme-toggle" type="button" onclick="toggleTheme()"
+                                class="w-14 h-8 bg-surface-container-highest rounded-full p-1 flex items-center shadow-inner relative transition-colors duration-300">
+                                <div id="theme-knob" class="w-6 h-6 bg-primary rounded-full shadow-md flex items-center justify-center transform translate-x-0 transition-transform duration-300">
+                                    <span id="theme-icon" class="material-symbols-outlined text-[14px] text-white">light_mode</span>
+                                </div>
+                            </button>
+                        </section>
+
+                    </div>
+
+                    <!-- Right Col: Notification Channels only -->
+                    <div class="lg:col-span-7">
+                        <section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm h-full">
+                            <h3 class="text-lg font-bold font-manrope mb-6">Notification Channels</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="text-left border-b border-surface-container">
+                                            <th class="pb-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest">Alert Type</th>
+                                            <th class="pb-4 text-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">App</th>
+                                            <th class="pb-4 text-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">SMS</th>
+                                            <th class="pb-4 text-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-surface-container">
+                                        <tr>
+                                            <td class="py-4">
+                                                <p class="font-semibold text-sm">Distress Signal</p>
+                                                <p class="text-[10px] text-on-surface-variant">Immediate panic button triggers</p>
+                                            </td>
+                                            <td class="py-4 text-center"><input checked class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                            <td class="py-4 text-center"><input checked class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                            <td class="py-4 text-center"><input class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-4">
+                                                <p class="font-semibold text-sm">Missed Medication</p>
+                                                <p class="text-[10px] text-on-surface-variant">30min delay after schedule</p>
+                                            </td>
+                                            <td class="py-4 text-center"><input checked class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                            <td class="py-4 text-center"><input class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                            <td class="py-4 text-center"><input checked class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-4">
+                                                <p class="font-semibold text-sm">Safe Zone Exit</p>
+                                                <p class="text-[10px] text-on-surface-variant">Patient leaves defined perimeter</p>
+                                            </td>
+                                            <td class="py-4 text-center"><input checked class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                            <td class="py-4 text-center"><input checked class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                            <td class="py-4 text-center"><input class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-4">
+                                                <p class="font-semibold text-sm">Low Battery (Robot)</p>
+                                                <p class="text-[10px] text-on-surface-variant">Below threshold alert</p>
+                                            </td>
+                                            <td class="py-4 text-center"><input checked class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                            <td class="py-4 text-center"><input class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                            <td class="py-4 text-center"><input class="w-5 h-5 rounded-md border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    </div>
+
                 </div>
             </div>
-            <!-- Global Actions -->
-            <div class="flex justify-end gap-4 pb-10">
-                <button
-                    class="px-8 py-3 bg-surface-container-highest text-on-surface-variant rounded-full font-bold transition-all hover:bg-outline-variant/30">
-                    Discard Changes
-                </button>
-                <button
-                    class="px-10 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-full font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95"
-                    onclick="showSuccessToast()">
-                    Save Configuration
-                </button>
-            </div>
+
+            <!-- Bottom spacer -->
+            <div class="pb-10"></div>
+
         </div>
     </main>
-    <!-- Patient Settings Modal -->
-    <div class="fixed inset-0 z-[60] bg-on-background/40 backdrop-blur-sm items-center justify-center p-4"
-        id="patient-modal">
-        <div class="bg-surface-container-lowest rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
-            <div class="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-primary/5">
-                <h3 class="text-xl font-bold font-manrope">Edit Patient Profile</h3>
-                <button class="p-2 hover:bg-surface-container rounded-full"
-                    onclick="document.getElementById('patient-modal').classList.remove('active')">
-                    <span class="material-symbols-outlined text-on-surface-variant">close</span>
-                </button>
-            </div>
-            <form class="p-8 space-y-5" id="patient-form"
-                onsubmit="event.preventDefault(); document.getElementById('patient-modal').classList.remove('active'); showSuccessToast();">
-                <div class="space-y-1">
-                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Patient Full
-                        Name</label>
-                    <input
-                        class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
-                        required="" type="text" value="Arthur Miller" />
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Age</label>
-                        <input
-                            class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
-                            required="" type="number" value="82" />
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Primary
-                            Condition</label>
-                        <select
-                            class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary">
-                            <option selected="">Alzheimer's</option>
-                            <option>Dementia</option>
-                            <option>Parkinson's</option>
-                            <option>Post-Op Care</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Emergency
-                        Contact</label>
-                    <input
-                        class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
-                        required="" type="tel" value="+1 (555) 012-3456" />
-                </div>
-                <div class="pt-4 flex gap-3">
-                    <button class="flex-1 py-3 border border-outline-variant rounded-xl font-bold text-sm"
-                        onclick="document.getElementById('patient-modal').classList.remove('active')"
-                        type="button">Cancel</button>
-                    <button
-                        class="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-primary/20"
-                        type="submit">Update Profile</button>
-                </div>
-            </form>
-        </div>
-    </div>
+
     <!-- Robot Configuration Modal -->
-    <div class="fixed inset-0 z-[60] bg-on-background/40 backdrop-blur-sm items-center justify-center p-4"
-        id="robot-modal">
+    <div class="fixed inset-0 z-[60] bg-on-background/40 backdrop-blur-sm items-center justify-center p-4" id="robot-modal" style="display:none;">
         <div class="bg-surface-container-lowest rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
             <div class="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-secondary/5">
                 <h3 class="text-xl font-bold font-manrope">Robot Configuration</h3>
-                <button class="p-2 hover:bg-surface-container rounded-full"
-                    onclick="document.getElementById('robot-modal').classList.remove('active')">
+                <button type="button" class="p-2 hover:bg-surface-container rounded-full"
+                    onclick="document.getElementById('robot-modal').style.display='none'">
                     <span class="material-symbols-outlined text-on-surface-variant">close</span>
                 </button>
             </div>
-            <form class="p-8 space-y-6" id="robot-form"
-                onsubmit="event.preventDefault(); document.getElementById('robot-modal').classList.remove('active'); showSuccessToast();">
+            <form class="p-8 space-y-6"
+                onsubmit="event.preventDefault(); document.getElementById('robot-modal').style.display='none'; showSuccessToast();">
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Device
-                        Name</label>
-                    <input
-                        class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-secondary"
-                        required="" type="text" value="CL-Echo-4" />
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Device Name</label>
+                    <input class="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-secondary" type="text" value="CL-Echo-4" />
                 </div>
                 <div class="p-4 bg-surface-container rounded-xl flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -572,42 +507,34 @@
                             <p class="text-secondary">Signal Strength: -45dBm</p>
                         </div>
                     </div>
-                    <span
-                        class="text-[10px] font-extrabold text-secondary bg-secondary/10 px-2 py-1 rounded">CONNECTED</span>
+                    <span class="text-[10px] font-extrabold text-secondary bg-secondary/10 px-2 py-1 rounded">CONNECTED</span>
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
-                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Low Battery
-                            Alert</label>
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Low Battery Alert</label>
                         <span class="text-sm font-bold text-secondary">20%</span>
                     </div>
-                    <input
-                        class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer accent-secondary"
-                        max="50" min="5" type="range" value="20" />
+                    <input class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer accent-secondary" max="50" min="5" type="range" value="20" />
                 </div>
                 <div class="flex items-center justify-between p-4 border border-outline-variant/20 rounded-xl">
                     <div>
-                        <p class="font-bold text-sm">Maintenance mode</p>
-                        <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Disables navigation for
-                            testing</p>
+                        <p class="font-bold text-sm">Maintenance Mode</p>
+                        <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Disables navigation for testing</p>
                     </div>
-                    <button class="w-10 h-5 bg-outline-variant/20 rounded-full relative flex items-center px-1"
-                        type="button">
+                    <button class="w-10 h-5 bg-outline-variant/20 rounded-full relative flex items-center px-1" type="button">
                         <div class="w-3 h-3 bg-outline rounded-full"></div>
                     </button>
                 </div>
                 <div class="pt-2 flex gap-3">
                     <button class="flex-1 py-3 border border-outline-variant rounded-xl font-bold text-sm"
-                        onclick="document.getElementById('robot-modal').classList.remove('active')"
-                        type="button">Cancel</button>
-                    <button
-                        class="flex-1 py-3 bg-secondary text-white rounded-xl font-bold text-sm shadow-lg shadow-secondary/20"
-                        type="submit">Apply Configuration</button>
+                        onclick="document.getElementById('robot-modal').style.display='none'" type="button">Cancel</button>
+                    <button class="flex-1 py-3 bg-secondary text-white rounded-xl font-bold text-sm shadow-lg shadow-secondary/20" type="submit">Apply Configuration</button>
                 </div>
             </form>
         </div>
     </div>
-    <!-- Success Feedback Toast -->
+
+    <!-- Success Toast -->
     <div class="fixed bottom-24 md:bottom-10 right-1/2 translate-x-1/2 md:translate-x-0 md:right-10 bg-inverse-surface text-inverse-on-surface px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 transition-all opacity-0 translate-y-20 pointer-events-none z-[100]"
         id="success-toast">
         <div class="bg-secondary p-1 rounded-full text-white">
@@ -615,25 +542,12 @@
         </div>
         <div>
             <p class="text-sm font-bold">Settings Updated</p>
-            <p class="text-[10px] opacity-80 uppercase tracking-widest font-semibold">Configuration saved successfully
-            </p>
+            <p class="text-[10px] opacity-80 uppercase tracking-widest font-semibold">Configuration saved successfully</p>
         </div>
     </div>
-    <script>
-        function showSuccessToast() {
-            const toast = document.getElementById('success-toast');
-            toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
-            toast.classList.add('opacity-100', 'translate-y-0');
 
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
-                toast.classList.remove('opacity-100', 'translate-y-0');
-            }, 3000);
-        }
-    </script>
-    <!-- BottomNavBar (Mobile Only Architecture) -->
-    <nav
-        class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-low backdrop-blur-lg flex justify-around items-center py-4 px-2 z-50">
+    <!-- BottomNavBar (Mobile Only) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-low backdrop-blur-lg flex justify-around items-center py-4 px-2 z-50">
         <a class="flex flex-col items-center gap-1 text-slate-500" href="#">
             <span class="material-symbols-outlined">dashboard</span>
             <span class="text-[10px] font-bold">Dash</span>
@@ -654,6 +568,118 @@
             <span class="text-[10px] font-bold">Config</span>
         </a>
     </nav>
-</body>
 
+    <script>
+        async function loadSettingsData() {
+            try {
+                const response = await fetch('/api/settings-data/');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                applyDataToForm(data);
+            } catch (error) {
+                console.error('Error loading settings data:', error);
+                // Fall back to Django-injected JSON block
+                const embeddedData = document.getElementById('django-settings-data');
+                if (embeddedData && embeddedData.textContent.trim()) {
+                    try {
+                        applyDataToForm(JSON.parse(embeddedData.textContent));
+                    } catch(e) {
+                        console.error('Fallback parse error:', e);
+                    }
+                }
+            }
+        }
+
+        function applyDataToForm(data) {
+            // Caregiver section
+            const fullName = data.caregiver_full_name || '';
+            document.getElementById('caregiver-name-display').innerText = fullName || 'Caregiver';
+            document.getElementById('caregiver-full-name').value = fullName;
+            document.getElementById('caregiver-email').value = data.caregiver_email || '';
+            document.getElementById('caregiver-phone').value = data.caregiver_phone || '';
+            document.getElementById('caregiver-username').innerText = data.caregiver_username || '-';
+
+            // Patient section
+            const firstName = data.patient_first_name || '';
+            const lastName  = data.patient_last_name  || '';
+            const patientFull = `${firstName} ${lastName}`.trim();
+            document.getElementById('patient-name-display').innerText = patientFull || 'Patient';
+            document.getElementById('patient-diagnosis-display').innerText = data.patient_diagnosis || '-';
+            document.getElementById('patient-first-name').value = firstName;
+            document.getElementById('patient-last-name').value  = lastName;
+            document.getElementById('patient-dob').value = data.patient_dob || '';
+
+            const diagSel = document.getElementById('patient-diagnosis-select');
+            if (diagSel && data.patient_diagnosis) {
+                diagSel.value = data.patient_diagnosis;
+            }
+
+            document.getElementById('patient-emergency-contact').value = data.patient_emergency_contact || '';
+            // document.getElementById('patient-medical-notes').value    = data.patient_medical_notes    || '';
+
+            if (data.patient_created_at) {
+                const d = new Date(data.patient_created_at);
+                document.getElementById('patient-since-display').innerText = isNaN(d.getTime())
+                    ? data.patient_created_at
+                    : d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+            }
+        }
+
+        function showSuccessToast() {
+            const toast = document.getElementById('success-toast');
+            toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const knob = document.getElementById('theme-knob');
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                knob.classList.remove('translate-x-6');
+                knob.classList.add('translate-x-0');
+                icon.textContent = 'light_mode';
+            } else {
+                html.classList.add('dark');
+                knob.classList.remove('translate-x-0');
+                knob.classList.add('translate-x-6');
+                icon.textContent = 'dark_mode';
+            }
+        }
+
+        // Trigger toast when Django redirects back after a successful save
+        {% if messages %}
+            {% for message in messages %}
+                document.addEventListener('DOMContentLoaded', showSuccessToast);
+            {% endfor %}
+        {% endif %}
+
+        document.addEventListener('DOMContentLoaded', loadSettingsData);
+    </script>
+
+    <!-- Django data injection fallback (consumed by applyDataToForm if the API fetch fails) -->
+    {% if caregiver_full_name %}
+    <script id="django-settings-data" type="application/json">
+        {
+            "caregiver_full_name":        "{{ caregiver_full_name|escapejs }}",
+            "caregiver_email":            "{{ caregiver_email|escapejs }}",
+            "caregiver_phone":            "{{ caregiver_phone|escapejs }}",
+            "caregiver_username":         "{{ caregiver_username|escapejs }}",
+            "patient_first_name":         "{{ patient_first_name|escapejs }}",
+            "patient_last_name":          "{{ patient_last_name|escapejs }}",
+            "patient_dob":                "{{ patient_dob|date:'Y-m-d'|default:'' }}",
+            "patient_diagnosis":          "{{ patient_diagnosis|escapejs }}",
+            "patient_emergency_contact":  "{{ patient_emergency_contact|escapejs }}",
+            "patient_medical_notes":      "{{ patient_medical_notes|escapejs }}",
+            "patient_created_at":         "{{ patient_created_at|date:'M Y'|default:'' }}"
+        }
+    </script>
+    {% endif %}
+
+</body>
 </html>

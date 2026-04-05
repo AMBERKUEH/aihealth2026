@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Medication, MedicationDose, RefillAlert, Patient
 from datetime import date, timedelta
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.hashers import make_password
+from .models import Patient
  
  
 def login_view(request):
@@ -495,3 +497,147 @@ def chat(request):
 
 def mood(request):
     return render(request, "mood.html")
+
+@login_required
+def settings_view(request):
+    caregiver = request.user
+
+    # Force a fresh fetch from the database, not the cached request.user object
+    from django.contrib.auth.models import User
+    caregiver = User.objects.get(pk=request.user.pk)
+
+    patient = Patient.objects.filter(caregiver=caregiver).first()
+    if not patient:
+        patient = Patient.objects.create(
+            caregiver=caregiver,
+            first_name="Arthur",
+            last_name="Miller",
+            date_of_birth=date(1942, 3, 15),
+            diagnosis="Alzheimer's Disease"
+        )
+
+    full_name = f"{caregiver.first_name} {caregiver.last_name}".strip() or caregiver.username
+
+    context = {
+        'caregiver_full_name': full_name,
+        'caregiver_email': caregiver.email or '',
+        'caregiver_phone': getattr(caregiver, 'profile', None) and caregiver.profile.phone or request.session.get('caregiver_phone', ''),
+        'caregiver_username': caregiver.username,
+
+        'patient_first_name': patient.first_name,
+        'patient_last_name': patient.last_name,
+        'patient_dob': patient.date_of_birth,
+        'patient_diagnosis': patient.diagnosis,
+        'patient_created_at': patient.created_at,
+
+        'patient_emergency_contact': request.session.get('patient_emergency_contact', ''),
+        # 'patient_medical_notes': request.session.get('patient_medical_notes', ''),
+    }
+
+    # Temporary debug — remove after confirming
+    print("DEBUG caregiver:", caregiver.username, caregiver.first_name, caregiver.last_name, caregiver.email)
+    print("DEBUG patient:", patient.first_name, patient.last_name, patient.diagnosis)
+
+    return render(request, 'settings.html', context)
+
+@login_required
+def update_caregiver(request):
+    """
+    Handle caregiver profile updates (full_name, email, phone, password).
+    """
+    if request.method == 'POST':
+        user = request.user
+        full_name = request.POST.get('full_name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        password = request.POST.get('password', '').strip()
+        
+        # Update user fields
+        if full_name:
+            # Split full_name into first_name and last_name
+            name_parts = full_name.split(' ', 1)
+            user.first_name = name_parts[0]
+            user.last_name = name_parts[1] if len(name_parts) > 1 else ''
+            user.save()
+        
+        if email:
+            user.email = email
+            user.save()
+        
+        if phone:
+            request.session['caregiver_phone'] = phone
+        
+        if password:
+            user.password = make_password(password)
+            user.save()
+            messages.success(request, 'Password updated. Please log in again.')
+            return redirect('login')
+        
+        messages.success(request, 'Caregiver profile updated successfully.')
+    return redirect('settings')
+
+
+@login_required
+def update_patient(request):
+    """
+    Handle patient profile updates (first_name, last_name, date_of_birth, diagnosis, emergency_contact, medical_notes).
+    """
+    if request.method == 'POST':
+        caregiver = request.user
+        patient = Patient.objects.filter(caregiver=caregiver).first()
+        
+        if patient:
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            date_of_birth = request.POST.get('date_of_birth', '')
+            diagnosis = request.POST.get('diagnosis', '').strip()
+            emergency_contact = request.POST.get('emergency_contact', '').strip()
+            medical_notes = request.POST.get('medical_notes', '').strip()
+            
+            if first_name:
+                patient.first_name = first_name
+            if last_name:
+                patient.last_name = last_name
+            if date_of_birth:
+                from datetime import datetime
+                try:
+                    patient.date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
+                except ValueError:
+                    pass
+            if diagnosis:
+                patient.diagnosis = diagnosis
+            if emergency_contact:
+                patient.emergency_contact = emergency_contact    
+            patient.save()
+            
+            # Store non-model fields in session (extend Patient model in production)
+            # if medical_notes:
+            #     request.session['patient_medical_notes'] = medical_notes
+            
+            messages.success(request, 'Patient profile updated successfully.')
+        else:
+            messages.error(request, 'Patient record not found.')
+    return redirect('settings')
+
+@login_required
+def settings_api_data(request):
+    """API endpoint to return settings data as JSON"""
+    caregiver = request.user
+    patient = Patient.objects.filter(caregiver=caregiver).first()
+    
+    full_name = f"{caregiver.first_name} {caregiver.last_name}".strip() or caregiver.username
+    
+    data = {
+        'caregiver_full_name': full_name,
+        'caregiver_email': caregiver.email or '',
+        'caregiver_phone': getattr(caregiver, 'profile', None) and caregiver.profile.phone or request.session.get('caregiver_phone', ''),
+        'caregiver_username': caregiver.username,
+        'patient_first_name': patient.first_name if patient else '',
+        'patient_last_name': patient.last_name if patient else '',
+        'patient_dob': patient.date_of_birth.strftime('%Y-%m-%d') if patient and patient.date_of_birth else '',
+        'patient_diagnosis': patient.diagnosis if patient else '',
+        'patient_emergency_contact': patient.emergency_contact if patient else '',
+        # 'patient_medical_notes': patient.medical_notes if patient else request.session.get('patient_medical_notes', ''),
+        'patient_created_at': patient.created_at.strftime('%b %Y') if patient and patient.created_at else '',
+    }
+    return JsonResponse(data)

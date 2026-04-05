@@ -9,7 +9,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     
     # Protected URLs (will redirect to login if not authenticated)
-    path("", login_required(views.home), name="dashboard"),
+    path("dashboard/", login_required(views.home), name="dashboard"),
     path("settings/", login_required(views.settings), name="settings"),
     path("medication/", login_required(views.medication), name="medication"),
     path("chat/", login_required(views.chat), name="chat"),
@@ -26,4 +26,8 @@ urlpatterns = [
     path("api/save-medication/",      views.save_medication,    name="save_medication"),
     path("api/delete-medication/",    views.delete_medication,  name="delete_medication"),
     path("api/send-refill-alert/",    views.send_refill_alert,  name="send_refill_alert"),
+    path("api/settings-view/",       views.settings_view,      name="settings_view"),
+    path('api/settings-data/', views.settings_api_data, name='settings_api_data'),
+    path('settings/update_caregiver/', views.update_caregiver, name='update_caregiver'),
+    path('settings/update_patient/', views.update_patient, name='update_patient')
 ]
