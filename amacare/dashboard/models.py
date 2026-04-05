@@ -190,3 +190,113 @@ class Pharmacy(models.Model):
 
     def __str__(self):
         return self.name
+    
+class MoodEntry(models.Model):
+    """
+    Caregiver-logged mood observation for a patient.
+    Replaces the static note cards in the Mood & Wellbeing page.
+    """
+    MOOD_CHOICES = [
+        ('stable',    'Stable'),
+        ('happy',     'Happy/Engaged'),
+        ('anxious',   'Anxious'),
+        ('confused',  'Confused'),
+        ('agitated',  'Agitated'),
+        ('withdrawn', 'Withdrawn'),
+        ('sad',       'Sad'),
+    ]
+ 
+    MOOD_ICON_MAP = {
+        'stable':    'sentiment_neutral',
+        'happy':     'sentiment_satisfied',
+        'anxious':   'sentiment_stressed',
+        'confused':  'psychology_alt',
+        'agitated':  'sentiment_dissatisfied',
+        'withdrawn': 'do_not_disturb_on',
+        'sad':       'sentiment_very_dissatisfied',
+    }
+ 
+    MOOD_SCORE_MAP = {
+        'happy':     100,
+        'stable':     78,
+        'withdrawn':  50,
+        'sad':        40,
+        'confused':   35,
+        'anxious':    30,
+        'agitated':   20,
+    }
+ 
+    patient    = models.ForeignKey('Patient', on_delete=models.CASCADE, related_name='mood_entries')
+    caregiver  = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='mood_entries')
+    mood       = models.CharField(max_length=20, choices=MOOD_CHOICES)
+    notes      = models.TextField(blank=True)
+    logged_at  = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+ 
+    class Meta:
+        ordering = ['-logged_at']
+ 
+    def mood_score(self):
+        return self.MOOD_SCORE_MAP.get(self.mood, 50)
+ 
+    def mood_icon(self):
+        return self.MOOD_ICON_MAP.get(self.mood, 'sentiment_neutral')
+ 
+    def __str__(self):
+        return f"{self.patient} | {self.mood} | {self.logged_at:%Y-%m-%d %H:%M}"
+ 
+ 
+class PhysicalConditionLog(models.Model):
+    """
+    Regular physical condition snapshot logged by the caregiver.
+    Tracks vitals and physical observations that can be retrieved
+    and correlated with mood data.
+    """
+    APPETITE_CHOICES = [
+        ('good',   'Good'),
+        ('fair',   'Fair'),
+        ('poor',   'Poor'),
+        ('none',   'No Appetite'),
+    ]
+    SLEEP_CHOICES = [
+        ('full',      'Full Night (7h+)'),
+        ('partial',   'Partial (4–6h)'),
+        ('poor',      'Poor (under 4h)'),
+        ('disturbed', 'Disturbed/Restless'),
+    ]
+    PAIN_LEVEL_CHOICES = [(str(i), str(i)) for i in range(0, 11)]   # 0–10
+ 
+    patient         = models.ForeignKey('Patient', on_delete=models.CASCADE, related_name='physical_logs')
+    caregiver       = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='physical_logs')
+ 
+    # Core vitals (optional — left blank if not measured)
+    blood_pressure_systolic  = models.PositiveSmallIntegerField(null=True, blank=True)
+    blood_pressure_diastolic = models.PositiveSmallIntegerField(null=True, blank=True)
+    heart_rate               = models.PositiveSmallIntegerField(null=True, blank=True)   # bpm
+    temperature_celsius      = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True)
+    oxygen_saturation        = models.PositiveSmallIntegerField(null=True, blank=True)   # %
+ 
+    # Behavioural / observational
+    appetite     = models.CharField(max_length=10, choices=APPETITE_CHOICES, blank=True)
+    sleep        = models.CharField(max_length=10, choices=SLEEP_CHOICES,    blank=True)
+    pain_level   = models.CharField(max_length=2,  choices=PAIN_LEVEL_CHOICES, default='0')
+    mobility_ok  = models.BooleanField(default=True)   # False = mobility concern flagged
+    fall_risk    = models.BooleanField(default=False)
+ 
+    # Free-form notes
+    notes       = models.TextField(blank=True)
+    logged_at   = models.DateTimeField(default=timezone.now)
+    created_at  = models.DateTimeField(auto_now_add=True)
+ 
+    class Meta:
+        ordering = ['-logged_at']
+ 
+    @property
+    def blood_pressure(self):
+        if self.blood_pressure_systolic and self.blood_pressure_diastolic:
+            return f"{self.blood_pressure_systolic}/{self.blood_pressure_diastolic}"
+        return None
+ 
+    def __str__(self):
+        return f"{self.patient} | Physical Log {self.logged_at:%Y-%m-%d %H:%M}"

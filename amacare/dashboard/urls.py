@@ -13,7 +13,7 @@ urlpatterns = [
     path("settings/", login_required(views.settings), name="settings"),
     path("medication/", login_required(views.medication), name="medication"),
     path("chat/", login_required(views.chat), name="chat"),
-    path("mood/", login_required(views.mood), name="mood"),
+    path("mood/", login_required(views.mood_page), name="mood"),
     path("location/", login_required(views.location), name="location"),
     
     # API URLs
@@ -29,5 +29,13 @@ urlpatterns = [
     path("api/settings-view/",       views.settings_view,      name="settings_view"),
     path('api/settings-data/', views.settings_api_data, name='settings_api_data'),
     path('settings/update_caregiver/', views.update_caregiver, name='update_caregiver'),
-    path('settings/update_patient/', views.update_patient, name='update_patient')
+    path('settings/update_patient/', views.update_patient, name='update_patient'),
+    path('mood/api/summary/',            views.mood_api_summary,       name='mood_api_summary'),
+    path('mood/api/notes/',              views.mood_api_notes,         name='mood_api_notes'),
+    path('mood/api/notes/save/',         views.mood_api_note_save,     name='mood_api_note_save'),
+    path('mood/api/notes/<int:pk>/delete/', views.mood_api_note_delete, name='mood_api_note_delete'),
+    path('mood/api/physical/',           views.mood_api_physical,      name='mood_api_physical'),
+    path('mood/api/physical/save/',      views.mood_api_physical_save, name='mood_api_physical_save'),
+    path('mood/api/physical/<int:pk>/',  views.mood_api_physical_detail, name='mood_api_physical_detail'),
+    path('mood/api/ai-insights/',        views.mood_api_ai_insights,   name='mood_api_ai_insights'),
 ]

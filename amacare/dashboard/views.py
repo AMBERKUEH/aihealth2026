@@ -1,5 +1,6 @@
 import json
 import math
+import os
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -15,7 +16,7 @@ from .models import Medication, MedicationDose, RefillAlert, Patient
 from datetime import date, timedelta
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.hashers import make_password
-from .models import Patient
+from .models import Patient, Patient, MoodEntry, PhysicalConditionLog
  
  
 def login_view(request):
@@ -495,8 +496,319 @@ def send_refill_alert(request):
 def chat(request): 
     return render(request, "chat.html")
 
-def mood(request):
-    return render(request, "mood.html")
+def _get_patient(user):
+    """Return the first patient belonging to the logged-in caregiver."""
+    return Patient.objects.filter(caregiver=user).first()
+ 
+ 
+def _mood_score(entries):
+    """Average mood score across a queryset of MoodEntry objects."""
+    if not entries.exists():
+        return 0
+    scores = [e.mood_score() for e in entries]
+    return round(sum(scores) / len(scores))
+ 
+ 
+# ─────────────────────────────────────────────────────────────────────────────
+# Page
+# ─────────────────────────────────────────────────────────────────────────────
+ 
+@login_required
+def mood_page(request):
+    patient = _get_patient(request.user)
+    return render(request, 'mood.html', {'patient': patient})
+ 
+ 
+# ─────────────────────────────────────────────────────────────────────────────
+# API – Summary (score + weekly trend)
+# ─────────────────────────────────────────────────────────────────────────────
+ 
+@login_required
+def mood_api_summary(request):
+    patient = _get_patient(request.user)
+    if not patient:
+        return JsonResponse({'score': 0, 'label': 'No Data', 'trend': [], 'alert': None})
+ 
+    today = timezone.localdate()
+    recent = MoodEntry.objects.filter(patient=patient, logged_at__date=today)
+    score  = _mood_score(recent) if recent.exists() else _mood_score(
+        MoodEntry.objects.filter(patient=patient).order_by('-logged_at')[:5]
+    )
+ 
+    # Score label
+    if score >= 75:
+        label = 'Stability High'
+    elif score >= 50:
+        label = 'Moderate'
+    elif score >= 30:
+        label = 'Low'
+    else:
+        label = 'Critical'
+ 
+    # Weekly trend (last 7 days)
+    trend = []
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        day_entries = MoodEntry.objects.filter(patient=patient, logged_at__date=day)
+        trend.append({
+            'label': day.strftime('%a').upper(),
+            'score': _mood_score(day_entries) if day_entries.exists() else None,
+            'date':  day.strftime('%b %d'),
+        })
+ 
+    # 3-day negative trend check
+    alert = None
+    last3 = []
+    for i in range(2, -1, -1):
+        day      = today - timedelta(days=i)
+        day_ents = MoodEntry.objects.filter(patient=patient, logged_at__date=day)
+        last3.append(_mood_score(day_ents) if day_ents.exists() else None)
+ 
+    valid3 = [s for s in last3 if s is not None]
+    if len(valid3) >= 2 and all(s < 50 for s in valid3):
+        alert = {
+            'type':    'negative_trend',
+            'message': f'Low mood scores detected over the past {len(valid3)} days. Consider scheduling a specialist review.',
+        }
+ 
+    # Last assessment time
+    last_entry = MoodEntry.objects.filter(patient=patient).first()
+    last_assessed = (
+        last_entry.logged_at.strftime('Today, %I:%M %p')
+        if last_entry and last_entry.logged_at.date() == today
+        else (last_entry.logged_at.strftime('%b %d, %I:%M %p') if last_entry else 'No assessments yet')
+    )
+ 
+    return JsonResponse({
+        'score':         score,
+        'label':         label,
+        'trend':         trend,
+        'alert':         alert,
+        'last_assessed': last_assessed,
+    })
+ 
+ 
+# ─────────────────────────────────────────────────────────────────────────────
+# API – Mood Notes (CRUD)
+# ─────────────────────────────────────────────────────────────────────────────
+ 
+@login_required
+def mood_api_notes(request):
+    patient = _get_patient(request.user)
+    if not patient:
+        return JsonResponse({'notes': []})
+ 
+    entries = MoodEntry.objects.filter(patient=patient).order_by('-logged_at')[:20]
+    data = []
+    for e in entries:
+        data.append({
+            'id':        e.pk,
+            'mood':      e.get_mood_display(),
+            'mood_key':  e.mood,
+            'mood_icon': e.mood_icon(),
+            'notes':     e.notes,
+            'logged_at': e.logged_at.strftime('%b %d, %Y • %I:%M %p'),
+            'score':     e.mood_score(),
+        })
+    return JsonResponse({'notes': data})
+ 
+ 
+@login_required
+@require_http_methods(['POST'])
+def mood_api_note_save(request):
+    patient = _get_patient(request.user)
+    if not patient:
+        return JsonResponse({'ok': False, 'error': 'No patient found'}, status=400)
+ 
+    body = json.loads(request.body)
+    pk   = body.get('id')
+ 
+    if pk:
+        entry = get_object_or_404(MoodEntry, pk=pk, patient=patient)
+    else:
+        entry = MoodEntry(patient=patient, caregiver=request.user)
+ 
+    entry.mood      = body.get('mood', entry.mood)
+    entry.notes     = body.get('notes', '')
+    raw_dt          = body.get('logged_at')
+    if raw_dt:
+        from django.utils.dateparse import parse_datetime
+        entry.logged_at = parse_datetime(raw_dt) or timezone.now()
+    entry.save()
+ 
+    return JsonResponse({'ok': True, 'id': entry.pk})
+ 
+ 
+@login_required
+@require_http_methods(['DELETE'])
+def mood_api_note_delete(request, pk):
+    patient = _get_patient(request.user)
+    entry   = get_object_or_404(MoodEntry, pk=pk, patient=patient)
+    entry.delete()
+    return JsonResponse({'ok': True})
+ 
+ 
+# ─────────────────────────────────────────────────────────────────────────────
+# API – Physical Condition Logs
+# ─────────────────────────────────────────────────────────────────────────────
+ 
+@login_required
+def mood_api_physical(request):
+    patient = _get_patient(request.user)
+    if not patient:
+        return JsonResponse({'logs': []})
+ 
+    logs = PhysicalConditionLog.objects.filter(patient=patient).order_by('-logged_at')[:10]
+    data = []
+    for l in logs:
+        data.append({
+            'id':          l.pk,
+            'logged_at':   l.logged_at.strftime('%b %d, %Y • %I:%M %p'),
+            'bp':          l.blood_pressure,
+            'heart_rate':  l.heart_rate,
+            'temp':        str(l.temperature_celsius) if l.temperature_celsius else None,
+            'spo2':        l.oxygen_saturation,
+            'appetite':    l.get_appetite_display() if l.appetite else None,
+            'sleep':       l.get_sleep_display()    if l.sleep    else None,
+            'pain':        l.pain_level,
+            'mobility_ok': l.mobility_ok,
+            'fall_risk':   l.fall_risk,
+            'notes':       l.notes,
+        })
+    return JsonResponse({'logs': data})
+ 
+ 
+@login_required
+@require_http_methods(['POST'])
+def mood_api_physical_save(request):
+    patient = _get_patient(request.user)
+    if not patient:
+        return JsonResponse({'ok': False, 'error': 'No patient found'}, status=400)
+ 
+    body = json.loads(request.body)
+ 
+    def _int(v):
+        try: return int(v) if v not in (None, '') else None
+        except: return None
+ 
+    def _dec(v):
+        try:
+            from decimal import Decimal
+            return Decimal(str(v)) if v not in (None, '') else None
+        except: return None
+ 
+    log = PhysicalConditionLog(patient=patient, caregiver=request.user)
+    log.blood_pressure_systolic  = _int(body.get('bp_sys'))
+    log.blood_pressure_diastolic = _int(body.get('bp_dia'))
+    log.heart_rate               = _int(body.get('heart_rate'))
+    log.temperature_celsius      = _dec(body.get('temp'))
+    log.oxygen_saturation        = _int(body.get('spo2'))
+    log.appetite     = body.get('appetite', '')
+    log.sleep        = body.get('sleep', '')
+    log.pain_level   = str(body.get('pain', '0'))
+    log.mobility_ok  = bool(body.get('mobility_ok', True))
+    log.fall_risk    = bool(body.get('fall_risk', False))
+    log.notes        = body.get('notes', '')
+ 
+    raw_dt = body.get('logged_at')
+    if raw_dt:
+        from django.utils.dateparse import parse_datetime
+        log.logged_at = parse_datetime(raw_dt) or timezone.now()
+ 
+    log.save()
+    return JsonResponse({'ok': True, 'id': log.pk})
+ 
+ 
+@login_required
+def mood_api_physical_detail(request, pk):
+    patient = _get_patient(request.user)
+    log = get_object_or_404(PhysicalConditionLog, pk=pk, patient=patient)
+    return JsonResponse({
+        'id':          log.pk,
+        'logged_at':   log.logged_at.strftime('%b %d, %Y • %I:%M %p'),
+        'bp':          log.blood_pressure,
+        'bp_sys':      log.blood_pressure_systolic,
+        'bp_dia':      log.blood_pressure_diastolic,
+        'heart_rate':  log.heart_rate,
+        'temp':        str(log.temperature_celsius) if log.temperature_celsius else '',
+        'spo2':        log.oxygen_saturation,
+        'appetite':    log.appetite,
+        'sleep':       log.sleep,
+        'pain':        log.pain_level,
+        'mobility_ok': log.mobility_ok,
+        'fall_risk':   log.fall_risk,
+        'notes':       log.notes,
+    })
+ 
+ 
+# ─────────────────────────────────────────────────────────────────────────────
+# API – Gemini AI Insights
+# ─────────────────────────────────────────────────────────────────────────────
+ 
+@login_required
+def mood_api_ai_insights(request):
+    """
+    Calls Google Gemini (gemini-1.5-flash) with recent mood + physical data
+    and returns a structured insight object.
+ 
+    Set GEMINI_API_KEY in your Django settings (or as an environment variable).
+    """
+    from google import genai
+    from django.conf import settings
+ 
+    patient = _get_patient(request.user)
+    if not patient:
+        return JsonResponse({'ok': False, 'insight': 'No patient data available.'})
+ 
+    # Gather last 7 days of mood entries
+    seven_days_ago = timezone.now() - timedelta(days=7)
+    mood_entries   = MoodEntry.objects.filter(patient=patient, logged_at__gte=seven_days_ago).order_by('logged_at')
+    phys_logs      = PhysicalConditionLog.objects.filter(patient=patient, logged_at__gte=seven_days_ago).order_by('logged_at')
+ 
+    if not mood_entries.exists() and not phys_logs.exists():
+        return JsonResponse({'ok': True, 'insight': 'Not enough data has been recorded in the past 7 days to generate an insight. Please log mood notes and physical conditions regularly.'})
+ 
+    # Build context string
+    mood_text = "\n".join(
+        f"- {e.logged_at.strftime('%a %b %d %H:%M')}: {e.get_mood_display()} (score {e.mood_score()}/100). Notes: {e.notes or 'none'}"
+        for e in mood_entries
+    ) or "No mood entries this week."
+ 
+    phys_text = "\n".join(
+        f"- {l.logged_at.strftime('%a %b %d %H:%M')}: BP {l.blood_pressure or 'N/A'}, HR {l.heart_rate or 'N/A'} bpm, "
+        f"SpO2 {l.oxygen_saturation or 'N/A'}%, Temp {l.temperature_celsius or 'N/A'}°C, "
+        f"Pain {l.pain_level}/10, Sleep: {l.get_sleep_display() if l.sleep else 'N/A'}, "
+        f"Appetite: {l.get_appetite_display() if l.appetite else 'N/A'}. Notes: {l.notes or 'none'}"
+        for l in phys_logs
+    ) or "No physical logs this week."
+ 
+    prompt = f"""You are a clinical assistant AI supporting a caregiver of an elderly dementia patient.
+Below is a 7-day log of mood observations and physical condition records.
+ 
+MOOD LOG:
+{mood_text}
+ 
+PHYSICAL CONDITION LOG:
+{phys_text}
+ 
+Based on this data, provide a concise clinical insight (3-5 sentences) covering:
+1. The dominant mood pattern and any concerning trends.
+2. Notable physical findings and potential correlations with mood.
+3. One or two specific, actionable recommendations for the caregiver.
+ 
+Write in a calm, professional, empathetic tone. Do not use bullet points. Do not use emojis. Speak directly to the caregiver."""
+ 
+    try:
+        api_key = getattr(settings, 'GEMINI_API_KEY', os.environ.get('GEMINI_API_KEY', ''))
+        # genai.configure(api_key=api_key)
+        client = genai.Client(api_key=api_key)
+        resp   = client.models.generate_content(
+            model="gemini-3-flash-preview", contents=prompt
+        )
+        insight = resp.text.strip()
+        return JsonResponse({'ok': True, 'insight': insight})
+    except Exception as exc:
+        return JsonResponse({'ok': False, 'insight': f'Unable to generate insight: {exc}'})
 
 @login_required
 def settings_view(request):
