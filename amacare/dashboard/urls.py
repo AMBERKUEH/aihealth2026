@@ -10,6 +10,7 @@ urlpatterns = [
     
     # Protected URLs (will redirect to login if not authenticated)
     path("dashboard/", login_required(views.home), name="dashboard"),
+    path("", login_required(views.home), name="dashboard"),
     path("settings/", login_required(views.settings), name="settings"),
     path("medication/", login_required(views.medication), name="medication"),
     path("chat/", login_required(views.chat), name="chat"),
@@ -38,4 +39,7 @@ urlpatterns = [
     path('mood/api/physical/save/',      views.mood_api_physical_save, name='mood_api_physical_save'),
     path('mood/api/physical/<int:pk>/',  views.mood_api_physical_detail, name='mood_api_physical_detail'),
     path('mood/api/ai-insights/',        views.mood_api_ai_insights,   name='mood_api_ai_insights'),
+    path('session/<int:session_id>/', views.session_messages, name='session_messages'),
+    path('export/<int:session_id>/', views.export_transcript, name='export_transcript'),
+    path('analyse/', views.analyse_sessions, name='chat_analyse'),
 ]

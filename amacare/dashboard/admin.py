@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Patient, SafeZone, LocationLog, Medication, MedicationDose, RefillAlert, Pharmacy, MoodEntry, PhysicalConditionLog
+from .models import Patient, SafeZone, LocationLog, Medication, MedicationDose, RefillAlert, Pharmacy, MoodEntry, PhysicalConditionLog, ChatSession, ChatMessage
 
 admin.site.register(Patient)
 admin.site.register(SafeZone)
@@ -21,3 +21,5 @@ admin.site.register(Pharmacy)
 #     list_filter  = ['logged_at', 'fall_risk']
 admin.site.register(MoodEntry)
 admin.site.register(PhysicalConditionLog)
+admin.site.register(ChatSession)
+admin.site.register(ChatMessage)

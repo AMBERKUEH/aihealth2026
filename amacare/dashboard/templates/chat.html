@@ -1,21 +1,12 @@
 <!DOCTYPE html>
-
 <html class="light" lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>AmaCare | Chat History</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -84,46 +75,57 @@
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
+    /* Analysis streaming */
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .cursor-blink { animation: blink 1s step-end infinite; }
+
+    /* Skeleton pulse */
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #e6eeff 25%, #dce9ff 50%, #e6eeff 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 0.5rem;
     }
 
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    /* Tab transition */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: flex; }
+
+    /* Analysis thinking animation */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 1s linear infinite; }
   </style>
 </head>
 
 <body class="bg-surface font-body text-on-surface">
-  <!-- SideNavBar -->
-  <aside
-    class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface flex flex-col gap-y-2 p-6 z-40 hidden md:flex border-r border-outline-variant/10">
+
+  <!-- ───────────── SIDEBAR ───────────── -->
+  <aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-surface flex flex-col gap-y-2 p-6 z-40 hidden md:flex border-r border-outline-variant/10">
     <div class="text-xl font-extrabold text-blue-700 mb-8 font-headline">AmaCare</div>
     <nav class="flex flex-col gap-y-2">
-      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold"
-        href="{% url 'dashboard' %}">
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-headline text-sm font-semibold" href="{% url 'dashboard' %}">
         <span class="material-symbols-outlined">dashboard</span> Dashboard
       </a>
-      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold"
-        href="{% url 'location' %}">
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-headline text-sm font-semibold" href="{% url 'location' %}">
         <span class="material-symbols-outlined">location_on</span> Location
       </a>
-      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold"
-        href="{% url 'medication' %}">
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-headline text-sm font-semibold" href="{% url 'medication' %}">
         <span class="material-symbols-outlined">medication</span> Medication
       </a>
-      <a class="flex items-center gap-3 px-4 py-3 text-blue-700 bg-blue-50/50 rounded-xl transition-all font-manrope text-sm font-semibold"
-        href="{% url 'chat' %}">
+      <a class="flex items-center gap-3 px-4 py-3 text-blue-700 bg-blue-50/50 rounded-xl transition-all font-headline text-sm font-semibold" href="{% url 'chat' %}">
         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span> Chat History
       </a>
-      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold"
-        href="{% url 'mood' %}">
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-headline text-sm font-semibold" href="{% url 'mood' %}">
         <span class="material-symbols-outlined">psychology</span> Mood &amp; Wellbeing
       </a>
-      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-manrope text-sm font-semibold"
-        href="{% url 'settings' %}">
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-blue-600 hover:bg-slate-100/50 rounded-xl transition-all font-headline text-sm font-semibold" href="{% url 'settings' %}">
         <span class="material-symbols-outlined">settings</span> Settings
       </a>
     </nav>
@@ -149,18 +151,17 @@
       </div>
     </div>
   </aside>
-  <!-- Main Content Area -->
+
+  <!-- ───────────── MAIN ───────────── -->
   <main class="md:ml-64 min-h-screen flex flex-col">
-    <!-- TopNavBar -->
-    <header
-      class="bg-surface/70 backdrop-blur-xl sticky top-0 z-50 flex justify-between items-center w-full px-6 py-3 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)]">
+
+    <!-- TOP NAV -->
+    <header class="bg-surface/70 backdrop-blur-xl sticky top-0 z-50 flex justify-between items-center w-full px-6 py-3 shadow-[0_8px_32px_0_rgba(0,23,75,0.05)]">
       <div class="flex items-center gap-4">
-        <div class="md:hidden text-2xl font-bold tracking-tight text-blue-700 font-manrope">AmaCare</div>
-        <div
-          class="hidden md:flex bg-surface-container-low px-4 py-2 rounded-full items-center gap-3 w-64 border border-outline-variant/10">
+        <div class="md:hidden text-2xl font-bold tracking-tight text-blue-700 font-headline">AmaCare</div>
+        <div class="hidden md:flex bg-surface-container-low px-4 py-2 rounded-full items-center gap-3 w-64 border border-outline-variant/10">
           <span class="material-symbols-outlined text-slate-400 text-sm">search</span>
-          <input class="bg-transparent border-none focus:ring-0 text-sm w-full p-0 placeholder-slate-400"
-            placeholder="Search conversations..." type="text" />
+          <input id="global-search" class="bg-transparent border-none focus:ring-0 text-sm w-full p-0 placeholder-slate-400" placeholder="Search conversations..." type="text" />
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -175,193 +176,370 @@
         </button>
       </div>
     </header>
-    <!-- Chat Shell -->
+
+    <!-- CHAT SHELL -->
     <section class="flex-1 flex overflow-hidden h-[calc(100vh-64px)]">
-      <!-- Conversation List Sidebar -->
+
+      <!-- ═══ LEFT PANEL: LIST + TABS ═══ -->
       <div class="w-80 bg-surface-container-low flex flex-col border-r border-outline-variant/10 overflow-hidden">
-        <div class="p-6">
+
+        <!-- Panel Header -->
+        <div class="p-6 pb-3">
           <h2 class="font-headline text-lg font-bold text-on-surface mb-1">Interactions</h2>
-          <p class="text-xs text-on-surface-variant">Archived history with CareBot V2</p>
+          <p class="text-xs text-on-surface-variant">CareBot conversation logs</p>
         </div>
-        <div class="flex-1 overflow-y-auto px-4 pb-6 space-y-2 no-scrollbar">
-          <!-- List Item Active -->
-          <button
-            class="w-full text-left p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-primary/10 transition-all">
-            <div class="flex justify-between items-start mb-1">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-primary">Today</span>
-              <span class="text-[10px] text-on-surface-variant">10:45 AM</span>
-            </div>
-            <p class="text-sm font-semibold text-on-surface truncate">Morning Check-in</p>
-            <div class="flex items-center gap-2 mt-2">
-              <span class="inline-block w-2 h-2 rounded-full bg-secondary"></span>
-              <span class="text-[10px] font-medium text-secondary-fixed-dim">Calm</span>
-            </div>
-          </button>
-          <!-- List Item -->
-          <button class="w-full text-left p-4 rounded-2xl hover:bg-surface-container-high transition-all group">
-            <div class="flex justify-between items-start mb-1">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Yesterday</span>
-              <span class="text-[10px] text-on-surface-variant">08:12 PM</span>
-            </div>
-            <p class="text-sm font-semibold text-slate-600 truncate group-hover:text-on-surface transition-colors">
-              Evening Routine</p>
-            <div class="flex items-center gap-2 mt-2">
-              <span class="inline-block w-2 h-2 rounded-full bg-tertiary"></span>
-              <span class="text-[10px] font-medium text-tertiary">Anxious</span>
-            </div>
-          </button>
-          <!-- List Item -->
-          <button class="w-full text-left p-4 rounded-2xl hover:bg-surface-container-high transition-all group">
-            <div class="flex justify-between items-start mb-1">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">24 Oct 2023</span>
-              <span class="text-[10px] text-on-surface-variant">02:30 PM</span>
-            </div>
-            <p class="text-sm font-semibold text-slate-600 truncate group-hover:text-on-surface transition-colors">
-              Medicine Reminder</p>
-            <div class="flex items-center gap-2 mt-2">
-              <span class="inline-block w-2 h-2 rounded-full bg-secondary"></span>
-              <span class="text-[10px] font-medium text-secondary-fixed-dim">Calm</span>
-            </div>
-          </button>
-          <!-- List Item -->
-          <button class="w-full text-left p-4 rounded-2xl hover:bg-surface-container-high transition-all group">
-            <div class="flex justify-between items-start mb-1">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">23 Oct 2023</span>
-              <span class="text-[10px] text-on-surface-variant">11:15 AM</span>
-            </div>
-            <p class="text-sm font-semibold text-slate-600 truncate group-hover:text-on-surface transition-colors">
-              Social Engagement</p>
-            <div class="flex items-center gap-2 mt-2">
-              <span class="inline-block w-2 h-2 rounded-full bg-error"></span>
-              <span class="text-[10px] font-medium text-error">Distressed</span>
-            </div>
-          </button>
-        </div>
-      </div>
-      <!-- Main Chat View -->
-      <div class="flex-1 flex flex-col bg-surface relative">
-        <!-- Chat Header / Sentiment Summary -->
-        <div class="p-6 bg-surface-bright flex items-center justify-between border-b border-outline-variant/5">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-primary-fixed-dim flex items-center justify-center text-primary">
-              <span class="material-symbols-outlined text-3xl">smart_toy</span>
-            </div>
-            <div>
-              <h1 class="font-headline font-bold text-xl leading-none">Morning Check-in</h1>
-              <p class="text-xs text-on-surface-variant mt-1">Patient: Arthur Miller • Session ID: #8821</p>
-            </div>
-          </div>
-          <!-- Sentiment Summary Card -->
-          <div
-            class="hidden lg:flex items-center gap-6 bg-surface-container-lowest px-6 py-3 rounded-2xl shadow-sm border border-outline-variant/10">
-            <div class="flex flex-col">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Overall Mood</span>
-              <div class="flex items-center gap-2 mt-0.5">
-                <span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(0,106,97,0.4)]"></span>
-                <span class="font-bold text-sm text-secondary">Calm &amp; Responsive</span>
-              </div>
-            </div>
-            <div class="w-px h-8 bg-outline-variant/20"></div>
-            <div class="flex flex-col">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Key Flags</span>
-              <div class="flex items-center gap-2 mt-0.5">
-                <span class="text-sm font-bold text-on-surface">None detected</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Chat Messages -->
-        <div class="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
-          <!-- Message Group: Robot -->
-          <div class="flex flex-col items-start max-w-2xl">
-            <div class="flex items-center gap-2 mb-2 px-1">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-primary">CareBot</span>
-              <span class="text-[10px] text-on-surface-variant">10:45 AM</span>
-            </div>
-            <div
-              class="bg-surface-container-high rounded-tr-3xl rounded-br-3xl rounded-bl-3xl p-5 text-sm leading-relaxed text-on-surface">
-              Good morning, Arthur. How are you feeling today? I've noticed you didn't finish your breakfast this
-              morning.
-            </div>
-          </div>
-          <!-- Message Group: Patient -->
-          <div class="flex flex-col items-end ml-auto max-w-2xl">
-            <div class="flex items-center gap-2 mb-2 px-1">
-              <span class="text-[10px] text-on-surface-variant">10:46 AM</span>
-              <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface">Patient</span>
-              <div class="flex items-center gap-1 bg-secondary-container/30 px-2 py-0.5 rounded-full">
-                <span class="w-1 h-1 rounded-full bg-secondary"></span>
-                <span class="text-[9px] font-bold text-on-secondary-container">Calm</span>
-              </div>
-            </div>
-            <div
-              class="bg-primary text-on-primary shadow-lg shadow-primary/10 rounded-tl-3xl rounded-bl-3xl rounded-br-3xl p-5 text-sm leading-relaxed">
-              I'm doing okay, but I have a bit of a <span
-                class="font-extrabold underline decoration-2 decoration-on-primary-container">pain</span> in my lower
-              back when I move. It's making me feel a bit <span
-                class="font-extrabold underline decoration-2 decoration-on-primary-container">lonely</span> too, as I
-              can't go to the garden.
-            </div>
-          </div>
-          <!-- Message Group: Robot -->
-          <div class="flex flex-col items-start max-w-2xl">
-            <div class="flex items-center gap-2 mb-2 px-1">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-primary">CareBot</span>
-              <span class="text-[10px] text-on-surface-variant">10:47 AM</span>
-            </div>
-            <div
-              class="bg-surface-container-high rounded-tr-3xl rounded-br-3xl rounded-bl-3xl p-5 text-sm leading-relaxed text-on-surface">
-              I'm sorry to hear that. Should I call Sarah to <span class="font-extrabold text-error">help</span> you
-              with the stretching exercises we talked about?
-            </div>
-          </div>
-          <!-- Message Group: Patient -->
-          <div class="flex flex-col items-end ml-auto max-w-2xl">
-            <div class="flex items-center gap-2 mb-2 px-1">
-              <span class="text-[10px] text-on-surface-variant">10:48 AM</span>
-              <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface">Patient</span>
-              <div class="flex items-center gap-1 bg-tertiary-fixed/30 px-2 py-0.5 rounded-full">
-                <span class="w-1 h-1 rounded-full bg-tertiary"></span>
-                <span class="text-[9px] font-bold text-tertiary">Anxious</span>
-              </div>
-            </div>
-            <div
-              class="bg-primary text-on-primary shadow-lg shadow-primary/10 rounded-tl-3xl rounded-bl-3xl rounded-br-3xl p-5 text-sm leading-relaxed">
-              Yes, please. I think I need some <span
-                class="font-extrabold underline decoration-2 decoration-on-primary-container">help</span> getting
-              comfortable.
-            </div>
-          </div>
-          <!-- System Note -->
-          <div class="flex justify-center my-8">
-            <div class="bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/10">
-              <p class="text-[11px] font-medium text-on-surface-variant flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">event_repeat</span>
-                Caregiver Sarah Jenkins notified at 10:49 AM
-              </p>
-            </div>
-          </div>
-        </div>
-        <!-- Message Input (Read Only / History Mode) -->
-        <div class="p-6 bg-surface-bright/80 backdrop-blur-md border-t border-outline-variant/5">
-          <div
-            class="max-w-4xl mx-auto bg-surface-container-highest rounded-2xl p-4 flex items-center justify-between border border-outline-variant/10">
-            <p class="text-xs text-on-surface-variant font-medium">Viewing historical log. New messages can only be sent
-              during live sessions.</p>
-            <button
-              class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-xl text-xs font-bold transition-all active:scale-95">
-              <span class="material-symbols-outlined text-sm">print</span>
-              Export Transcript
+
+        <!-- Tab Switcher -->
+        <div class="px-4 pb-3">
+          <div class="flex bg-surface-container rounded-xl p-1 gap-1">
+            <button onclick="switchTab('recent')" id="tab-recent"
+              class="tab-btn flex-1 text-[11px] font-bold py-2 px-2 rounded-lg transition-all text-primary bg-surface-container-lowest shadow-sm">
+              Recent
+            </button>
+            <button onclick="switchTab('archived')" id="tab-archived"
+              class="tab-btn flex-1 text-[11px] font-bold py-2 px-2 rounded-lg transition-all text-on-surface-variant hover:text-on-surface">
+              Archived
+            </button>
+            <button onclick="switchTab('analysis')" id="tab-analysis"
+              class="tab-btn flex-1 text-[11px] font-bold py-2 px-2 rounded-lg transition-all text-on-surface-variant hover:text-on-surface">
+              Analysis
             </button>
           </div>
         </div>
+
+        <!-- ── RECENT TAB (last 7 days) ── -->
+        <div id="panel-recent" class="tab-panel active flex-1 flex-col overflow-hidden">
+          <div class="px-4 pb-2">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Last 7 Days</p>
+          </div>
+          <div class="flex-1 overflow-y-auto px-4 pb-6 space-y-2 no-scrollbar" id="recent-list">
+            {% if recent_sessions %}
+              {% for session in recent_sessions %}
+              <button onclick="loadSession({{ session.id }})"
+                data-session-id="{{ session.id }}"
+                class="session-item w-full text-left p-4 rounded-2xl hover:bg-surface-container-high transition-all group {% if forloop.first %}bg-surface-container-lowest shadow-sm border border-primary/10{% endif %}">
+                <div class="flex justify-between items-start mb-1">
+                  <span class="text-[10px] font-bold uppercase tracking-widest
+                    {% if session.is_today %}text-primary
+                    {% elif session.is_yesterday %}text-on-surface-variant
+                    {% else %}text-on-surface-variant{% endif %}">
+                    {% if session.is_today %}Today
+                    {% elif session.is_yesterday %}Yesterday
+                    {% else %}{{ session.started_at|date:"d M Y" }}{% endif %}
+                  </span>
+                  <span class="text-[10px] text-on-surface-variant">{{ session.started_at|time:"h:i A" }}</span>
+                </div>
+                <p class="text-sm font-semibold text-on-surface truncate group-hover:text-primary transition-colors">
+                  {{ session.title|default:"Untitled Session" }}
+                </p>
+                {% if session.dominant_mood %}
+                <div class="flex items-center gap-2 mt-2">
+                  <span class="inline-block w-2 h-2 rounded-full
+                    {% if session.dominant_mood == 'calm' %}bg-secondary
+                    {% elif session.dominant_mood == 'anxious' %}bg-tertiary
+                    {% elif session.dominant_mood == 'distressed' %}bg-error
+                    {% else %}bg-outline-variant{% endif %}">
+                  </span>
+                  <span class="text-[10px] font-medium capitalize
+                    {% if session.dominant_mood == 'calm' %}text-secondary
+                    {% elif session.dominant_mood == 'anxious' %}text-tertiary
+                    {% elif session.dominant_mood == 'distressed' %}text-error
+                    {% else %}text-on-surface-variant{% endif %}">
+                    {{ session.dominant_mood }}
+                  </span>
+                </div>
+                {% endif %}
+                <div class="mt-2 text-[10px] text-on-surface-variant">{{ session.message_count }} message{{ session.message_count|pluralize }}</div>
+              </button>
+              {% endfor %}
+            {% else %}
+              <div class="flex flex-col items-center justify-center py-12 text-center">
+                <span class="material-symbols-outlined text-3xl text-outline-variant mb-3">chat_bubble_outline</span>
+                <p class="text-sm font-semibold text-on-surface-variant">No recent sessions</p>
+                <p class="text-xs text-outline mt-1">Sessions from the last 7 days will appear here</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- ── ARCHIVED TAB (older than 7 days) ── -->
+        <div id="panel-archived" class="tab-panel flex-1 flex-col overflow-hidden">
+          <div class="px-4 pb-2 flex items-center justify-between">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">All Archives</p>
+            {% if archived_sessions %}
+            <span class="text-[10px] bg-surface-container px-2 py-0.5 rounded-full font-bold text-on-surface-variant">{{ archived_sessions|length }}</span>
+            {% endif %}
+          </div>
+          <!-- Archive search -->
+          <div class="px-4 mb-3">
+            <div class="bg-surface-container-highest rounded-xl px-3 py-2 flex items-center gap-2 border border-outline-variant/10">
+              <span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+              <input id="archive-search" class="bg-transparent border-none focus:ring-0 text-xs w-full p-0 placeholder-slate-400" placeholder="Search archives..." type="text" oninput="filterArchive(this.value)" />
+            </div>
+          </div>
+          <div class="flex-1 overflow-y-auto px-4 pb-6 space-y-2 no-scrollbar" id="archive-list">
+            {% if archived_sessions %}
+              {% regroup archived_sessions by started_at|date:"F Y" as sessions_by_month %}
+              {% for month_group in sessions_by_month %}
+              <div class="pt-2">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 px-1">{{ month_group.grouper }}</p>
+                {% for session in month_group.list %}
+                <button onclick="loadSession({{ session.id }})"
+                  data-session-id="{{ session.id }}"
+                  data-search-text="{{ session.title|lower }} {{ session.started_at|date:'d M Y'|lower }}"
+                  class="archive-item session-item w-full text-left p-4 rounded-2xl hover:bg-surface-container-high transition-all group mb-2">
+                  <div class="flex justify-between items-start mb-1">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+                      {{ session.started_at|date:"d M Y" }}
+                    </span>
+                    <span class="text-[10px] text-on-surface-variant">{{ session.started_at|time:"h:i A" }}</span>
+                  </div>
+                  <p class="text-sm font-semibold text-slate-600 truncate group-hover:text-on-surface transition-colors">
+                    {{ session.title|default:"Untitled Session" }}
+                  </p>
+                  {% if session.dominant_mood %}
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="inline-block w-2 h-2 rounded-full
+                      {% if session.dominant_mood == 'calm' %}bg-secondary
+                      {% elif session.dominant_mood == 'anxious' %}bg-tertiary
+                      {% elif session.dominant_mood == 'distressed' %}bg-error
+                      {% else %}bg-outline-variant{% endif %}">
+                    </span>
+                    <span class="text-[10px] font-medium capitalize
+                      {% if session.dominant_mood == 'calm' %}text-secondary
+                      {% elif session.dominant_mood == 'anxious' %}text-tertiary
+                      {% elif session.dominant_mood == 'distressed' %}text-error
+                      {% else %}text-on-surface-variant{% endif %}">
+                      {{ session.dominant_mood }}
+                    </span>
+                  </div>
+                  {% endif %}
+                  <div class="mt-1 text-[10px] text-on-surface-variant">{{ session.message_count }} message{{ session.message_count|pluralize }}</div>
+                </button>
+                {% endfor %}
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="flex flex-col items-center justify-center py-12 text-center">
+                <span class="material-symbols-outlined text-3xl text-outline-variant mb-3">inventory_2</span>
+                <p class="text-sm font-semibold text-on-surface-variant">No archived sessions</p>
+                <p class="text-xs text-outline mt-1">Sessions older than 7 days are archived automatically</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- ── ANALYSIS TAB ── -->
+        <div id="panel-analysis" class="tab-panel flex-1 flex-col overflow-hidden">
+          <div class="px-4 pb-3 flex-1 flex flex-col gap-3 overflow-y-auto no-scrollbar">
+
+            <div class="bg-surface-container rounded-2xl p-4 border border-outline-variant/10">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Session Range</p>
+              <div class="flex gap-2">
+                <div class="flex-1">
+                  <label class="text-[10px] text-on-surface-variant block mb-1">From</label>
+                  <input type="date" id="analysis-from" class="w-full text-xs bg-surface-container-highest border-0 rounded-lg px-3 py-2 focus:ring-1 focus:ring-primary/20 text-on-surface" />
+                </div>
+                <div class="flex-1">
+                  <label class="text-[10px] text-on-surface-variant block mb-1">To</label>
+                  <input type="date" id="analysis-to" class="w-full text-xs bg-surface-container-highest border-0 rounded-lg px-3 py-2 focus:ring-1 focus:ring-primary/20 text-on-surface" />
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-surface-container rounded-2xl p-4 border border-outline-variant/10">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Quick Prompts</p>
+              <div class="space-y-2">
+                <button onclick="setAnalysisPrompt(this)" class="quick-prompt w-full text-left text-xs bg-surface-container-highest hover:bg-surface-container-high rounded-xl px-3 py-2.5 text-on-surface transition-colors font-medium">
+                  Summarise the patient's emotional trends
+                </button>
+                <button onclick="setAnalysisPrompt(this)" class="quick-prompt w-full text-left text-xs bg-surface-container-highest hover:bg-surface-container-high rounded-xl px-3 py-2.5 text-on-surface transition-colors font-medium">
+                  Identify recurring topics or concerns
+                </button>
+                <button onclick="setAnalysisPrompt(this)" class="quick-prompt w-full text-left text-xs bg-surface-container-highest hover:bg-surface-container-high rounded-xl px-3 py-2.5 text-on-surface transition-colors font-medium">
+                  Flag any signs of distress or confusion
+                </button>
+                <button onclick="setAnalysisPrompt(this)" class="quick-prompt w-full text-left text-xs bg-surface-container-highest hover:bg-surface-container-high rounded-xl px-3 py-2.5 text-on-surface transition-colors font-medium">
+                  Were medications discussed or refused?
+                </button>
+                <button onclick="setAnalysisPrompt(this)" class="quick-prompt w-full text-left text-xs bg-surface-container-highest hover:bg-surface-container-high rounded-xl px-3 py-2.5 text-on-surface transition-colors font-medium">
+                  Highlight moments of social engagement
+                </button>
+              </div>
+            </div>
+
+            <div class="bg-surface-container rounded-2xl p-4 border border-outline-variant/10">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Your Question</p>
+              <textarea id="analysis-question" rows="3"
+                class="w-full text-xs bg-surface-container-highest border-0 rounded-xl px-3 py-2.5 focus:ring-1 focus:ring-primary/20 text-on-surface resize-none placeholder-slate-400"
+                placeholder="Ask anything about the patient's conversations..."></textarea>
+              <button onclick="runAnalysis()"
+                class="mt-3 w-full flex items-center justify-center gap-2 py-2.5 bg-primary text-on-primary rounded-xl text-xs font-bold transition-all active:scale-95 hover:bg-primary-container">
+                <span class="material-symbols-outlined text-sm">auto_awesome</span>
+                Analyse Sessions
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══ RIGHT PANEL: CHAT VIEW ═══ -->
+      <div class="flex-1 flex flex-col bg-surface relative overflow-hidden">
+
+        <!-- ── EMPTY STATE (default) ── -->
+        <div id="empty-state" class="flex-1 flex flex-col items-center justify-center gap-4 text-center p-12">
+          <div class="w-20 h-20 rounded-3xl bg-primary-fixed-dim flex items-center justify-center">
+            <span class="material-symbols-outlined text-4xl text-primary">chat_bubble_outline</span>
+          </div>
+          <div>
+            <h2 class="font-headline font-bold text-xl text-on-surface mb-1">Select a conversation</h2>
+            <p class="text-sm text-on-surface-variant max-w-xs">Choose a session from the left to view the full conversation log, or use Analysis to ask questions across multiple sessions.</p>
+          </div>
+        </div>
+
+        <!-- ── SESSION VIEW (shown when a session is selected) ── -->
+        <div id="session-view" class="flex-1 flex flex-col hidden overflow-hidden">
+
+          <!-- Chat Header -->
+          <div class="p-6 bg-surface-bright flex items-center justify-between border-b border-outline-variant/5 flex-shrink-0">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-primary-fixed-dim flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-3xl">smart_toy</span>
+              </div>
+              <div>
+                <h1 id="session-title" class="font-headline font-bold text-xl leading-none">Loading...</h1>
+                <p id="session-meta" class="text-xs text-on-surface-variant mt-1"></p>
+              </div>
+            </div>
+            <!-- Sentiment Summary -->
+            <div id="sentiment-card" class="hidden lg:flex items-center gap-6 bg-surface-container-lowest px-6 py-3 rounded-2xl shadow-sm border border-outline-variant/10">
+              <div class="flex flex-col">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Overall Mood</span>
+                <div class="flex items-center gap-2 mt-0.5">
+                  <span id="sentiment-dot" class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(0,106,97,0.4)]"></span>
+                  <span id="sentiment-label" class="font-bold text-sm text-secondary">--</span>
+                </div>
+              </div>
+              <div class="w-px h-8 bg-outline-variant/20"></div>
+              <div class="flex flex-col">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Key Flags</span>
+                <div class="flex items-center gap-2 mt-0.5">
+                  <span id="sentiment-flags" class="text-sm font-bold text-on-surface">--</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Footer (Read-only) -->
+          <div class="p-6 bg-surface-bright/80 backdrop-blur-md border-t border-outline-variant/5 flex-shrink-0">
+            <div class="max-w-4xl mx-auto bg-surface-container-highest rounded-2xl p-4 flex items-center justify-between border border-outline-variant/10">
+              <p class="text-xs text-on-surface-variant font-medium">Viewing historical log. New messages can only be sent during live sessions.</p>
+              <button onclick="exportTranscript()"
+                class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-xl text-xs font-bold transition-all active:scale-95">
+                <span class="material-symbols-outlined text-sm">print</span>
+                Export Transcript
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ANALYSIS VIEW (shown when analysis tab active and result available) ── -->
+        <div id="analysis-view" class="flex-1 flex-col hidden overflow-hidden">
+
+          <!-- Analysis Header -->
+          <div class="p-6 bg-surface-bright flex items-center gap-4 border-b border-outline-variant/5 flex-shrink-0">
+            <div class="w-12 h-12 rounded-2xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+              <span class="material-symbols-outlined text-3xl">analytics</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h1 class="font-headline font-bold text-xl leading-none">Session Analysis</h1>
+              <p id="analysis-range-label" class="text-xs text-on-surface-variant mt-1"></p>
+            </div>
+            <button onclick="clearAnalysis()" class="p-2 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
+              <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+          </div>
+
+          <!-- Analysis Body -->
+          <div class="flex-1 overflow-y-auto p-6 no-scrollbar">
+
+            <!-- Question display -->
+            <div class="flex flex-col items-end ml-auto max-w-2xl mb-8">
+              <div class="flex items-center gap-2 mb-2 px-1">
+                <span class="text-[10px] text-on-surface-variant" id="analysis-time"></span>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface">Caregiver</span>
+              </div>
+              <div class="bg-primary text-on-primary shadow-lg shadow-primary/10 rounded-tl-3xl rounded-bl-3xl rounded-br-3xl p-5 text-sm leading-relaxed">
+                <span id="analysis-question-display"></span>
+              </div>
+            </div>
+
+            <!-- Loading state -->
+            <div id="analysis-loading" class="hidden flex flex-col items-start max-w-2xl">
+              <div class="flex items-center gap-2 mb-2 px-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-primary">CareBot Analysis</span>
+              </div>
+              <div class="bg-surface-container-high rounded-tr-3xl rounded-br-3xl rounded-bl-3xl p-5 w-full">
+                <div class="flex items-center gap-3 text-on-surface-variant text-sm">
+                  <span class="material-symbols-outlined text-primary spin text-base">refresh</span>
+                  <span>Analysing conversation logs...</span>
+                </div>
+                <div class="mt-4 space-y-2">
+                  <div class="skeleton h-3 w-full"></div>
+                  <div class="skeleton h-3 w-4/5"></div>
+                  <div class="skeleton h-3 w-3/4"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Result -->
+            <div id="analysis-result" class="hidden flex flex-col items-start max-w-2xl">
+              <div class="flex items-center gap-2 mb-2 px-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-primary">CareBot Analysis</span>
+                <span id="analysis-result-time" class="text-[10px] text-on-surface-variant"></span>
+              </div>
+              <div class="bg-surface-container-high rounded-tr-3xl rounded-br-3xl rounded-bl-3xl p-5 text-sm leading-relaxed text-on-surface w-full">
+                <div id="analysis-result-text" class="prose-like whitespace-pre-wrap"></div>
+              </div>
+              <!-- Follow-up -->
+              <div class="mt-4 w-full">
+                <div class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 flex gap-3 items-end">
+                  <textarea id="followup-question" rows="2"
+                    class="flex-1 text-xs bg-surface-container-highest border-0 rounded-xl px-3 py-2.5 focus:ring-1 focus:ring-primary/20 text-on-surface resize-none placeholder-slate-400"
+                    placeholder="Ask a follow-up question..."></textarea>
+                  <button onclick="runFollowUp()"
+                    class="flex items-center gap-1 px-4 py-2.5 bg-primary text-on-primary rounded-xl text-xs font-bold transition-all active:scale-95 hover:bg-primary-container whitespace-nowrap">
+                    <span class="material-symbols-outlined text-sm">send</span>
+                    Ask
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Error state -->
+            <div id="analysis-error" class="hidden flex flex-col items-start max-w-2xl">
+              <div class="bg-error-container rounded-tr-3xl rounded-br-3xl rounded-bl-3xl p-5 text-sm leading-relaxed text-on-error-container">
+                <span id="analysis-error-text"></span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </section>
   </main>
-  <!-- Mobile Navigation Toggle (Bottom Bar for Mobile) -->
-  <nav
-    class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-low flex justify-around items-center px-4 py-3 z-50 border-t border-outline-variant/10">
-    <a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+
+  <!-- Mobile Nav -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-low flex justify-around items-center px-4 py-3 z-50 border-t border-outline-variant/10">
+    <a class="flex flex-col items-center gap-1 text-slate-500" href="{% url 'dashboard' %}">
       <span class="material-symbols-outlined">dashboard</span>
       <span class="text-[10px] font-semibold">Dashboard</span>
     </a>
@@ -369,15 +547,402 @@
       <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
       <span class="text-[10px] font-bold">Chat</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+    <a class="flex flex-col items-center gap-1 text-slate-500" href="{% url 'mood' %}">
       <span class="material-symbols-outlined">psychology</span>
       <span class="text-[10px] font-semibold">Mood</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+    <a class="flex flex-col items-center gap-1 text-slate-500" href="{% url 'settings' %}">
       <span class="material-symbols-outlined">settings</span>
       <span class="text-[10px] font-semibold">Settings</span>
     </a>
   </nav>
-</body>
 
+  <!-- ───────────── JAVASCRIPT ───────────── -->
+  <script>
+    // CSRF helper
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // ── TAB SWITCHING ──
+    let currentTab = 'recent';
+    function switchTab(tab) {
+      currentTab = tab;
+      ['recent', 'archived', 'analysis'].forEach(t => {
+        document.getElementById(`panel-${t}`).classList.remove('active');
+        const btn = document.getElementById(`tab-${t}`);
+        btn.classList.remove('text-primary', 'bg-surface-container-lowest', 'shadow-sm');
+        btn.classList.add('text-on-surface-variant', 'hover:text-on-surface');
+      });
+      document.getElementById(`panel-${tab}`).classList.add('active');
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      activeBtn.classList.add('text-primary', 'bg-surface-container-lowest', 'shadow-sm');
+      activeBtn.classList.remove('text-on-surface-variant', 'hover:text-on-surface');
+
+      if (tab === 'analysis') {
+        showAnalysisView();
+      } else {
+        document.getElementById('analysis-view').classList.add('hidden');
+        document.getElementById('analysis-view').style.display = '';
+      }
+    }
+
+    // ── SESSION LOADING ──
+    let activeSessionId = null;
+    function loadSession(sessionId) {
+      if (activeSessionId === sessionId) return;
+      activeSessionId = sessionId;
+
+      // Highlight selected item
+      document.querySelectorAll('.session-item').forEach(btn => {
+        btn.classList.remove('bg-surface-container-lowest', 'shadow-sm', 'border', 'border-primary/10');
+      });
+      const activeBtn = document.querySelector(`[data-session-id="${sessionId}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-surface-container-lowest', 'shadow-sm', 'border', 'border-primary/10');
+      }
+
+      // Show session view
+      document.getElementById('empty-state').classList.add('hidden');
+      document.getElementById('analysis-view').classList.add('hidden');
+      document.getElementById('analysis-view').style.display = '';
+      const sv = document.getElementById('session-view');
+      sv.classList.remove('hidden');
+      sv.style.display = 'flex';
+
+      // Reset header & messages
+      document.getElementById('session-title').textContent = 'Loading...';
+      document.getElementById('session-meta').textContent = '';
+      document.getElementById('messages-container').innerHTML = renderLoadingMessages();
+      document.getElementById('sentiment-card').classList.add('hidden');
+
+      // Fetch from Django
+      fetch(`/session/${sessionId}/`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('session-title').textContent = data.title || 'Untitled Session';
+        document.getElementById('session-meta').textContent =
+          `Patient: ${data.patient_name} • Session ID: #${data.id}`;
+
+        renderSentimentCard(data);
+        renderMessages(data.messages);
+      })
+      .catch(() => {
+        document.getElementById('messages-container').innerHTML = `
+          <div class="flex justify-center py-12">
+            <div class="bg-error-container px-6 py-4 rounded-2xl text-on-error-container text-sm font-medium">
+              Failed to load session. Please try again.
+            </div>
+          </div>`;
+      });
+    }
+
+    function renderLoadingMessages() {
+      return `
+        <div class="flex flex-col items-start max-w-2xl">
+          <div class="skeleton h-3 w-24 mb-3"></div>
+          <div class="skeleton h-16 w-80 rounded-3xl"></div>
+        </div>
+        <div class="flex flex-col items-end ml-auto max-w-2xl">
+          <div class="skeleton h-3 w-24 mb-3"></div>
+          <div class="skeleton h-12 w-64 rounded-3xl"></div>
+        </div>`;
+    }
+
+    function renderSentimentCard(data) {
+      if (!data.dominant_mood) return;
+      const card = document.getElementById('sentiment-card');
+      card.classList.remove('hidden');
+
+      const moodColors = {
+        calm: { dot: 'bg-secondary shadow-[0_0_8px_rgba(0,106,97,0.4)]', text: 'text-secondary' },
+        anxious: { dot: 'bg-tertiary', text: 'text-tertiary' },
+        distressed: { dot: 'bg-error', text: 'text-error' },
+        happy: { dot: 'bg-secondary shadow-[0_0_8px_rgba(0,106,97,0.4)]', text: 'text-secondary' },
+      };
+      const mc = moodColors[data.dominant_mood] || { dot: 'bg-outline-variant', text: 'text-on-surface-variant' };
+
+      const dot = document.getElementById('sentiment-dot');
+      dot.className = `w-2 h-2 rounded-full ${mc.dot}`;
+      const label = document.getElementById('sentiment-label');
+      label.className = `font-bold text-sm ${mc.text}`;
+      label.textContent = capitalize(data.dominant_mood);
+
+      document.getElementById('sentiment-flags').textContent = data.flags || 'None detected';
+    }
+
+    function renderMessages(messages) {
+      const container = document.getElementById('messages-container');
+      if (!messages || messages.length === 0) {
+        container.innerHTML = `
+          <div class="flex justify-center py-12 text-on-surface-variant text-sm">No messages found in this session.</div>`;
+        return;
+      }
+
+      const moodBadgeMap = {
+        calm: { bg: 'bg-secondary-container/30', dot: 'bg-secondary', text: 'text-on-secondary-container', label: 'Calm' },
+        anxious: { bg: 'bg-tertiary-fixed/30', dot: 'bg-tertiary', text: 'text-tertiary', label: 'Anxious' },
+        distressed: { bg: 'bg-error-container/30', dot: 'bg-error', text: 'text-error', label: 'Distressed' },
+        happy: { bg: 'bg-secondary-container/30', dot: 'bg-secondary', text: 'text-on-secondary-container', label: 'Happy' },
+      };
+
+      let html = '';
+      messages.forEach(msg => {
+        const time = formatTime(msg.timestamp);
+        if (msg.sender === 'bot') {
+          html += `
+            <div class="flex flex-col items-start max-w-2xl">
+              <div class="flex items-center gap-2 mb-2 px-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-primary">CareBot</span>
+                <span class="text-[10px] text-on-surface-variant">${time}</span>
+              </div>
+              <div class="bg-surface-container-high rounded-tr-3xl rounded-br-3xl rounded-bl-3xl p-5 text-sm leading-relaxed text-on-surface">
+                ${escapeHtml(msg.content)}
+              </div>
+            </div>`;
+        } else if (msg.sender === 'patient') {
+          const mood = moodBadgeMap[msg.detected_mood] || null;
+          html += `
+            <div class="flex flex-col items-end ml-auto max-w-2xl">
+              <div class="flex items-center gap-2 mb-2 px-1">
+                <span class="text-[10px] text-on-surface-variant">${time}</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface">Patient</span>
+                ${mood ? `<div class="flex items-center gap-1 ${mood.bg} px-2 py-0.5 rounded-full">
+                  <span class="w-1 h-1 rounded-full ${mood.dot}"></span>
+                  <span class="text-[9px] font-bold ${mood.text}">${mood.label}</span>
+                </div>` : ''}
+              </div>
+              <div class="bg-primary text-on-primary shadow-lg shadow-primary/10 rounded-tl-3xl rounded-bl-3xl rounded-br-3xl p-5 text-sm leading-relaxed">
+                ${highlightKeywords(escapeHtml(msg.content), msg.flagged_keywords || [])}
+              </div>
+            </div>`;
+        } else if (msg.sender === 'system') {
+          html += `
+            <div class="flex justify-center my-4">
+              <div class="bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/10">
+                <p class="text-[11px] font-medium text-on-surface-variant flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">event_repeat</span>
+                  ${escapeHtml(msg.content)}
+                </p>
+              </div>
+            </div>`;
+        }
+      });
+
+      container.innerHTML = html;
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // ── ARCHIVE SEARCH ──
+    function filterArchive(query) {
+      const q = query.toLowerCase().trim();
+
+      document.querySelectorAll('.archive-item').forEach(item => {
+        const text = item.getAttribute('data-search-text') || '';
+
+        if (!q) {
+          item.style.display = '';
+        } else {
+          item.style.display = text.includes(q) ? '' : 'none';
+        }
+      });
+    }
+
+    // ── GLOBAL SEARCH ──
+    document.getElementById('global-search').addEventListener('input', function() {
+      const q = this.value.toLowerCase().trim();
+      document.querySelectorAll('.tab-panel.active .session-item').forEach(item => {
+        const title = item.querySelector('p')?.textContent?.toLowerCase() || '';
+        const date = item.querySelector('span:first-child')?.textContent?.toLowerCase() || '';
+        item.style.display = (!q || title.includes(q) || date.includes(q)) ? '' : 'none';
+      });
+    });
+
+    // ── EXPORT ──
+    function exportTranscript() {
+      if (!activeSessionId) return;
+      window.open(`/export/${activeSessionId}/`, '_blank');
+    }
+
+    // ── ANALYSIS ──
+    let analysisHistory = [];
+
+    function showAnalysisView() {
+      document.getElementById('empty-state').classList.add('hidden');
+      document.getElementById('session-view').classList.add('hidden');
+      document.getElementById('session-view').style.display = '';
+
+      const av = document.getElementById('analysis-view');
+      av.classList.remove('hidden');
+      av.style.display = 'flex';
+    }
+
+    function clearAnalysis() {
+      const av = document.getElementById('analysis-view');
+      av.classList.add('hidden');
+      av.style.display = '';
+      document.getElementById('empty-state').classList.remove('hidden');
+      analysisHistory = [];
+
+      ['analysis-loading', 'analysis-result', 'analysis-error'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+        document.getElementById(id).style.display = '';
+      });
+    }
+
+    function setAnalysisPrompt(btn) {
+      document.getElementById('analysis-question').value = btn.textContent.trim();
+      document.getElementById('analysis-question').focus();
+    }
+
+    function runAnalysis() {
+      const question = document.getElementById('analysis-question').value.trim();
+      if (!question) return;
+
+      const fromDate = document.getElementById('analysis-from').value;
+      const toDate = document.getElementById('analysis-to').value;
+
+      // Show analysis view
+      switchTab('analysis');
+      showAnalysisView();
+
+      // Update question display
+      document.getElementById('analysis-question-display').textContent = question;
+      document.getElementById('analysis-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('analysis-range-label').textContent =
+        fromDate && toDate ? `Sessions from ${fromDate} to ${toDate}` :
+        fromDate ? `Sessions from ${fromDate}` :
+        toDate ? `Sessions up to ${toDate}` :
+        'All available sessions';
+
+      // Show loading, hide others
+      ['analysis-result', 'analysis-error'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+        document.getElementById(id).style.display = '';
+      });
+      const loading = document.getElementById('analysis-loading');
+      loading.classList.remove('hidden');
+      loading.style.display = 'flex';
+
+      // Build conversation history for context
+      analysisHistory.push({ role: 'user', content: question });
+
+      fetch('/analyse/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+          question,
+          from_date: fromDate || null,
+          to_date: toDate || null,
+          history: analysisHistory
+        })
+      })
+      .then(r => r.json())
+      .then(data => {
+        loading.classList.add('hidden');
+        loading.style.display = '';
+
+        if (data.error) {
+          document.getElementById('analysis-error-text').textContent = data.error;
+          const errEl = document.getElementById('analysis-error');
+          errEl.classList.remove('hidden');
+          errEl.style.display = 'flex';
+          return;
+        }
+
+        analysisHistory.push({ role: 'assistant', content: data.answer });
+
+        document.getElementById('analysis-result-text').textContent = data.answer;
+        document.getElementById('analysis-result-time').textContent =
+          new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const resultEl = document.getElementById('analysis-result');
+        resultEl.classList.remove('hidden');
+        resultEl.style.display = 'flex';
+        document.getElementById('analysis-question').value = '';
+      })
+      .catch(() => {
+        loading.classList.add('hidden');
+        loading.style.display = '';
+        document.getElementById('analysis-error-text').textContent =
+          'Analysis failed. Please check your connection and try again.';
+        const errEl = document.getElementById('analysis-error');
+        errEl.classList.remove('hidden');
+        errEl.style.display = 'flex';
+      });
+    }
+
+    function runFollowUp() {
+      const q = document.getElementById('followup-question').value.trim();
+      if (!q) return;
+      document.getElementById('analysis-question').value = q;
+      document.getElementById('followup-question').value = '';
+      runAnalysis();
+    }
+
+    // ── UTILS ──
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.appendChild(document.createTextNode(text || ''));
+      return div.innerHTML;
+    }
+
+    function highlightKeywords(html, keywords) {
+      if (!keywords || keywords.length === 0) return html;
+      let result = html;
+      keywords.forEach(kw => {
+        const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        result = result.replace(new RegExp(`(${escaped})`, 'gi'),
+          '<span class="font-extrabold underline decoration-2 decoration-on-primary-container">$1</span>');
+      });
+      return result;
+    }
+
+    function formatTime(timestamp) {
+      if (!timestamp) return '';
+      const d = new Date(timestamp);
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function capitalize(str) {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Auto-set date pickers to last 7 days by default
+    (function() {
+      const now = new Date();
+      const to = now.toISOString().split('T')[0];
+      const from = new Date(now.setDate(now.getDate() - 7)).toISOString().split('T')[0];
+      document.getElementById('analysis-from').value = from;
+      document.getElementById('analysis-to').value = to;
+    })();
+
+    // Load first session automatically if available
+    // (function() {
+    //   const first = document.querySelector('[data-session-id]');
+    //   if (first) {
+    //     loadSession(parseInt(first.getAttribute('data-session-id')));
+    //   }
+    // })();
+  </script>
+</body>
 </html>

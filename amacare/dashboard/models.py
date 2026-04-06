@@ -300,3 +300,85 @@ class PhysicalConditionLog(models.Model):
  
     def __str__(self):
         return f"{self.patient} | Physical Log {self.logged_at:%Y-%m-%d %H:%M}"
+    
+class ChatSession(models.Model):
+    """
+    One continuous conversation between a patient and CareBot.
+    Sessions older than 7 days are considered 'archived' — no separate flag
+    is needed; the view filters by started_at relative to today.
+    """
+    MOOD_CHOICES = [
+        ('calm',       'Calm'),
+        ('happy',      'Happy'),
+        ('anxious',    'Anxious'),
+        ('distressed', 'Distressed'),
+        ('confused',   'Confused'),
+        ('neutral',    'Neutral'),
+    ]
+ 
+    patient    = models.ForeignKey('Patient', on_delete=models.CASCADE, related_name='chat_sessions')
+    title      = models.CharField(max_length=200, blank=True)   # auto-generated or device label
+    started_at = models.DateTimeField(default=timezone.now)
+    ended_at   = models.DateTimeField(null=True, blank=True)
+ 
+    # Aggregated after session ends
+    dominant_mood = models.CharField(max_length=20, choices=MOOD_CHOICES, blank=True)
+    flags         = models.TextField(blank=True)   # e.g. "Pain mentioned, Loneliness"
+    message_count = models.PositiveIntegerField(default=0)
+ 
+    class Meta:
+        ordering = ['-started_at']
+ 
+    @property
+    def is_today(self):
+        return self.started_at.date() == timezone.localdate()
+ 
+    @property
+    def is_yesterday(self):
+        from datetime import timedelta
+        return self.started_at.date() == timezone.localdate() - timedelta(days=1)
+ 
+    @property
+    def is_recent(self):
+        """True if the session started within the last 7 days."""
+        from datetime import timedelta
+        return self.started_at >= timezone.now() - timedelta(days=7)
+ 
+    def __str__(self):
+        return f"{self.patient} | {self.title or 'Session'} | {self.started_at:%Y-%m-%d %H:%M}"
+ 
+ 
+class ChatMessage(models.Model):
+    """
+    One utterance in a ChatSession.
+    sender = 'bot'     → CareBot response
+    sender = 'patient' → Patient voice/text input
+    sender = 'system'  → Automated note (e.g. "Caregiver notified")
+    """
+    SENDER_CHOICES = [
+        ('bot',     'CareBot'),
+        ('patient', 'Patient'),
+        ('system',  'System'),
+    ]
+    MOOD_CHOICES = [
+        ('calm',       'Calm'),
+        ('happy',      'Happy'),
+        ('anxious',    'Anxious'),
+        ('distressed', 'Distressed'),
+        ('confused',   'Confused'),
+        ('neutral',    'Neutral'),
+    ]
+ 
+    session          = models.ForeignKey(ChatSession, on_delete=models.CASCADE, related_name='messages')
+    sender           = models.CharField(max_length=10, choices=SENDER_CHOICES)
+    content          = models.TextField()
+    timestamp        = models.DateTimeField(default=timezone.now)
+    detected_mood    = models.CharField(max_length=20, choices=MOOD_CHOICES, blank=True)
+    flagged_keywords = models.JSONField(default=list, blank=True)  # e.g. ["pain", "lonely"]
+    audio_file       = models.FileField(upload_to='chat_audio/', null=True, blank=True)
+ 
+    class Meta:
+        ordering = ['timestamp']
+ 
+    def __str__(self):
+        return f"[{self.sender}] {self.content[:60]}"

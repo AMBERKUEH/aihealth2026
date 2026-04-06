@@ -2,21 +2,21 @@ import json
 import math
 import os
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
-from django.utils.timezone import localtime
-from .models import Patient, SafeZone, LocationLog
+from django.utils.timezone import datetime, localtime
+from .models import Patient, SafeZone, LocationLog, Medication, MedicationDose, RefillAlert, MoodEntry, PhysicalConditionLog, ChatSession, ChatMessage
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Medication, MedicationDose, RefillAlert, Patient
 from datetime import date, timedelta
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.hashers import make_password
-from .models import Patient, Patient, MoodEntry, PhysicalConditionLog
+from django.views.decorators.http import require_GET, require_POST
+from google import genai 
  
  
 def login_view(request):
@@ -493,12 +493,270 @@ def send_refill_alert(request):
  
     return JsonResponse({"success": True})
 
-def chat(request): 
-    return render(request, "chat.html")
-
 def _get_patient(user):
     """Return the first patient belonging to the logged-in caregiver."""
     return Patient.objects.filter(caregiver=user).first()
+ 
+ 
+def _seven_days_ago():
+    return timezone.now() - timedelta(days=7)
+ 
+ 
+# ─────────────────────────────────────────────
+#  Main page
+# ─────────────────────────────────────────────
+ 
+@login_required
+def chat(request):
+    patient = _get_patient(request.user)
+ 
+    if patient:
+        cutoff = _seven_days_ago()
+        recent_sessions = ChatSession.objects.filter(
+            patient=patient,
+            started_at__gte=cutoff,
+        ).order_by('-started_at')
+ 
+        archived_sessions = ChatSession.objects.filter(
+            patient=patient,
+            started_at__lt=cutoff,
+        ).order_by('-started_at')
+    else:
+        recent_sessions = ChatSession.objects.none()
+        archived_sessions = ChatSession.objects.none()
+ 
+    return render(request, 'chat.html', {
+        'patient': patient,
+        'recent_sessions': recent_sessions,
+        'archived_sessions': archived_sessions,
+    })
+ 
+ 
+# ─────────────────────────────────────────────
+#  Session detail (AJAX)
+# ─────────────────────────────────────────────
+ 
+@login_required
+@require_GET
+def session_messages(request, session_id):
+    patient = _get_patient(request.user)
+    session = get_object_or_404(ChatSession, id=session_id, patient=patient)
+ 
+    messages = []
+    for msg in session.messages.all():
+        messages.append({
+            'id':               msg.id,
+            'sender':           msg.sender,
+            'content':          msg.content,
+            'timestamp':        msg.timestamp.isoformat(),
+            'detected_mood':    msg.detected_mood,
+            'flagged_keywords': msg.flagged_keywords or [],
+        })
+ 
+    return JsonResponse({
+        'id':            session.id,
+        'title':         session.title or 'Untitled Session',
+        'patient_name':  f"{patient.first_name} {patient.last_name}",
+        'started_at':    session.started_at.isoformat(),
+        'dominant_mood': session.dominant_mood,
+        'flags':         session.flags,
+        'messages':      messages,
+    })
+ 
+ 
+# ─────────────────────────────────────────────
+#  Export transcript
+# ─────────────────────────────────────────────
+ 
+@login_required
+@require_GET
+def export_transcript(request, session_id):
+    patient = _get_patient(request.user)
+    session = get_object_or_404(ChatSession, id=session_id, patient=patient)
+ 
+    lines = [
+        f"AmaCare — Session Transcript",
+        f"Patient : {patient.first_name} {patient.last_name}",
+        f"Session : {session.title or 'Untitled'} (ID #{session.id})",
+        f"Date    : {session.started_at.strftime('%d %B %Y, %I:%M %p')}",
+        f"Mood    : {session.dominant_mood.capitalize() if session.dominant_mood else '—'}",
+        f"Flags   : {session.flags or 'None'}",
+        "─" * 60,
+        "",
+    ]
+ 
+    for msg in session.messages.all():
+        sender_label = {
+            'bot':     'CareBot',
+            'patient': f"{patient.first_name} (Patient)",
+            'system':  '[ System ]',
+        }.get(msg.sender, msg.sender)
+ 
+        ts = msg.timestamp.strftime('%I:%M %p')
+        lines.append(f"[{ts}] {sender_label}:")
+        lines.append(f"  {msg.content}")
+        if msg.detected_mood:
+            lines.append(f"  (Mood detected: {msg.detected_mood})")
+        if msg.flagged_keywords:
+            lines.append(f"  (Flagged: {', '.join(msg.flagged_keywords)})")
+        lines.append("")
+ 
+    content = "\n".join(lines)
+    filename = f"amacare_session_{session_id}_{session.started_at.strftime('%Y%m%d')}.txt"
+ 
+    response = HttpResponse(content, content_type='text/plain; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+ 
+ 
+# ─────────────────────────────────────────────
+#  AI Analysis
+# ─────────────────────────────────────────────
+ 
+@login_required
+@require_POST
+def analyse_sessions(request):
+    """
+    Accepts:
+        question  (str)  — caregiver's question
+        from_date (str)  — ISO date string, optional
+        to_date   (str)  — ISO date string, optional
+        history   (list) — previous turns for follow-up support
+    Returns:
+        { answer: str }  or  { error: str }
+    """
+    try:
+        body = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({'error': 'Invalid request body.'}, status=400)
+ 
+    question  = (body.get('question') or '').strip()
+    from_date = body.get('from_date')
+    to_date   = body.get('to_date')
+    history   = body.get('history') or []
+ 
+    if not question:
+        return JsonResponse({'error': 'Question cannot be empty.'}, status=400)
+ 
+    patient = _get_patient(request.user)
+    if not patient:
+        return JsonResponse({'error': 'No patient linked to your account.'}, status=404)
+ 
+    # ── Gather sessions in the requested range ──
+    qs = ChatSession.objects.filter(patient=patient)
+    if from_date:
+        try:
+            from_date = datetime.fromisoformat(from_date).date()
+            qs = qs.filter(started_at__date__gte=from_date)
+        except ValueError:
+            pass
+    if to_date:
+        try:
+            to_date = datetime.fromisoformat(to_date).date()
+            qs = qs.filter(started_at__date__lte=to_date)
+        except ValueError:
+            pass
+ 
+    sessions = qs.prefetch_related('messages').order_by('started_at')
+ 
+    if not sessions.exists():
+        return JsonResponse({'answer': 'No sessions found for the selected date range.'})
+ 
+    # ── Build transcript context for Claude ──
+    transcript_blocks = []
+    for sess in sessions:
+        block = [
+            f"--- Session: {sess.title or 'Untitled'} | {sess.started_at.strftime('%d %b %Y %I:%M %p')} ---",
+            f"Overall Mood: {sess.dominant_mood or 'Unknown'}",
+            f"Flags: {sess.flags or 'None'}",
+        ]
+        for msg in sess.messages.all():
+            sender_label = {
+                'bot':     'CareBot',
+                'patient': f"{patient.first_name}",
+                'system':  '[System]',
+            }.get(msg.sender, msg.sender)
+            ts = msg.timestamp.strftime('%H:%M')
+            line = f"[{ts}] {sender_label}: {msg.content}"
+            if msg.detected_mood:
+                line += f" (mood: {msg.detected_mood})"
+            if msg.flagged_keywords:
+                line += f" [flagged: {', '.join(msg.flagged_keywords)}]"
+            block.append(line)
+        transcript_blocks.append("\n".join(block))
+ 
+    full_transcript = "\n\n".join(transcript_blocks)
+ 
+    # Cap transcript to ~80k chars to stay within context limits
+    MAX_CHARS = 80_000
+    if len(full_transcript) > MAX_CHARS:
+        full_transcript = full_transcript[:MAX_CHARS] + "\n\n[... transcript truncated for length ...]"
+ 
+    system_prompt = f"""You are a clinical AI assistant helping a caregiver understand conversations between their elderly patient with dementia and a care companion chatbot (CareBot).
+ 
+Patient: {patient.first_name} {patient.last_name}
+Date of Birth: {patient.date_of_birth}
+Diagnosis: {patient.diagnosis or 'Dementia'}
+ 
+Your role is to:
+- Summarise emotional patterns and recurring topics clearly and compassionately
+- Highlight clinical concerns (pain, confusion, refusal of medication, distress, isolation)
+- Identify positive moments (engagement, calm, responsiveness)
+- Be factual and evidence-based — reference specific messages where helpful
+- Use plain, professional language suitable for a caregiver without clinical training
+- Keep responses concise but thorough — use short paragraphs, not bullet lists unless essential
+ 
+Here are the conversation logs for this analysis:
+ 
+{full_transcript}"""
+ 
+    # ── Build message list (support follow-up turns) ──
+    # history already contains prior turns; strip to last 8 for token efficiency
+    safe_history = history[-8:] if len(history) > 8 else history
+ 
+    # Replace the last user message in history with the current question
+    # (history arrives with the current question already appended by JS)
+    messages = safe_history + [{'role': 'user', 'content': question}]
+ 
+    # Ensure history alternates roles correctly
+    clean_messages = []
+    for turn in messages:
+        role = turn.get('role', '')
+        content = turn.get('content', '')
+        if role in ('user', 'assistant') and content:
+            clean_messages.append({'role': role, 'content': content})
+ 
+    if not clean_messages:
+        clean_messages = [{'role': 'user', 'content': question}]
+ 
+    try:
+        api_key = getattr(settings, 'GEMINI_API_KEY', os.environ.get('GEMINI_API_KEY', ''))
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model='gemini-3-flash-preview',
+            contents=[
+                {"role": "user", "parts": [{"text": system_prompt}]},
+                *[
+                    {"role": m["role"], "parts": [{"text": m["content"]}]}
+                    for m in clean_messages
+                ]
+            ],
+            config={
+                "max_output_tokens": 1500
+            }
+        )
+        try:
+            answer = response.text
+        except AttributeError:
+            answer = str(response)
+        return JsonResponse({'answer': answer})
+ 
+    except Exception as e:
+        return JsonResponse({'error': f'Unexpected error during analysis: {str(e)}'}, status=500)
+
+# def _get_patient(user):
+#     """Return the first patient belonging to the logged-in caregiver."""
+#     return Patient.objects.filter(caregiver=user).first()
  
  
 def _mood_score(entries):
