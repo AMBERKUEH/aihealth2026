@@ -9,8 +9,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     
     # Protected URLs (will redirect to login if not authenticated)
-    path("dashboard/", login_required(views.home), name="dashboard"),
-    path("", login_required(views.home), name="dashboard"),
+    path("dashboard/", login_required(views.dashboard), name="dashboard"),
+    path("", views.landing, name="landing"),
     path("settings/", login_required(views.settings), name="settings"),
     path("medication/", login_required(views.medication), name="medication"),
     path("chat/", login_required(views.chat), name="chat"),

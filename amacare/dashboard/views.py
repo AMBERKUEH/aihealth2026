@@ -232,10 +232,25 @@ def api_safe_zone_delete(request, zone_id):
     zone.delete()
     return JsonResponse({"status": "deleted"})
 
-def home(request):
-    # meds = Medication.objects.all()
-    # return render(request, "home.html", {"meds": meds})
-    return render(request, "dashboard.html")
+@login_required
+def dashboard(request):
+    from datetime import date
+    patient = Patient.objects.filter(caregiver=request.user).first()
+    medications = []
+    if patient:
+        from .models import Medication
+        medications = list(Medication.objects.filter(patient=patient, is_active=True).values(
+            'id', 'name', 'morning', 'noon', 'night',
+            'pills_remaining', 'low_stock_threshold', 'is_active'
+        ))
+    import json
+    from django.core.serializers.json import DjangoJSONEncoder
+    context = {
+        'patient': patient,
+        'today_str': date.today().isoformat(),
+        'medications_json': json.dumps(medications, cls=DjangoJSONEncoder),
+    }
+    return render(request, 'dashboard.html', context)
 
 def settings(request):
     return render(request, "settings.html")
@@ -1211,3 +1226,6 @@ def settings_api_data(request):
         'patient_created_at': patient.created_at.strftime('%b %Y') if patient and patient.created_at else '',
     }
     return JsonResponse(data)
+
+def landing(request):
+    return render(request, 'landing.html')
